@@ -10,12 +10,12 @@
 
 | Sahə | Dəyər |
 |---|---|
-| **Son tamamlanan tapşırıq** | Mərhələ 5 — Kurslar Səhifəsi (backend + frontend) |
-| **Aktiv branch** | `feature/m05-courses` |
-| **Növbəti branch** | `feature/m06-teachers` |
-| **Növbəti tapşırıq** | Mərhələ 6 — Müəllimlər Səhifəsi |
+| **Son tamamlanan tapşırıq** | Mərhələ 6 — Müəllimlər Səhifəsi (backend + frontend) |
+| **Aktiv branch** | `feature/m06-teachers` |
+| **Növbəti branch** | `feature/m08-blog` |
+| **Növbəti tapşırıq** | Mərhələ 8 — Blog |
 | **Bloklanmış tapşırıq** | Yoxdur |
-| **Qeyd** | categories/teachers/courses cədvəlləri yaradıldı, 6 kurs seed edildi. /courses və /courses/[slug] səhifələri hazırdır. |
+| **Qeyd** | Müəllim siyahısı və profil səhifələri hazırdır. Drizzle ORM uyğunsuzluğu həll edildi. |
 
 ---
 
@@ -210,22 +210,24 @@
 ---
 
 ## Mərhələ 6 — Müəllimlər Səhifəsi
-**Status:** `[ ]` gözləyir — 0/10
+**Status:** `[x]` tamamlandı — 10/10
 
 **Branch:** `feature/m06-teachers`
 
 ### 6.1 Backend
-- [ ] `GET /api/teachers` endpointi hazırlandı (siyahı)
-- [ ] `GET /api/teachers/:slug` endpointi hazırlandı (tək müəllim)
-- [ ] Müəllim seed data yaradıldı (en azı 4 müəllim)
+- [x] `GET /api/teachers` endpointi hazırlandı (siyahı)
+- [x] `GET /api/teachers/:slug` endpointi hazırlandı (tək müəllim)
+- [x] Müəllim seed data yaradıldı (en azı 4 müəllim)
 
 ### 6.2 Frontend
-- [ ] `/teachers` səhifəsi yaradıldı (SSG)
-- [ ] `TeacherGrid` komponenti yaradıldı
-- [ ] `TeacherCard` komponenti yaradıldı (foto, ad, ixtisas, sosial linklər)
-- [ ] `/teachers/[slug]` tək müəllim profil səhifəsi yaradıldı (SSG)
-- [ ] JSON-LD `Person` schema əlavə edildi
-- [ ] `generateMetadata()` hər müəllim üçün dinamik yazıldı
+- [x] `/teachers` səhifəsi yaradıldı (SSG)
+- [x] `TeacherGrid` komponenti yaradıldı
+- [x] `TeacherCard` komponenti yaradıldı (foto, ad, ixtisas, sosial linklər)
+- [x] `/teachers/[slug]` tək müəllim profil səhifəsi yaradıldı (SSG)
+- [x] JSON-LD `Person` schema əlavə edildi
+- [x] `generateMetadata()` hər müəllim üçün dinamik yazıldı
+- [x] Drizzle ORM join xətası həll edildi (repository + controller)
+- [x] Localization (AZ, EN, RU) tamamlandı (messages/JSON)
 
 ---
 

@@ -17,11 +17,11 @@
     "db:migrate:manual": "tsx scripts/migrate.ts"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^1.1.0",
+    "@neondatabase/serverless": "^0.10.4",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "drizzle-orm": "^0.36.4",
+    "drizzle-orm": "^0.45.2",
     "express": "^5.0.0",
     "express-rate-limit": "^7.4.1",
     "helmet": "^8.0.0",

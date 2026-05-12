@@ -79,5 +79,17 @@
     "students": "tələbə",
     "duration": "müddət",
     "loading": "Yüklənir..."
+  },
+  "teachers": {
+    "badge": "Komandamız",
+    "page_title": "Müəllimlərimiz",
+    "page_description": "Sahəsində peşəkar və təcrübəli ekspertlərdən ibarət komandamızla tanış olun. Hər bir müəllimimiz öz sahəsində illərin təcrübəsinə malikdir.",
+    "search_placeholder": "Müəllim axtar...",
+    "stat_teachers": "Müəllim",
+    "stat_experts": "Yüksək ixtisaslı mütəxəssislər",
+    "no_results_title": "Müəllim tapılmadı",
+    "no_results_desc": "Axtarış meyarlarınıza uyğun müəllim yoxdur.",
+    "clear_search": "Axtarışı təmizlə",
+    "back_to_list": "Bütün müəllimlərə qayıt"
   }
 }

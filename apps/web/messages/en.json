@@ -79,5 +79,17 @@
     "students": "students",
     "duration": "duration",
     "loading": "Loading..."
+  },
+  "teachers": {
+    "badge": "Our Team",
+    "page_title": "Our Teachers",
+    "page_description": "Meet our team of professional and experienced experts. Each teacher has years of experience in their field.",
+    "search_placeholder": "Search teachers...",
+    "stat_teachers": "Teachers",
+    "stat_experts": "Highly qualified experts",
+    "no_results_title": "No teachers found",
+    "no_results_desc": "There are no teachers matching your search criteria.",
+    "clear_search": "Clear search",
+    "back_to_list": "Back to all teachers"
   }
 }

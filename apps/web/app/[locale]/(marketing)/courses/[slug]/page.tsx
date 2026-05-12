@@ -38,6 +38,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+export async function generateStaticParams() {
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api';
+    const res = await fetch(`${apiUrl}/courses`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    const courses: Course[] = data.data ?? [];
+
+    const locales = ['az', 'en', 'ru'];
+    return locales.flatMap((locale) =>
+      courses.map((course) => ({
+        locale,
+        slug: course.slug,
+      }))
+    );
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
+}
+
 export default async function CourseDetailPage({ params }: PageProps) {
   const { locale, slug } = await params;
   const t = await getTranslations({ locale, namespace: 'courses' });
@@ -62,8 +83,36 @@ export default async function CourseDetailPage({ params }: PageProps) {
     'Onlayn və oflayn variantlar',
   ];
 
+  // JSON-LD Schema
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Course',
+    name: course.title,
+    description: course.description,
+    provider: {
+      '@type': 'Organization',
+      name: 'Cahan Academy',
+      sameAs: 'https://cahan.academy',
+    },
+    image: course.image,
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: course.rating,
+      reviewCount: course.studentsCount,
+    },
+    offers: {
+      '@type': 'Offer',
+      price: course.price.replace(/[^0-9.]/g, ''),
+      priceCurrency: 'AZN',
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero */}
       <section className="relative pt-28 pb-0 overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
         {/* Decorative blobs */}
