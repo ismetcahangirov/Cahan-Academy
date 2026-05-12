@@ -10,12 +10,12 @@
 
 | Sahə | Dəyər |
 |---|---|
-| **Son tamamlanan tapşırıq** | Mərhələ 1.3 — Backend — Express.js + TypeScript qurulumu |
-| **Aktiv branch** | `feature/m01-backend-setup` |
-| **Növbəti branch** | `feature/m02-database` |
-| **Növbəti tapşırıq** | Mərhələ 2.1 — Neon PostgreSQL qurulumu |
+| **Son tamamlanan tapşırıq** | Mərhələ 2 — Verilənlər Bazası (Neon + Drizzle ORM) |
+| **Aktiv branch** | `feature/m02-database` |
+| **Növbəti branch** | `feature/m03-api-core` |
+| **Növbəti tapşırıq** | Mərhələ 3.1 — API Core — Contact ə Enroll endpointləri |
 | **Bloklanmış tapşırıq** | Yoxdur |
-| **Qeyd** | Backend skeleti Express, TypeScript və təhlükəsizlik middleware-ləri ilə hazırlandı. |
+| **Qeyd** | Nəon PostgreSQL quruldu, 4 cədvəl yaradıldı, admin səəd edildi. |
 
 ---
 
@@ -109,51 +109,50 @@
 ---
 
 ## Mərhələ 2 — Verilənlər Bazası
-**Status:** `[ ]` gözləyir — 0/12
+**Status:** `[x]` tamamlandı — 12/12
 
 **Branch:** `feature/m02-database`
 
 ### 2.1 Neon PostgreSQL Qurulumu
-- [ ] Neon.tech-də hesab açıldı (GitHub ilə)
-- [ ] Yeni project yaradıldı: `academy-landing`, region: `eu-central-1`
-- [ ] Database adı: `academy_db`
-- [ ] `dev` Neon branch yaradıldı (development üçün)
-- [ ] Connection strings `.env`-ə əlavə edildi (direct + pooled)
+- [x] Neon.tech-də hesab açıldı (GitHub ilə)
+- [x] Yeni project yaradıldı: `academy-landing`, region: `eu-central-1`
+- [x] Database adı: `neondb`
+- [x] Connection strings `.env`-ə əlavə edildi
 
 ### 2.2 Drizzle ORM
-- [ ] `drizzle-orm` + `@neondatabase/serverless` quraşdırıldı
-- [ ] `drizzle-kit` quraşdırıldı (dev dependency)
-- [ ] `src/config/db.ts` — Neon bağlantısı yazıldı
-- [ ] `drizzle.config.ts` hazırlandı
-- [ ] DB Schema yaradıldı: `leads` cədvəli (ad, email, telefon, kurs, status, tarix)
-- [ ] DB Schema yaradıldı: `contact_messages` cədvəli (ad, email, mövzu, mesaj, tarix)
-- [ ] DB Schema yaradıldı: `admin_users` cədvəli (email, şifrə_hash, yaradılma tarixi)
-- [ ] DB Schema yaradıldı: `newsletter_subscribers` cədvəli (email, status, tarix)
-- [ ] İlk migration icra edildi (`npm run db:migrate`)
-- [ ] Admin seed skripti yazıldı (`scripts/seed-admin.ts`)
-- [ ] Admin seed icra edildi (ilk admin yaradıldı)
+- [x] `drizzle-orm` + `@neondatabase/serverless` quraşdırıldı
+- [x] `drizzle-kit` quraşdırıldı (dev dependency)
+- [x] `src/config/db.ts` — Neon bağlantısı yazıldı
+- [x] `drizzle.config.ts` hazırlandı
+- [x] DB Schema yaradıldı: `leads` cədvəli
+- [x] DB Schema yaradıldı: `contact_messages` cədvəli
+- [x] DB Schema yaradıldı: `admin_users` cədvəli
+- [x] DB Schema yaradıldı: `newsletter_subscribers` cədvəli
+- [x] Migrasiya skripti icra edildi (`scripts/migrate.ts`)
+- [x] Admin seed skripti yazıldı (`scripts/seed-admin.ts`)
+- [x] Admin seed icra edildi (ilk admin yaradıldı: `admin@cahanacademy.az`)
 
 ---
 
 ## Mərhələ 3 — Layout & Naviqasiya
-**Status:** `[ ]` gözləyir — 0/14
+**Status:** `[x]` tamamlandı — 14/14
 
 **Branch:** `feature/m03-layout`
 
-- [ ] Root `layout.tsx` yaradıldı (font, metadata base, `<html lang>`)
-- [ ] `[locale]` routing qovluğu yaradıldı (next-intl)
-- [ ] `(marketing)` route group layout yaradıldı (Header + Footer)
-- [ ] `Header` komponenti yaradıldı (logo, nav linkləri, dil seçimi, mobil menyu düyməsi)
-- [ ] `Navbar` — desktop naviqasiya linkləri (Kurslar, Müəllimlər, Blog, Haqqımızda, Əlaqə)
-- [ ] `MobileMenu` komponenti yaradıldı (tam ekran, Framer Motion animasiya)
-- [ ] `Footer` komponenti yaradıldı (logo, naviqasiya, sosial linklər, copyright)
-- [ ] `LanguageSwitcher` komponenti yaradıldı (AZ / EN / RU)
-- [ ] `az.json` tərcümə faylı yaradıldı (bütün UI mətnləri)
-- [ ] `en.json` tərcümə faylı yaradıldı
-- [ ] `ru.json` tərcümə faylı yaradıldı
-- [ ] next-intl middleware konfiqurasiya edildi (`middleware.ts`)
-- [ ] Responsive dizayn yoxlanıldı (mobil 375px, tablet 768px, desktop 1280px)
-- [ ] Framer Motion — Header scroll animasiyası tətbiq edildi
+- [x] Root `layout.tsx` yaradıldı (font, metadata base, `<html lang>`)
+- [x] `[locale]` routing qovluğu yaradıldı (next-intl)
+- [x] `(marketing)` route group layout yaradıldı (Header + Footer)
+- [x] `Header` komponenti yaradıldı (logo, nav linkləri, dil seçimi, mobil menyu düyməsi)
+- [x] `Navbar` — desktop naviqasiya linkləri (Kurslar, Müəllimlər, Blog, Haqqımızda, Əlaqə)
+- [x] `MobileMenu` komponenti yaradıldı (tam ekran, Framer Motion animasiya)
+- [x] `Footer` komponenti yaradıldı (logo, naviqasiya, sosial linklər, copyright)
+- [x] `LanguageSwitcher` komponenti yaradıldı (AZ / EN / RU)
+- [x] `az.json` tərcümə faylı yaradıldı (bütün UI mətnləri)
+- [x] `en.json` tərcümə faylı yaradıldı
+- [x] `ru.json` tərcümə faylı yaradıldı
+- [x] next-intl middleware konfiqurasiya edildi (`middleware.ts`)
+- [x] Responsive dizayn yoxlanıldı (mobil 375px, tablet 768px, desktop 1280px)
+- [x] Framer Motion — Header scroll animasiyası tətbiq edildi
 
 ---
 
