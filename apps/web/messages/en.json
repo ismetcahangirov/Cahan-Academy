@@ -56,10 +56,40 @@
     "home_title": "Cahan Academy — Professional Education Center",
     "home_description": "Advance your career with professional instructors at Cahan Academy. Programming, design, business English, and many more courses.",
     "courses_title": "Courses — Cahan Academy",
+    "courses_description": "Programming, design, language courses and more. Certified courses with professional instructors.",
     "teachers_title": "Teachers — Cahan Academy",
     "blog_title": "Blog — Cahan Academy",
     "about_title": "About — Cahan Academy",
     "contact_title": "Contact — Cahan Academy",
     "faq_title": "FAQ — Cahan Academy"
+  },
+  "courses": {
+    "page_title": "All Courses",
+    "page_subtitle": "Discover the best courses to advance your career",
+    "filter_all": "All",
+    "filter_popular": "Popular",
+    "search_placeholder": "Search courses...",
+    "no_results": "No courses found",
+    "enroll_btn": "Enroll Now",
+    "details_btn": "Details",
+    "level_beginner": "Beginner",
+    "level_intermediate": "Intermediate",
+    "level_advanced": "Advanced",
+    "level_all": "All Levels",
+    "students": "students",
+    "duration": "duration",
+    "loading": "Loading..."
+  },
+  "teachers": {
+    "badge": "Our Team",
+    "page_title": "Our Teachers",
+    "page_description": "Meet our team of professional and experienced experts. Each teacher has years of experience in their field.",
+    "search_placeholder": "Search teachers...",
+    "stat_teachers": "Teachers",
+    "stat_experts": "Highly qualified experts",
+    "no_results_title": "No teachers found",
+    "no_results_desc": "There are no teachers matching your search criteria.",
+    "clear_search": "Clear search",
+    "back_to_list": "Back to all teachers"
   }
 }

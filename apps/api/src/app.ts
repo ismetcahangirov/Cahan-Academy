@@ -4,6 +4,8 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import { globalErrorHandler } from './middleware/error.middleware.js';
 import { env } from './config/env.js';
+import courseRoutes from './routes/course.routes.js';
+import teacherRoutes from './routes/teacher.routes.js';
 
 const app = express();
 
@@ -22,8 +24,9 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Routes Placeholder
-// app.use('/api', routes);
+// Routes
+app.use('/api/courses', courseRoutes);
+app.use('/api/teachers', teacherRoutes);
 
 // Error Handling
 app.use(globalErrorHandler);
