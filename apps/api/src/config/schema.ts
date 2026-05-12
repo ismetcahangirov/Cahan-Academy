@@ -108,6 +108,27 @@ export const courses = pgTable('courses', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
+// ─── Blog Posts ───────────────────────────────────────────────────────────────
+export const posts = pgTable('posts', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  titleAz: varchar('title_az', { length: 500 }).notNull(),
+  titleEn: varchar('title_en', { length: 500 }).notNull(),
+  titleRu: varchar('title_ru', { length: 500 }).notNull(),
+  slug: varchar('slug', { length: 500 }).notNull().unique(),
+  contentAz: text('content_az').notNull(),
+  contentEn: text('content_en').notNull(),
+  contentRu: text('content_ru').notNull(),
+  excerptAz: text('excerpt_az'),
+  excerptEn: text('excerpt_en'),
+  excerptRu: text('excerpt_ru'),
+  image: varchar('image', { length: 1000 }),
+  authorId: text('author_id').references(() => adminUsers.id),
+  readingTime: varchar('reading_time', { length: 50 }),
+  isPublished: text('is_published').default('true').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 // ─── Type Exports ─────────────────────────────────────────────────────────────
 export type Lead = typeof leads.$inferSelect;
 export type NewLead = typeof leads.$inferInsert;
@@ -123,3 +144,5 @@ export type Teacher = typeof teachers.$inferSelect;
 export type NewTeacher = typeof teachers.$inferInsert;
 export type Course = typeof courses.$inferSelect;
 export type NewCourse = typeof courses.$inferInsert;
+export type Post = typeof posts.$inferSelect;
+export type NewPost = typeof posts.$inferInsert;

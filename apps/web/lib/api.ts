@@ -40,11 +40,23 @@ export const getTeacher = (slug: string) =>
   apiFetch<Teacher>(`/teachers/${slug}`, { tags: [`teacher-${slug}`], revalidate: 86400 });
 
 // ─── Blog ────────────────────────────────────────────────────────────────────
-export const getBlogPosts = () =>
-  apiFetch<BlogPost[]>('/blog', { tags: ['blog'], revalidate: 600 });
+export const getBlogPosts = (params?: { locale?: string; limit?: number; excludeSlug?: string }) => {
+  const query = new URLSearchParams();
+  if (params?.locale) query.append('locale', params.locale);
+  if (params?.limit) query.append('limit', params.limit.toString());
+  if (params?.excludeSlug) query.append('excludeSlug', params.excludeSlug);
+  
+  return apiFetch<{ data: BlogPost[] }>(`/blog?${query.toString()}`, { 
+    tags: ['blog'], 
+    revalidate: 600 
+  });
+};
 
-export const getBlogPost = (slug: string) =>
-  apiFetch<BlogPost>(`/blog/${slug}`, { tags: [`blog-${slug}`], revalidate: 3600 });
+export const getBlogPost = (slug: string, locale: string = 'az') =>
+  apiFetch<{ data: BlogPost }>(`/blog/${slug}?locale=${locale}`, { 
+    tags: [`blog-${slug}`], 
+    revalidate: 3600 
+  });
 
 // ─── Forms ────────────────────────────────────────────────────────────────────
 export const submitContactForm = (data: ContactFormData) =>
@@ -83,12 +95,18 @@ interface Teacher {
   imageUrl: string | null; socialLinks?: Record<string, string>;
 }
 interface BlogPost {
-  id: string; slug: string;
-  title: Record<'az'|'en'|'ru', string>;
-  excerpt: Record<'az'|'en'|'ru', string>;
-  content: Record<'az'|'en'|'ru', string>;
-  coverImageUrl: string | null; publishedAt: string; readingTime: number;
-  author: { name: string; imageUrl: string | null };
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content?: string;
+  image: string | null;
+  readingTime: string | null;
+  createdAt: string;
+  author: {
+    id: string;
+    name: string;
+  } | null;
 }
 interface ContactFormData { name: string; email: string; phone?: string; subject: string; message: string; }
 interface EnrollFormData   { name: string; email: string; phone: string; courseSlug?: string; }

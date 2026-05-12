@@ -102,7 +102,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
     },
     offers: {
       '@type': 'Offer',
-      price: course.price.replace(/[^0-9.]/g, ''),
+      price: course.price?.replace(/[^0-9.]/g, '') || '0',
       priceCurrency: 'AZN',
     },
   };

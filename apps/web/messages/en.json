@@ -91,5 +91,18 @@
     "no_results_desc": "There are no teachers matching your search criteria.",
     "clear_search": "Clear search",
     "back_to_list": "Back to all teachers"
+  },
+  "blog": {
+    "hero_badge": "News",
+    "page_title": "Cahan Academy Blog",
+    "page_subtitle": "The latest information from the world of technology, career, and education",
+    "search_placeholder": "Search articles...",
+    "no_results": "No articles found",
+    "read_more": "Read more",
+    "home": "Home",
+    "author_label": "Author",
+    "share": "Share",
+    "related_posts": "Related posts",
+    "back_to_blog": "Back to all articles"
   }
 }
