@@ -10,12 +10,12 @@
 
 | Sahə | Dəyər |
 |---|---|
-| **Son tamamlanan tapşırıq** | Mərhələ 1.1 — Monorepo & Turborepo qurulumu |
-| **Aktiv branch** | `feature/m01-monorepo-setup` |
-| **Növbəti branch** | `feature/m01-frontend-setup` |
-| **Növbəti tapşırıq** | Mərhələ 1.2 — Frontend — Next.js 15 qurulumu |
+| **Son tamamlanan tapşırıq** | Mərhələ 1.3 — Backend — Express.js + TypeScript qurulumu |
+| **Aktiv branch** | `feature/m01-backend-setup` |
+| **Növbəti branch** | `feature/m02-database` |
+| **Növbəti tapşırıq** | Mərhələ 2.1 — Neon PostgreSQL qurulumu |
 | **Bloklanmış tapşırıq** | Yoxdur |
-| **Qeyd** | Monorepo skeleti hazırlandı. Növbəti addım Next.js tətbiqini yaratmaqdır. |
+| **Qeyd** | Backend skeleti Express, TypeScript və təhlükəsizlik middleware-ləri ilə hazırlandı. |
 
 ---
 
@@ -76,35 +76,35 @@
 ### 1.2 Frontend — Next.js 15
 **Branch:** `feature/m01-frontend-setup`
 
-- [ ] Next.js 15 App Router layihəsi yaradıldı (`apps/web`)
-- [ ] TypeScript 5 konfiqurasiya edildi (`tsconfig.json`)
-- [ ] Tailwind CSS 4 konfiqurasiya edildi
-- [ ] Rəng palitası Tailwind-ə əlavə edildi (bordo `#800020`, qızılı `#C9A84C`, dərin qara `#1C1C1E`)
-- [ ] Framer Motion quraşdırıldı
-- [ ] React Hook Form + Zod quraşdırıldı
-- [ ] next-intl quraşdırıldı (AZ, EN, RU routing)
-- [ ] Lucide React quraşdırıldı
-- [ ] Sharp quraşdırıldı (şəkil optimallaşdırması)
-- [ ] Qovluq strukturu yaradıldı (`components/ui/`, `components/sections/`, `components/forms/`, `components/layout/`)
-- [ ] Global CSS dəyişənləri yazıldı (`--color-primary`, `--font-heading`, `--font-body` və s.)
-- [ ] `apps/web/.env.example` hazırlandı
-- [ ] `apps/web/.env.local` yaradıldı (dəyişənlər dolduruldu)
+- [x] Next.js 15 App Router layihəsi yaradıldı (`apps/web`)
+- [x] TypeScript 5 konfiqurasiya edildi (`tsconfig.json`)
+- [x] Tailwind CSS 4 konfiqurasiya edildi
+- [x] Rəng palitası Tailwind-ə əlavə edildi (bordo `#800020`, qızılı `#C9A84C`, dərin qara `#1C1C1E`)
+- [x] Framer Motion quraşdırıldı
+- [x] React Hook Form + Zod quraşdırıldı
+- [x] next-intl quraşdırıldı (AZ, EN, RU routing)
+- [x] Lucide React quraşdırıldı
+- [x] Sharp quraşdırıldı (şəkil optimallaşdırması)
+- [x] Qovluq strukturu yaradıldı (`components/ui/`, `components/sections/`, `components/forms/`, `components/layout/`)
+- [x] Global CSS dəyişənləri yazıldı (`--color-primary`, `--font-heading`, `--font-body` və s.)
+- [x] `apps/web/.env.example` hazırlandı
+- [x] `apps/web/.env.local` yaradıldı (dəyişənlər dolduruldu)
 
 ### 1.3 Backend — Express.js + TypeScript
 **Branch:** `feature/m01-backend-setup`
 
-- [ ] Express 5 + TypeScript layihəsi yaradıldı (`apps/api`)
-- [ ] `tsconfig.json` konfiqurasiya edildi
-- [ ] Helmet quraşdırıldı
-- [ ] CORS konfiqurasiya edildi (yalnız `CLIENT_URL`-ə icazə)
-- [ ] Morgan (logging) quraşdırıldı
-- [ ] dotenv + tip-güclü `env.ts` hazırlandı
-- [ ] Rate limiter quraşdırıldı (auth + contact endpointləri üçün)
-- [ ] Global error handler middleware yazıldı
-- [ ] API response utility yazıldı (`utils/apiResponse.ts`)
-- [ ] Nodemailer konfiqurasiya edildi (Gmail SMTP)
-- [ ] `apps/api/.env.example` hazırlandı
-- [ ] `apps/api/.env` yaradıldı (dəyişənlər dolduruldu)
+- [x] Express 5 + TypeScript layihəsi yaradıldı (`apps/api`)
+- [x] `tsconfig.json` konfiqurasiya edildi
+- [x] Helmet quraşdırıldı
+- [x] CORS konfiqurasiya edildi (yalnız `CLIENT_URL`-ə icazə)
+- [x] Morgan (logging) quraşdırıldı
+- [x] dotenv + tip-güclü `env.ts` hazırlandı
+- [x] Rate limiter quraşdırıldı (auth + contact endpointləri üçün)
+- [x] Global error handler middleware yazıldı
+- [x] API response utility yazıldı (`utils/apiResponse.ts`)
+- [x] Nodemailer konfiqurasiya edildi (Gmail SMTP)
+- [x] `apps/api/.env.example` hazırlandı
+- [x] `apps/api/.env` yaradıldı (dəyişənlər dolduruldu)
 
 ---
 

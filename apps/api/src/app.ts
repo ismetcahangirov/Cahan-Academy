@@ -1,0 +1,31 @@
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import { globalErrorHandler } from './middleware/error.middleware.js';
+import { env } from './config/env.js';
+
+const app = express();
+
+// Middleware
+app.use(helmet());
+app.use(cors({
+  origin:      env.CLIENT_URL,
+  credentials: true,
+}));
+app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Health Check
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Routes Placeholder
+// app.use('/api', routes);
+
+// Error Handling
+app.use(globalErrorHandler);
+
+export default app;
