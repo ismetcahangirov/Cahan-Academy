@@ -56,10 +56,28 @@
     "home_title": "Cahan Academy — Peşəkar Təhsil Mərkəzi",
     "home_description": "Cahan Academy-də peşəkar müəllimlər ilə karyeranızı inkişaf etdirin. Proqramlaşdırma, dizayn, iş ingilis dili və daha çox kurs.",
     "courses_title": "Kurslar — Cahan Academy",
+    "courses_description": "Proqramlaşdırma, dizayn, dil kursları və daha çox. Peşəkar müəllimlər ilə sertifikatlı kurslar.",
     "teachers_title": "Müəllimlər — Cahan Academy",
     "blog_title": "Blog — Cahan Academy",
     "about_title": "Haqqımızda — Cahan Academy",
     "contact_title": "Əlaqə — Cahan Academy",
     "faq_title": "Tez-tez Verilən Suallar — Cahan Academy"
+  },
+  "courses": {
+    "page_title": "Bütün Kurslar",
+    "page_subtitle": "Karyeranızı irəli aparmaq üçün ən yaxşı kursları kəşf edin",
+    "filter_all": "Hamısı",
+    "filter_popular": "Populyar",
+    "search_placeholder": "Kurs axtar...",
+    "no_results": "Kurs tapılmadı",
+    "enroll_btn": "Kursa Yazıl",
+    "details_btn": "Ətraflı",
+    "level_beginner": "Başlanğıc",
+    "level_intermediate": "Orta",
+    "level_advanced": "İrəliləmiş",
+    "level_all": "Hər Səviyyə",
+    "students": "tələbə",
+    "duration": "müddət",
+    "loading": "Yüklənir..."
   }
 }

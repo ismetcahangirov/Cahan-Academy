@@ -83,6 +83,74 @@ async function migrate() {
 
   console.log('  ✅ newsletter_subscribers cədvəli hazır');
 
+  // Course level enum
+  await sql`
+    DO $$ BEGIN
+      CREATE TYPE course_level AS ENUM ('beginner', 'intermediate', 'advanced', 'all');
+    EXCEPTION WHEN duplicate_object THEN null;
+    END $$;
+  `;
+
+  // Categories table
+  await sql`
+    CREATE TABLE IF NOT EXISTS categories (
+      id         TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      name_az    VARCHAR(255) NOT NULL,
+      name_en    VARCHAR(255) NOT NULL,
+      name_ru    VARCHAR(255) NOT NULL,
+      slug       VARCHAR(255) NOT NULL UNIQUE,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW()
+    );
+  `;
+  console.log('  ✅ categories cədvəli hazır');
+
+  // Teachers table
+  await sql`
+    CREATE TABLE IF NOT EXISTS teachers (
+      id          TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      name        VARCHAR(255) NOT NULL,
+      slug        VARCHAR(255) NOT NULL UNIQUE,
+      image       VARCHAR(1000),
+      bio_az      TEXT,
+      bio_en      TEXT,
+      bio_ru      TEXT,
+      position_az VARCHAR(255),
+      position_en VARCHAR(255),
+      position_ru VARCHAR(255),
+      created_at  TIMESTAMP NOT NULL DEFAULT NOW()
+    );
+  `;
+  console.log('  ✅ teachers cədvəli hazır');
+
+  // Courses table
+  await sql`
+    CREATE TABLE IF NOT EXISTS courses (
+      id              TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      title_az        VARCHAR(255) NOT NULL,
+      title_en        VARCHAR(255) NOT NULL,
+      title_ru        VARCHAR(255) NOT NULL,
+      slug            VARCHAR(255) NOT NULL UNIQUE,
+      description_az  TEXT NOT NULL,
+      description_en  TEXT NOT NULL,
+      description_ru  TEXT NOT NULL,
+      category_id     TEXT REFERENCES categories(id),
+      teacher_id      TEXT REFERENCES teachers(id),
+      price           VARCHAR(100),
+      duration        VARCHAR(100),
+      level           course_level NOT NULL DEFAULT 'beginner',
+      image           VARCHAR(1000),
+      is_popular      TEXT NOT NULL DEFAULT 'false',
+      rating          VARCHAR(10) DEFAULT '5.0',
+      students_count  VARCHAR(50) DEFAULT '0',
+      syllabus_az     TEXT,
+      syllabus_en     TEXT,
+      syllabus_ru     TEXT,
+      created_at      TIMESTAMP NOT NULL DEFAULT NOW(),
+      updated_at      TIMESTAMP NOT NULL DEFAULT NOW()
+    );
+  `;
+  console.log('  ✅ courses cədvəli hazır');
+
   console.log('\n🎉 Migrasiya uğurla tamamlandı!');
   process.exit(0);
 }

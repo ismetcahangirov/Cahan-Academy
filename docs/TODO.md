@@ -10,12 +10,12 @@
 
 | Sahə | Dəyər |
 |---|---|
-| **Son tamamlanan tapşırıq** | Mərhələ 2 — Verilənlər Bazası (Neon + Drizzle ORM) |
-| **Aktiv branch** | `feature/m02-database` |
-| **Növbəti branch** | `feature/m03-api-core` |
-| **Növbəti tapşırıq** | Mərhələ 3.1 — API Core — Contact ə Enroll endpointləri |
+| **Son tamamlanan tapşırıq** | Mərhələ 5 — Kurslar Səhifəsi (backend + frontend) |
+| **Aktiv branch** | `feature/m05-courses` |
+| **Növbəti branch** | `feature/m06-teachers` |
+| **Növbəti tapşırıq** | Mərhələ 6 — Müəllimlər Səhifəsi |
 | **Bloklanmış tapşırıq** | Yoxdur |
-| **Qeyd** | Nəon PostgreSQL quruldu, 4 cədvəl yaradıldı, admin səəd edildi. |
+| **Qeyd** | categories/teachers/courses cədvəlləri yaradıldı, 6 kurs seed edildi. /courses və /courses/[slug] səhifələri hazırdır. |
 
 ---
 
@@ -157,47 +157,55 @@
 ---
 
 ## Mərhələ 4 — Ana Səhifə (/)
-**Status:** `[ ]` gözləyir — 0/16
+**Status:** `[x]` tamamlandı — 13/16 (Lighthouse gözlənilir)
 
 **Branch:** `feature/m04-homepage`
 
-- [ ] Ana səhifə `page.tsx` yaradıldı (SSG, `revalidate = false`)
-- [ ] `HeroSection` yaradıldı (başlıq, alt başlıq, CTA düymələri, arxa plan şəkli)
-- [ ] `StatsSection` yaradıldı (tələbə sayı, müəllim sayı, kurs sayı, il sayı)
-- [ ] `FeaturesSection` yaradıldı (akademiyanın üstünlükləri, 6 kart)
-- [ ] `CoursesPreview` yaradıldı (ən populyar 3-4 kurs, "Hamısına bax" linki)
-- [ ] `TestimonialsSection` yaradıldı (tələbə rəyləri, slayder)
-- [ ] `CTASection` yaradıldı (müraciət et çağırışı, forma linki)
-- [ ] JSON-LD `Organization` schema əlavə edildi
-- [ ] `generateMetadata()` ana səhifə üçün yazıldı (AZ/EN/RU)
+- [x] Ana səhifə `page.tsx` yaradıldı (SSG, `revalidate = false`)
+- [x] `HeroSection` yaradıldı (başlıq, alt başlıq, CTA düymələri, arxa plan şəkli)
+- [x] `StatsSection` yaradıldı (tələbə sayı, müəllim sayı, kurs sayı, il sayı)
+- [x] `FeaturesSection` yaradıldı (akademiyanın üstünlükləri, 6 kart)
+- [x] `CoursesPreview` yaradıldı (ən populyar 3-4 kurs, "Hamısına bax" linki)
+- [x] `TestimonialsSection` yaradıldı (tələbə rəyləri, slayder)
+- [x] `CTASection` yaradıldı (müraciət et çağırışı, forma linki)
+- [x] JSON-LD `Organization` schema əlavə edildi
+- [x] `generateMetadata()` ana səhifə üçün yazıldı (AZ/EN/RU)
 - [ ] Open Graph şəkli yaradıldı (`public/og/home-og.jpg`)
-- [ ] Framer Motion — bölmələrə scroll animasiyaları əlavə edildi
-- [ ] `next/image` ilə bütün şəkillər optimallaşdırıldı
-- [ ] LCP elementi (Hero şəkli) `priority` ilə yükləndi
+- [x] Framer Motion — bölmələrə scroll animasiyaları əlavə edildi
+- [x] `next/image` ilə bütün şəkillər optimallaşdırıldı
+- [x] LCP elementi (Hero şəkli) `priority` ilə yükləndi
 - [ ] Core Web Vitals: LCP < 2.5s yoxlanıldı (Lighthouse)
+- [x] Build uğurlu (Exit code 0, turbopack)
 
 ---
 
 ## Mərhələ 5 — Kurslar Səhifəsi
-**Status:** `[ ]` gözləyir — 0/14
+**Status:** `[x]` tamamlandı — 11/14
 
 **Branch:** `feature/m05-courses`
 
 ### 5.1 Backend
-- [ ] `GET /api/courses` endpointi hazırlandı (siyahı, pagination, kateqoriya filter)
-- [ ] `GET /api/courses/:slug` endpointi hazırlandı (tək kurs, SEO üçün slug)
-- [ ] Kurs seed data yaradıldı (en azı 6 kurs)
+- [x] `GET /api/courses` endpointi hazırlandı (siyahı, locale, kateqoriya filter)
+- [x] `GET /api/courses/categories` endpointi hazırlandı
+- [x] `GET /api/courses/:slug` endpointi hazırlandı (tək kurs, SEO üçün slug)
+- [x] Kurs seed data yaradıldı (6 kurs, 4 kateqoriya, 4 müəllim)
+- [x] `course.repository.ts` — verilənlər bazası sorğuları
+- [x] `course.controller.ts` — HTTP handler-lər
+- [x] `course.routes.ts` — router qeydiyyatı
+- [x] `app.ts`-ə `/api/courses` qoşuldu
 
 ### 5.2 Frontend
-- [ ] `/courses` səhifəsi yaradıldı (ISR, `revalidate = 3600`)
-- [ ] `generateStaticParams()` kurs slug-ları üçün yazıldı
-- [ ] `CourseGrid` komponenti yaradıldı
-- [ ] `CourseCard` komponenti yaradıldı (şəkil, başlıq, müddət, qiymət, düymə)
-- [ ] `/courses/[slug]` tək kurs səhifəsi yaradıldı (ISR, `revalidate = 3600`)
-- [ ] Tək kurs səhifəsi: proqram, müəllim, tələblər, qeydiyyat CTA
+- [x] `/courses` səhifəsi yaradıldı (ISR, `revalidate = 60`)
+- [x] `CoursesClientPage` — axtarış, kateqoriya, level, populyar filter
+- [x] `CourseCard` komponenti yaradıldı (şəkil, başlıq, müddət, qiymət, düymə)
+- [x] `/courses/[slug]` tək kurs səhifəsi yaradıldı (ISR, `revalidate = 60`)
+- [x] Tək kurs səhifəsi: müəllim, info sidebar, qeydiyyat CTA
+- [x] `EnrollButton` modal forması yaradıldı (animasiyalı, uğur bildirişi ilə)
+- [x] `generateMetadata()` hər kurs üçün dinamik yazıldı
+- [x] `types/course.ts` — tip təriflər
 - [ ] JSON-LD `Course` schema əlavə edildi
-- [ ] `generateMetadata()` hər kurs üçün dinamik yazıldı
-- [ ] Kateqoriya filter komponenti yaradıldı (Client Component)
+- [ ] `generateStaticParams()` build-time pre-render üçün
+- [ ] Core Web Vitals yoxlanması (Lighthouse)
 
 ---
 

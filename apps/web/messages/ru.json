@@ -56,10 +56,28 @@
     "home_title": "Cahan Academy — Профессиональный Образовательный Центр",
     "home_description": "Развивайте свою карьеру с профессиональными учителями в Cahan Academy. Программирование, дизайн, деловой английский и многие другие курсы.",
     "courses_title": "Курсы — Cahan Academy",
+    "courses_description": "Программирование, дизайн, языковые курсы и многое другое. Сертифицированные курсы с профессиональными преподавателями.",
     "teachers_title": "Учителя — Cahan Academy",
     "blog_title": "Блог — Cahan Academy",
     "about_title": "О нас — Cahan Academy",
     "contact_title": "Контакты — Cahan Academy",
     "faq_title": "Частые вопросы — Cahan Academy"
+  },
+  "courses": {
+    "page_title": "Все Курсы",
+    "page_subtitle": "Откройте для себя лучшие курсы для карьерного роста",
+    "filter_all": "Все",
+    "filter_popular": "Популярные",
+    "search_placeholder": "Найти курс...",
+    "no_results": "Курсы не найдены",
+    "enroll_btn": "Записаться",
+    "details_btn": "Подробнее",
+    "level_beginner": "Начинающий",
+    "level_intermediate": "Средний",
+    "level_advanced": "Продвинутый",
+    "level_all": "Все Уровни",
+    "students": "студентов",
+    "duration": "длительность",
+    "loading": "Загрузка..."
   }
 }
