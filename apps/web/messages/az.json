@@ -1,0 +1,65 @@
+{
+  "nav": {
+    "courses": "Kurslar",
+    "teachers": "Müəllimlər",
+    "blog": "Blog",
+    "about": "Haqqımızda",
+    "contact": "Əlaqə",
+    "faq": "SSS"
+  },
+  "hero": {
+    "title": "Bilikli Gələcəyə Açılan Qapı",
+    "subtitle": "Peşəkar müəllimlər, praktiki dərslər və sertifikatlaşdırılmış proqramlarla karyeranızı növbəti səviyyəyə aparın.",
+    "cta_primary": "Kurslara Bax",
+    "cta_secondary": "Müraciət Et"
+  },
+  "stats": {
+    "students": "Tələbə",
+    "teachers": "Müəllim",
+    "courses": "Kurs",
+    "years": "İl Təcrübə"
+  },
+  "contact": {
+    "title": "Bizimlə Əlaqə",
+    "name": "Ad Soyad",
+    "email": "Email",
+    "phone": "Telefon",
+    "subject": "Mövzu",
+    "message": "Mesaj",
+    "send": "Göndər",
+    "success": "Müraciətiniz qəbul edildi. Tezliklə sizinlə əlaqə saxlayacağıq.",
+    "error": "Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin."
+  },
+  "enroll": {
+    "title": "Kursa Yazıl",
+    "name": "Ad Soyad",
+    "email": "Email",
+    "phone": "Telefon",
+    "course": "Kurs seçin",
+    "submit": "Müraciət Et",
+    "success": "Qeydiyyatınız alındı. Tezliklə əlaqə saxlayacağıq.",
+    "error": "Xəta baş verdi. Yenidən cəhd edin."
+  },
+  "newsletter": {
+    "title": "Xəbərlərdən Xəbərdar Olun",
+    "placeholder": "Email ünvanınız",
+    "subscribe": "Abunə Ol",
+    "success": "Abunəliyiniz təsdiqləndi!",
+    "error": "Xəta baş verdi."
+  },
+  "footer": {
+    "rights": "Bütün hüquqlar qorunur.",
+    "privacy": "Gizlilik Siyasəti",
+    "terms": "İstifadə Şərtləri"
+  },
+  "meta": {
+    "home_title": "Cahan Academy — Peşəkar Təhsil Mərkəzi",
+    "home_description": "Cahan Academy-də peşəkar müəllimlər ilə karyeranızı inkişaf etdirin. Proqramlaşdırma, dizayn, iş ingilis dili və daha çox kurs.",
+    "courses_title": "Kurslar — Cahan Academy",
+    "teachers_title": "Müəllimlər — Cahan Academy",
+    "blog_title": "Blog — Cahan Academy",
+    "about_title": "Haqqımızda — Cahan Academy",
+    "contact_title": "Əlaqə — Cahan Academy",
+    "faq_title": "Tez-tez Verilən Suallar — Cahan Academy"
+  }
+}

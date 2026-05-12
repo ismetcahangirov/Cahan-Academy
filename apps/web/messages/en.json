@@ -1,0 +1,65 @@
+{
+  "nav": {
+    "courses": "Courses",
+    "teachers": "Teachers",
+    "blog": "Blog",
+    "about": "About",
+    "contact": "Contact",
+    "faq": "FAQ"
+  },
+  "hero": {
+    "title": "The Gateway to a Knowledgeable Future",
+    "subtitle": "Advance your career to the next level with professional instructors, practical lessons, and certified programs.",
+    "cta_primary": "View Courses",
+    "cta_secondary": "Apply Now"
+  },
+  "stats": {
+    "students": "Students",
+    "teachers": "Teachers",
+    "courses": "Courses",
+    "years": "Years Experience"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "name": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "subject": "Subject",
+    "message": "Message",
+    "send": "Send",
+    "success": "Your request has been received. We will contact you shortly.",
+    "error": "An error occurred. Please try again."
+  },
+  "enroll": {
+    "title": "Enroll in a Course",
+    "name": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "course": "Select a course",
+    "submit": "Apply",
+    "success": "Your registration has been received. We will contact you soon.",
+    "error": "An error occurred. Please try again."
+  },
+  "newsletter": {
+    "title": "Stay Up to Date",
+    "placeholder": "Your email address",
+    "subscribe": "Subscribe",
+    "success": "Your subscription has been confirmed!",
+    "error": "An error occurred."
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use"
+  },
+  "meta": {
+    "home_title": "Cahan Academy — Professional Education Center",
+    "home_description": "Advance your career with professional instructors at Cahan Academy. Programming, design, business English, and many more courses.",
+    "courses_title": "Courses — Cahan Academy",
+    "teachers_title": "Teachers — Cahan Academy",
+    "blog_title": "Blog — Cahan Academy",
+    "about_title": "About — Cahan Academy",
+    "contact_title": "Contact — Cahan Academy",
+    "faq_title": "FAQ — Cahan Academy"
+  }
+}
