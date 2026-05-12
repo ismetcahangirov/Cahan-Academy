@@ -91,5 +91,18 @@
     "no_results_desc": "Axtarış meyarlarınıza uyğun müəllim yoxdur.",
     "clear_search": "Axtarışı təmizlə",
     "back_to_list": "Bütün müəllimlərə qayıt"
+  },
+  "blog": {
+    "hero_badge": "Xəbərlər",
+    "page_title": "Cahan Academy Blog",
+    "page_subtitle": "Texnologiya, karyera və təhsil dünyasından ən son məlumatlar",
+    "search_placeholder": "Məqalə axtar...",
+    "no_results": "Məqalə tapılmadı",
+    "read_more": "Davamını oxu",
+    "home": "Ana Səhifə",
+    "author_label": "Müəllif",
+    "share": "Paylaş",
+    "related_posts": "Oxşar məqalələr",
+    "back_to_blog": "Bütün məqalələrə qayıt"
   }
 }

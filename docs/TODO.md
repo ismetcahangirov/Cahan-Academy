@@ -10,12 +10,12 @@
 
 | Sahə | Dəyər |
 |---|---|
-| **Son tamamlanan tapşırıq** | Mərhələ 6 — Müəllimlər Səhifəsi (backend + frontend) |
-| **Aktiv branch** | `feature/m06-teachers` |
-| **Növbəti branch** | `feature/m08-blog` |
-| **Növbəti tapşırıq** | Mərhələ 8 — Blog |
+| **Son tamamlanan tapşırıq** | Mərhələ 8 — Blog (backend + frontend + SEO) |
+| **Aktiv branch** | `feature/m08-blog` |
+| **Növbəti branch** | `feature/m07-about` və ya `feature/m09-forms` |
+| **Növbəti tapşırıq** | Mərhələ 7 — Haqqımızda və ya Mərhələ 9 — Formalar |
 | **Bloklanmış tapşırıq** | Yoxdur |
-| **Qeyd** | Müəllim siyahısı və profil səhifələri hazırdır. Drizzle ORM uyğunsuzluğu həll edildi. |
+| **Qeyd** | Blog modulu tam hazırdır. Lokalizasiya və SEO sxemaları əlavə edilib. |
 
 ---
 
@@ -60,7 +60,7 @@
 ---
 
 ## Mərhələ 1 — Layihə Qurulumu
-**Status:** `[ ]` gözləyir — 0/28
+**Status:** `[x]` tamamlandı — 28/28
 
 ### 1.1 Monorepo & Turborepo
 **Branch:** `feature/m01-monorepo-setup`
@@ -247,25 +247,25 @@
 ---
 
 ## Mərhələ 8 — Blog
-**Status:** `[ ]` gözləyir — 0/13
+**Status:** `[x]` tamamlandı — 13/13
 
 **Branch:** `feature/m08-blog`
 
 ### 8.1 Backend
-- [ ] `GET /api/blog` endpointi hazırlandı (siyahı, pagination, ISR üçün)
-- [ ] `GET /api/blog/:slug` endpointi hazırlandı (tək məqalə)
-- [ ] Blog yazısı seed data yaradıldı (en azı 3 yazı)
+- [x] `GET /api/blog` endpointi hazırlandı (siyahı, pagination, ISR üçün)
+- [x] `GET /api/blog/:slug` endpointi hazırlandı (tək məqalə)
+- [x] Blog yazısı seed data yaradıldı (en azı 3 yazı)
 
 ### 8.2 Frontend
-- [ ] `/blog` səhifəsi yaradıldı (ISR, `revalidate = 600`)
-- [ ] `BlogGrid` komponenti yaradıldı
-- [ ] `BlogCard` komponenti yaradıldı (kapak şəkli, başlıq, tarix, oxuma vaxtı, snippet)
-- [ ] `/blog/[slug]` tək məqalə səhifəsi yaradıldı (ISR, `revalidate = 3600`)
-- [ ] Tək məqalə: başlıq, kapak şəkli, məzmun (HTML/Markdown), müəllif
-- [ ] `generateStaticParams()` blog slug-ları üçün yazıldı
-- [ ] JSON-LD `Article` schema əlavə edildi
-- [ ] `generateMetadata()` hər məqalə üçün yazıldı
-- [ ] Oxşar məqalələr bölməsi əlavə edildi
+- [x] `/blog` səhifəsi yaradıldı (ISR, `revalidate = 600`)
+- [x] `BlogGrid` komponenti yaradıldı
+- [x] `BlogCard` komponenti yaradıldı (kapak şəkli, başlıq, tarix, oxuma vaxtı, snippet)
+- [x] `/blog/[slug]` tək məqalə səhifəsi yaradıldı (ISR, `revalidate = 3600`)
+- [x] Tək məqalə: başlıq, kapak şəkli, məzmun (HTML/Markdown), müəllif
+- [x] `generateStaticParams()` blog slug-ları üçün yazıldı
+- [x] JSON-LD `Article` schema əlavə edildi
+- [x] `generateMetadata()` hər məqalə üçün yazıldı
+- [x] Oxşar məqalələr bölməsi əlavə edildi
 
 ---
 
@@ -468,14 +468,14 @@
 | Mərhələ | Status | Tamamlanma | Tapşırıq sayı |
 |---|---|---|---|
 | 0 — Sənədləşmə | `[x]` tamamlandı | 100% (11/11) | 11 |
-| 1 — Qurulum | `[ ]` gözləyir | 0% (0/28) | 28 |
-| 2 — Verilənlər bazası | `[ ]` gözləyir | 0% (0/12) | 12 |
-| 3 — Layout & Nav | `[ ]` gözləyir | 0% (0/14) | 14 |
-| 4 — Ana səhifə | `[ ]` gözləyir | 0% (0/14) | 14 |
-| 5 — Kurslar | `[ ]` gözləyir | 0% (0/14) | 14 |
-| 6 — Müəllimlər | `[ ]` gözləyir | 0% (0/10) | 10 |
+| 1 — Qurulum | `[x]` tamamlandı | 100% (28/28) | 28 |
+| 2 — Verilənlər bazası | `[x]` tamamlandı | 100% (12/12) | 12 |
+| 3 — Layout & Nav | `[x]` tamamlandı | 100% (14/14) | 14 |
+| 4 — Ana səhifə | `[x]` tamamlandı | 100% (14/14) | 14 |
+| 5 — Kurslar | `[x]` tamamlandı | 100% (14/14) | 14 |
+| 6 — Müəllimlər | `[x]` tamamlandı | 100% (10/10) | 10 |
 | 7 — Haqqımızda | `[ ]` gözləyir | 0% (0/7) | 7 |
-| 8 — Blog | `[ ]` gözləyir | 0% (0/13) | 13 |
+| 8 — Blog | `[x]` tamamlandı | 100% (13/13) | 13 |
 | 9 — Formalar | `[ ]` gözləyir | 0% (0/16) | 16 |
 | 10 — FAQ | `[ ]` gözləyir | 0% (0/6) | 6 |
 | 11 — Admin Panel | `[ ]` gözləyir | 0% (0/24) | 24 |
@@ -484,7 +484,7 @@
 | 14 — Testlər | `[ ]` gözləyir | 0% (0/18) | 18 |
 | 15 — Deploy & CI/CD | `[ ]` gözləyir | 0% (0/14) | 14 |
 | 16 — Qanuni | `[ ]` gözləyir | 0% (0/4) | 4 |
-| **CƏMİ** | | **~5% (11/225)** | **225** |
+| **CƏMİ** | | **~52% (116/225)** | **225** |
 
 ---
 
