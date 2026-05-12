@@ -1,33 +1,77 @@
-import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
+import type { Metadata } from 'next';
+import HeroSection         from '@/components/sections/HeroSection';
+import StatsSection        from '@/components/sections/StatsSection';
+import FeaturesSection     from '@/components/sections/FeaturesSection';
+import CoursesPreview      from '@/components/sections/CoursesPreview';
+import TestimonialsSection from '@/components/sections/TestimonialsSection';
+import CTASection          from '@/components/sections/CTASection';
 
-export default function HomePage({
-  params
-}: {
+interface Props {
   params: Promise<{ locale: string }>;
-}) {
-  const t = useTranslations('hero');
-  
-  // Note: setRequestLocale is required for static export/rendering
-  // but we are using a dynamic route group here.
-  // For simplicity in this step, we just use the translations.
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'meta' });
+
+  return {
+    title:       t('home_title'),
+    description: t('home_description'),
+    openGraph: {
+      title:       t('home_title'),
+      description: t('home_description'),
+      type:        'website',
+      locale,
+      images: [{ url: '/og/home-og.jpg', width: 1200, height: 630 }],
+    },
+    twitter: {
+      card:        'summary_large_image',
+      title:       t('home_title'),
+      description: t('home_description'),
+      images:      ['/og/home-og.jpg'],
+    },
+  };
+}
+
+export default async function HomePage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 text-center">
-      <h1 className="text-6xl font-bold mb-6 text-primary">
-        {t('title')}
-      </h1>
-      <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-        {t('subtitle')}
-      </p>
-      <div className="flex gap-4">
-        <button className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">
-          {t('cta_primary')}
-        </button>
-        <button className="border-2 border-secondary text-secondary px-8 py-3 rounded-lg font-semibold hover:bg-secondary hover:text-secondary-foreground transition-all">
-          {t('cta_secondary')}
-        </button>
-      </div>
-    </main>
+    <>
+      {/* JSON-LD Organization */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context':   'https://schema.org',
+            '@type':      'EducationalOrganization',
+            name:         'Cahan Academy',
+            url:          'https://cahanacademy.az',
+            logo:         'https://cahanacademy.az/logo.png',
+            description:  'Azərbaycanda peşəkar texnologiya təhsili — proqramlaşdırma, dizayn, marketinq.',
+            address: {
+              '@type':           'PostalAddress',
+              addressLocality:   'Bakı',
+              addressCountry:    'AZ',
+            },
+            contactPoint: {
+              '@type':       'ContactPoint',
+              telephone:     '+994-50-123-45-67',
+              contactType:   'customer service',
+            },
+          }),
+        }}
+      />
+
+      <HeroSection />
+      <StatsSection />
+      <FeaturesSection />
+      <CoursesPreview />
+      <TestimonialsSection />
+      <CTASection />
+    </>
   );
 }

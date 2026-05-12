@@ -1,6 +1,6 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
-import { notFound } from 'next-intl/navigation';
+import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { playfair, inter } from '@/lib/fonts';
 import "../globals.css";
