@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { getBlogPost, getBlogPosts } from '@/lib/api';
 import BlogCard from '@/components/cards/BlogCard';
+import JsonLd from '@/components/seo/JsonLd';
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -71,7 +72,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   });
 
   // JSON-LD Schema
-  const jsonLd = {
+  const articleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: post.title,
@@ -88,17 +89,40 @@ export default async function BlogPostPage({ params }: PageProps) {
       name: 'Cahan Academy',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://cahan.academy/logo.png',
+        url: 'https://cahanacademy.az/logo.png',
       },
     },
   };
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: t('home') || 'Ana Səhifə',
+        item: `https://cahanacademy.az/${locale}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: t('page_title') || 'Blog',
+        item: `https://cahanacademy.az/${locale}/blog`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: post.title,
+        item: `https://cahanacademy.az/${locale}/blog/${post.slug}`,
+      },
+    ],
+  };
+
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={articleJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
 
       <article className="pt-32 pb-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -42,7 +42,7 @@ export default function HistorySection() {
             <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl z-10 border-8 border-white dark:border-white/5">
               <Image
                 src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200"
-                alt="History"
+                alt={t('history_title')}
                 fill
                 className="object-cover"
               />

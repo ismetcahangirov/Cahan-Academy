@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { Course } from '@/types/course';
 import EnrollButton from '@/components/ui/EnrollButton';
+import JsonLd from '@/components/seo/JsonLd';
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -84,7 +85,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
   ];
 
   // JSON-LD Schema
-  const jsonLd = {
+  const courseJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Course',
     name: course.title,
@@ -92,7 +93,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
     provider: {
       '@type': 'Organization',
       name: 'Cahan Academy',
-      sameAs: 'https://cahan.academy',
+      sameAs: 'https://cahanacademy.az',
     },
     image: course.image,
     aggregateRating: {
@@ -107,12 +108,35 @@ export default async function CourseDetailPage({ params }: PageProps) {
     },
   };
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Ana Səhifə',
+        item: `https://cahanacademy.az/${locale}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: t('page_title'),
+        item: `https://cahanacademy.az/${locale}/courses`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: course.title,
+        item: `https://cahanacademy.az/${locale}/courses/${course.slug}`,
+      },
+    ],
+  };
+
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={courseJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
       {/* Hero */}
       <section className="relative pt-28 pb-0 overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
         {/* Decorative blobs */}

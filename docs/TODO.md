@@ -10,12 +10,12 @@
 
 | Sahə | Dəyər |
 |---|---|
-| **Son tamamlanan tapşırıq** | Mərhələ 11 — Admin Panel |
-| **Aktiv branch** | `feature/m11-admin` |
-| **Növbəti branch** | `feature/m12-seo` |
-| **Növbəti tapşırıq** | Mərhələ 12 — SEO |
+| **Son tamamlanan tapşırıq** | Mərhələ 12 — SEO (Əsas hissə) |
+| **Aktiv branch** | `feature/m12-seo` |
+| **Növbəti branch** | `feature/m13-performance` |
+| **Növbəti tapşırıq** | Mərhələ 13 — Performans |
 | **Bloklanmış tapşırıq** | Yoxdur |
-| **Qeyd** | Admin Panel (Dashboard, Leads, Blog, FAQ management) tamamlanıb. |
+| **Qeyd** | Dinamik sitemap, robots, OG şəkillər, JSON-LD və GSC verifikasiyası tamamlanıb. |
 
 ---
 
@@ -349,22 +349,22 @@
 
 **Branch:** `feature/m12-seo`
 
-- [ ] `sitemap.ts` — dinamik sitemap yaradıldı (bütün statik + dinamik URL-lər)
-- [ ] `robots.ts` — robots.txt yaradıldı (`/admin/**` bloklandı)
-- [ ] `hreflang` teqləri bütün səhifələrə əlavə edildi (az, en, ru)
-- [ ] Canonical URL-lər bütün səhifələrə əlavə edildi
-- [ ] `generateMetadata()` — bütün səhifələr üçün tamamlandı
-- [ ] Open Graph şəkilləri hazırlandı (bütün əsas səhifələr üçün)
-- [ ] Twitter Card meta teqləri əlavə edildi
-- [ ] JSON-LD: `Organization` — ana səhifə
-- [ ] JSON-LD: `Course` — hər kurs səhifəsi
-- [ ] JSON-LD: `Person` — hər müəllim profili
-- [ ] JSON-LD: `FAQPage` — FAQ səhifəsi
-- [ ] JSON-LD: `Article` — hər blog yazısı
-- [ ] JSON-LD: `BreadcrumbList` — bütün alt səhifələr
-- [ ] `next/image` — bütün şəkillərdə `alt` teqləri dolduruldu
-- [ ] Heading iyerarxiyası yoxlanıldı (hər səhifədə yalnız bir `h1`)
-- [ ] Google Search Console doğrulaması əlavə edildi
+- [x] `sitemap.ts` — dinamik sitemap yaradıldı (bütün statik + dinamik URL-lər)
+- [x] `robots.ts` — robots.txt yaradıldı (`/admin/**` bloklandı)
+- [x] `hreflang` teqləri bütün səhifələrə əlavə edildi (az, en, ru)
+- [x] Canonical URL-lər bütün səhifələrə əlavə edildi
+- [x] `generateMetadata()` — bütün səhifələr üçün tamamlandı
+- [x] Open Graph şəkilləri hazırlandı (Dinamik ImageResponse API ilə)
+- [x] Twitter Card meta teqləri əlavə edildi
+- [x] JSON-LD: `Organization` — ana səhifə (sosial linklərlə)
+- [x] JSON-LD: `Course` — hər kurs səhifəsi
+- [x] JSON-LD: `Person` — hər müəllim profili
+- [x] JSON-LD: `FAQPage` — FAQ səhifəsi
+- [x] JSON-LD: `Article` — hər blog yazısı
+- [x] JSON-LD: `BreadcrumbList` — bütün alt səhifələr
+- [x] `next/image` — bütün şəkillərdə `alt` teqləri dolduruldu
+- [x] Heading iyerarxiyası yoxlanıldı (hər səhifədə yalnız bir `h1`)
+- [x] Google Search Console doğrulaması əlavə edildi
 
 ---
 
@@ -479,12 +479,12 @@
 | 9 — Formalar | `[x]` tamamlandı | 100% (16/16) | 16 |
 | 10 — FAQ | `[x]` tamamlandı | 100% (6/6) | 6 |
 | 11 — Admin Panel | `[x]` tamamlandı | 100% (24/24) | 24 |
-| 12 — SEO | `[ ]` gözləyir | 0% (0/16) | 16 |
+| 12 — SEO | `[x]` tamamlandı | 100% (16/16) | 16 |
 | 13 — Performans | `[ ]` gözləyir | 0% (0/10) | 10 |
 | 14 — Testlər | `[ ]` gözləyir | 0% (0/18) | 18 |
 | 15 — Deploy & CI/CD | `[ ]` gözləyir | 0% (0/14) | 14 |
 | 16 — Qanuni | `[ ]` gözləyir | 0% (0/4) | 4 |
-| **CƏMİ** | | **~75% (169/225)** | **225** |
+| **CƏMİ** | | **~80% (184/225)** | **225** |
 
 ---
 
