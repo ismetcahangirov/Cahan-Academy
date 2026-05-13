@@ -18,7 +18,9 @@ import { getHealth } from './controllers/health.controller.js';
 
 const app = express();
 
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 app.use(cors({
   origin: [
     'http://localhost:3000',
