@@ -48,6 +48,7 @@ export default function NewsletterForm() {
           {...register('email')}
           type="email"
           placeholder={t('placeholder')}
+          aria-label={t('placeholder')}
           className={`w-full bg-background/10 border ${
             errors.email ? 'border-red-500/50' : 'border-background/20'
           } rounded-xl px-4 py-3.5 pr-12 text-sm text-background placeholder:text-background/40 focus:outline-none focus:border-secondary transition-all`}
@@ -55,6 +56,7 @@ export default function NewsletterForm() {
         <button
           type="submit"
           disabled={status === 'loading'}
+          aria-label={t('button')}
           className="absolute right-1.5 top-1.5 bottom-1.5 px-3 rounded-lg bg-secondary text-foreground hover:bg-secondary/90 disabled:opacity-50 transition-all flex items-center justify-center"
         >
           {status === 'loading' ? (

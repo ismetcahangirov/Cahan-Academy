@@ -42,10 +42,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export async function generateStaticParams() {
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api';
-    const res = await fetch(`${apiUrl}/courses`);
+    const res = await fetch(`${apiUrl}/courses`, { signal: AbortSignal.timeout(5000) });
     if (!res.ok) return [];
     const data = await res.json();
-    const courses: Course[] = data.data ?? [];
+    const courses: any[] = data.data ?? [];
 
     const locales = ['az', 'en', 'ru'];
     return locales.flatMap((locale) =>
@@ -55,7 +55,7 @@ export async function generateStaticParams() {
       }))
     );
   } catch (error) {
-    console.error('Error generating static params:', error);
+    console.error('Error generating static params for courses:', error);
     return [];
   }
 }

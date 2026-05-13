@@ -92,6 +92,7 @@ export default function CourseCard({ course, index = 0 }: CourseCardProps) {
           </div>
           <Link 
             href={`/courses/${course.slug}`}
+            aria-label={`${course.title} — ${t('details_btn')}`}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accent hover:bg-primary hover:text-white transition-all duration-300 font-semibold text-sm group/btn"
           >
             {t('details_btn')}

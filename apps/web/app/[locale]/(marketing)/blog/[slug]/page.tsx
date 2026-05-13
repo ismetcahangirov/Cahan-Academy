@@ -42,6 +42,7 @@ export async function generateStaticParams() {
       }))
     );
   } catch (error) {
+    console.error('Error generating static params for blog:', error);
     return [];
   }
 }

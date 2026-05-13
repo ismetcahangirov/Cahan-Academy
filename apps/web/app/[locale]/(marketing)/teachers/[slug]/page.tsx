@@ -7,7 +7,7 @@ import {
   ChevronRight, Linkedin, Twitter, Github, 
   BookOpen, Award, Mail, ArrowLeft, Star
 } from 'lucide-react';
-import { TeacherDetail } from '@/types/teacher';
+import { getTeacher } from '@/lib/api';
 import CourseCard from '@/components/cards/CourseCard';
 import JsonLd from '@/components/seo/JsonLd';
 
@@ -15,17 +15,24 @@ interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
 }
 
-async function getTeacher(slug: string, locale: string): Promise<TeacherDetail | null> {
+export async function generateStaticParams() {
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api';
-    const res = await fetch(`${apiUrl}/teachers/${slug}?locale=${locale}`, {
-      next: { revalidate: 3600 },
-    });
-    if (!res.ok) return null;
+    const res = await fetch(`${apiUrl}/teachers`, { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) return [];
     const data = await res.json();
-    return data.data ?? null;
-  } catch {
-    return null;
+    const teachers: any[] = data.data ?? [];
+
+    const locales = ['az', 'en', 'ru'];
+    return locales.flatMap((locale) =>
+      teachers.map((t) => ({
+        locale,
+        slug: t.slug,
+      }))
+    );
+  } catch (error) {
+    console.error('Error generating static params for teachers:', error);
+    return [];
   }
 }
 
