@@ -18,10 +18,13 @@ import { getHealth } from './controllers/health.controller.js';
 
 const app = express();
 
-// Middleware
 app.use(helmet());
 app.use(cors({
-  origin:      ["https://cahan-academy.vercel.app", env.CLIENT_URL],
+  origin: [
+    'http://localhost:3000',
+    'https://cahan-academy.vercel.app',
+    env.CLIENT_URL
+  ].filter(Boolean),
   credentials: true,
 }));
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
