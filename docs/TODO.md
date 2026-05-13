@@ -10,12 +10,12 @@
 
 | Sahə | Dəyər |
 |---|---|
-| **Son tamamlanan tapşırıq** | Mərhələ 9 — Formalar (backend + frontend) |
-| **Aktiv branch** | `feature/m10-faq` |
-| **Növbəti branch** | `feature/m11-admin` |
-| **Növbəti tapşırıq** | Mərhələ 10 — FAQ |
+| **Son tamamlanan tapşırıq** | Mərhələ 11 — Admin Panel |
+| **Aktiv branch** | `feature/m11-admin` |
+| **Növbəti branch** | `feature/m12-seo` |
+| **Növbəti tapşırıq** | Mərhələ 12 — SEO |
 | **Bloklanmış tapşırıq** | Yoxdur |
-| **Qeyd** | Haqqımızda və Formalar modulları tamamlanıb. Növbəti FAQ. |
+| **Qeyd** | Admin Panel (Dashboard, Leads, Blog, FAQ management) tamamlanıb. |
 
 ---
 
@@ -297,50 +297,50 @@
 ---
 
 ## Mərhələ 10 — FAQ Səhifəsi
-**Status:** `[ ]` gözləyir — 0/6
+**Status:** `[x]` tamamlandı — 6/6
 
 **Branch:** `feature/m10-faq`
 
-- [ ] `/faq` səhifəsi yaradıldı (SSG)
-- [ ] Accordion FAQ komponenti yaradıldı (açılıb-bağlanan suallar)
-- [ ] En azı 10 sual-cavab əlavə edildi (AZ/EN/RU)
-- [ ] JSON-LD `FAQPage` schema əlavə edildi
-- [ ] `generateMetadata()` yazıldı
-- [ ] Framer Motion — accordion animasiyası tətbiq edildi
+- [x] `/faq` səhifəsi yaradıldı (SSG)
+- [x] Accordion FAQ komponenti yaradıldı (açılıb-bağlanan suallar)
+- [x] En azı 10 sual-cavab əlavə edildi (AZ/EN/RU)
+- [x] JSON-LD `FAQPage` schema əlavə edildi
+- [x] `generateMetadata()` yazıldı
+- [x] Framer Motion — accordion animasiyası tətbiq edildi
 
 ---
 
 ## Mərhələ 11 — Admin Panel
-**Status:** `[ ]` gözləyir — 0/24
+**Status:** `[x]` tamamlandı — 24/24
 
 **Branch:** `feature/m11-admin`
 
 ### 11.1 Backend — Auth
-- [ ] `POST /api/auth/login` endpointi hazırlandı (email + şifrə, bcryptjs)
-- [ ] Access Token (JWT, 15 dəq) generasiyası yazıldı (Jose kitabxanası)
-- [ ] Refresh Token (JWT, 7 gün) generasiyası yazıldı
-- [ ] Refresh Token → HttpOnly Cookie olaraq göndərildi
-- [ ] `POST /api/auth/refresh` endpointi hazırlandı (yeni access token)
-- [ ] `POST /api/auth/logout` endpointi hazırlandı (cookie sil)
-- [ ] Auth middleware yazdıldı (`authMiddleware.ts`)
-- [ ] `GET /api/admin/leads` endpointi hazırlandı (müraciətlər siyahısı, filter, export)
-- [ ] `PUT /api/admin/leads/:id/status` endpointi hazırlandı (status dəyiş)
-- [ ] `GET /api/admin/contact` endpointi hazırlandı (əlaqə mesajları)
-- [ ] `GET /api/admin/stats` endpointi hazırlandı (ümumi statistika)
+- [x] `POST /api/auth/login` endpointi hazırlandı (email + şifrə, bcryptjs)
+- [x] Access Token (JWT, 15 dəq) generasiyası yazıldı (Jose kitabxanası)
+- [x] Refresh Token (JWT, 7 gün) generasiyası yazıldı
+- [x] Refresh Token → HttpOnly Cookie olaraq göndərildi
+- [x] `POST /api/auth/refresh` endpointi hazırlandı (yeni access token)
+- [x] `POST /api/auth/logout` endpointi hazırlandı (cookie sil)
+- [x] Auth middleware yazdıldı (`authMiddleware.ts`)
+- [x] `GET /api/admin/leads` endpointi hazırlandı (müraciətlər siyahısı, filter, export)
+- [x] `PUT /api/admin/leads/:id/status` endpointi hazırlandı (status dəyiş)
+- [x] `GET /api/admin/contact` endpointi hazırlandı (əlaqə mesajları)
+- [x] `GET /api/admin/stats` endpointi hazırlandı (ümumi statistika)
 
 ### 11.2 Frontend — Admin Panel
-- [ ] `(admin)` route group layout yaradıldı (ayrı dizayn, Header yoxdur)
-- [ ] `/admin/login` səhifəsi yaradıldı (Next.js middleware ilə qorunur)
-- [ ] Login forması: email + şifrə, React Hook Form + Zod
-- [ ] Next.js `middleware.ts` — `/admin/**` yollarını qoruyur (token yoxla)
-- [ ] Access Token memory-də saxlanıldı (React state / Zustand)
-- [ ] `/admin/dashboard` — statistika kartları (ümumi müraciətlər, bu ay, oxunmamış mesajlar)
-- [ ] `/admin/leads` — müraciətlər cədvəli (ad, email, kurs, tarix, status)
-- [ ] Leads cədvəlində status dəyişdirmə funksiyası
-- [ ] Leads CSV export funksiyası
-- [ ] `/admin/contact` — əlaqə mesajları siyahısı
-- [ ] Çıxış (logout) funksiyası tətbiq edildi
-- [ ] Admin paneli — responsive dizayn tamamlandı
+- [x] `(admin)` route group layout yaradıldı (ayrı dizayn, Header yoxdur)
+- [x] `/admin/login` səhifəsi yaradıldı (Next.js middleware ilə qorunur)
+- [x] Login forması: email + şifrə, React Hook Form + Zod
+- [x] Next.js `middleware.ts` — `/admin/**` yollarını qoruyur (token yoxla)
+- [x] Access Token memory-də saxlanıldı (React state / Zustand)
+- [x] `/admin/dashboard` — statistika kartları (ümumi müraciətlər, bu ay, oxunmamış mesajlar)
+- [x] `/admin/leads` — müraciətlər cədvəli (ad, email, kurs, tarix, status)
+- [x] Leads cədvəlində status dəyişdirmə funksiyası
+- [x] Leads CSV export funksiyası
+- [x] `/admin/contact` — əlaqə mesajları siyahısı
+- [x] Çıxış (logout) funksiyası tətbiq edildi
+- [x] Admin paneli — responsive dizayn tamamlandı
 
 ---
 
@@ -477,14 +477,14 @@
 | 7 — Haqqımızda | `[x]` tamamlandı | 100% (7/7) | 7 |
 | 8 — Blog | `[x]` tamamlandı | 100% (13/13) | 13 |
 | 9 — Formalar | `[x]` tamamlandı | 100% (16/16) | 16 |
-| 10 — FAQ | `[ ]` gözləyir | 0% (0/6) | 6 |
-| 11 — Admin Panel | `[ ]` gözləyir | 0% (0/24) | 24 |
+| 10 — FAQ | `[x]` tamamlandı | 100% (6/6) | 6 |
+| 11 — Admin Panel | `[x]` tamamlandı | 100% (24/24) | 24 |
 | 12 — SEO | `[ ]` gözləyir | 0% (0/16) | 16 |
 | 13 — Performans | `[ ]` gözləyir | 0% (0/10) | 10 |
 | 14 — Testlər | `[ ]` gözləyir | 0% (0/18) | 18 |
 | 15 — Deploy & CI/CD | `[ ]` gözləyir | 0% (0/14) | 14 |
 | 16 — Qanuni | `[ ]` gözləyir | 0% (0/4) | 4 |
-| **CƏMİ** | | **~62% (139/225)** | **225** |
+| **CƏMİ** | | **~75% (169/225)** | **225** |
 
 ---
 

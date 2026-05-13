@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
   const isAdminPath = /\/(az|en|ru)?\/?(admin)(?!\/login)/.test(pathname);
 
   if (isAdminPath) {
-    const token = request.cookies.get('admin_token');
+    const token = request.cookies.get('refreshToken');
     if (!token) {
       const locale = pathname.split('/')[1] ?? 'az';
       const loginUrl = ['az', 'en', 'ru'].includes(locale)
