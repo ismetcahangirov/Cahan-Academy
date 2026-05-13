@@ -51,17 +51,17 @@ export default function CookieConsent() {
           <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-800 p-6 overflow-hidden relative">
             {/* Background decoration */}
             <div className="absolute -top-12 -right-12 w-24 h-24 bg-bordo/5 rounded-full blur-2xl" />
-            
+
             <div className="flex gap-4 items-start">
               <div className="p-3 bg-bordo/10 rounded-xl shrink-0">
                 <Cookie className="w-6 h-6 text-bordo" />
               </div>
-              
+
               <div className="flex-1">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                   {t('title')}
                 </h3>
-                
+
                 <AnimatePresence>
                   {showDetails && (
                     <motion.div
@@ -70,11 +70,11 @@ export default function CookieConsent() {
                       exit={{ height: 0, opacity: 0 }}
                       className="overflow-hidden"
                     >
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+                      <p className="text-sm text-bordo dark:text-bordo/80 mb-4 leading-relaxed font-medium">
                         {t('description')}{' '}
-                        <Link 
+                        <Link
                           href={`/${locale}/privacy-policy`}
-                          className="text-bordo hover:underline font-medium"
+                          className="underline hover:text-bordo-dark"
                         >
                           {t('learn_more')}
                         </Link>
@@ -82,11 +82,11 @@ export default function CookieConsent() {
                     </motion.div>
                   )}
                 </AnimatePresence>
-                
+
                 <div className="flex gap-3">
                   <button
                     onClick={handleAccept}
-                    className="flex-1 py-2.5 px-4 bg-bordo hover:bg-bordo-dark text-white rounded-xl font-semibold text-sm transition-all shadow-lg shadow-bordo/20 active:scale-95"
+                    className="flex-1 py-2.5 px-4 border-2 border-bordo text-bordo hover:bg-bg-gray-700  rounded-xl font-bold text-sm transition-all active:scale-95"
                   >
                     {t('accept')}
                   </button>
@@ -98,8 +98,8 @@ export default function CookieConsent() {
                   </button>
                 </div>
               </div>
-              
-              <button 
+
+              <button
                 onClick={() => setIsVisible(false)}
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
               >
