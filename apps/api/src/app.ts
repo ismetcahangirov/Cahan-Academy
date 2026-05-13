@@ -14,13 +14,17 @@ import newsletterRoutes from './routes/newsletter.routes.js';
 import faqRoutes from './routes/faq.routes.js';
 import authRoutes from './routes/auth.routes.js';
 import adminRoutes from './routes/admin.routes.js';
+import { getHealth } from './controllers/health.controller.js';
 
 const app = express();
 
-// Middleware
 app.use(helmet());
 app.use(cors({
-  origin:      env.CLIENT_URL,
+  origin: [
+    'http://localhost:3000',
+    'https://cahan-academy.vercel.app',
+    env.CLIENT_URL
+  ].filter(Boolean),
   credentials: true,
 }));
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
@@ -29,9 +33,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Health Check
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
-});
+app.get('/api/health', getHealth);
 
 // Routes
 app.use('/api/courses', courseRoutes);

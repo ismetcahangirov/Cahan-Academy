@@ -1,7 +1,30 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import request from 'supertest';
 import app from '../app.js';
 import { generateAccessToken } from '../utils/jwt.js';
+
+// DB mock - real bağlantı olmadan testlər işləsin
+vi.mock('../config/db.js', () => ({
+  db: {
+    execute: vi.fn().mockResolvedValue({ rows: [] }),
+    select: vi.fn().mockReturnValue({
+      from: vi.fn().mockResolvedValue([{ value: 0 }]),
+    }),
+    insert: vi.fn().mockReturnValue({
+      values: vi.fn().mockReturnValue({
+        returning: vi.fn().mockResolvedValue([]),
+      }),
+    }),
+    update: vi.fn().mockReturnValue({
+      set: vi.fn().mockReturnValue({
+        where: vi.fn().mockResolvedValue([]),
+      }),
+    }),
+    delete: vi.fn().mockReturnValue({
+      where: vi.fn().mockResolvedValue([]),
+    }),
+  },
+}));
 
 describe('Auth Middleware & Admin Routes', () => {
   it('Token olmadan /api/admin/stats 401 qaytarmalıdır', async () => {
@@ -31,9 +54,6 @@ describe('Auth Middleware & Admin Routes', () => {
       .get('/api/admin/stats')
       .set('Authorization', `Bearer ${token}`);
     
-    // Qeyd: stats controller DB-yə bağlana bilər, lakin biz burada 
-    // middleware-in next() çağırdığını və 200 (və ya başqa uğurlu status) 
-    // qaytardığını yoxlayırıq.
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
   });
