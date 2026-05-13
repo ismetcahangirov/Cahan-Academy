@@ -44,6 +44,16 @@ jobs:
 
       - name: Backend Tests
         run: npm run test --workspace=@academy/api
+        env:
+          DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
+          TEST_DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
+          JWT_SECRET: cahan_academy_test_secret_32_chars_long
+          JWT_REFRESH_SECRET: cahan_academy_test_refresh_32_chars_long
+          SMTP_USER: test@example.com
+          SMTP_PASS: testpassword
+          ADMIN_EMAIL: admin@example.com
+          NOTIFICATION_EMAIL: notify@example.com
+          REVALIDATE_SECRET: test_revalidate_secret
 
       - name: Frontend Build
         run: npm run build --workspace=@academy/web
