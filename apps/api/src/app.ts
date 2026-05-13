@@ -18,25 +18,20 @@ import { getHealth } from './controllers/health.controller.js';
 
 const app = express();
 
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+
 app.use(cors({
-  origin: function (origin, callback) {
-    const allowedOrigins = [
-      'http://localhost:3000',
-      'https://cahan-academy.vercel.app',
-      env.CLIENT_URL
-    ].filter(Boolean);
-    
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS xətası: Girişə icazə verilmir'));
-    }
-  },
+  origin: [
+    'http://localhost:3000',
+    'https://cahan-academy.vercel.app',
+    'https://cahan-academy-git-feature-m16-legal-ismetcahangirovs-projects.vercel.app', // Test üçün PR linki
+    env.CLIENT_URL
+  ].filter(Boolean),
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
-  credentials: true,
-  optionsSuccessStatus: 200
 }));
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(cookieParser());
