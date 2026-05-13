@@ -70,11 +70,11 @@ export default function CookieConsent() {
                       exit={{ height: 0, opacity: 0 }}
                       className="overflow-hidden"
                     >
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+                      <p className="text-sm text-bordo dark:text-bordo/80 mb-4 leading-relaxed font-medium">
                         {t('description')}{' '}
                         <Link 
                           href={`/${locale}/privacy-policy`}
-                          className="text-bordo hover:underline font-medium"
+                          className="underline hover:text-bordo-dark"
                         >
                           {t('learn_more')}
                         </Link>
@@ -86,7 +86,7 @@ export default function CookieConsent() {
                 <div className="flex gap-3">
                   <button
                     onClick={handleAccept}
-                    className="flex-1 py-2.5 px-4 bg-bordo hover:bg-bordo-dark text-white rounded-xl font-semibold text-sm transition-all shadow-lg shadow-bordo/20 active:scale-95"
+                    className="flex-1 py-2.5 px-4 border-2 border-bordo text-bordo hover:bg-bordo hover:text-white rounded-xl font-bold text-sm transition-all active:scale-95"
                   >
                     {t('accept')}
                   </button>
