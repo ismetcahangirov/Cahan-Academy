@@ -40,7 +40,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setToken(null);
       setAccessToken(null);
       setUser(null);
-      router.push('/admin/login');
+      router.push('/login');
     }
   };
 
@@ -71,7 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setToken(null);
       setAccessToken(null);
       setUser(null);
-      router.push('/admin/login');
+      router.push('/login');
     };
 
     window.addEventListener('auth-logout', handleLogoutEvent);
