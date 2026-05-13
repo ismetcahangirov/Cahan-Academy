@@ -5,13 +5,18 @@
     "blog": "Blog",
     "about": "Haqqımızda",
     "contact": "Əlaqə",
-    "faq": "SSS"
+    "faq": "SSS",
+    "enroll": "Kursa Yazıl"
   },
   "hero": {
     "title": "Bilikli Gələcəyə Açılan Qapı",
     "subtitle": "Peşəkar müəllimlər, praktiki dərslər və sertifikatlaşdırılmış proqramlarla karyeranızı növbəti səviyyəyə aparın.",
     "cta_primary": "Kurslara Bax",
-    "cta_secondary": "Müraciət Et"
+    "cta_secondary": "Müraciət Et",
+    "badge": "Azərbaycanda №1 Peşəkar Akademiya",
+    "view_video": "Video Bax",
+    "graduates": "Məzun Tələbə",
+    "enroll": "Kursa Yazıl"
   },
   "stats": {
     "students": "Tələbə",

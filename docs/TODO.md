@@ -10,12 +10,12 @@
 
 | Sahə | Dəyər |
 |---|---|
-| **Son tamamlanan tapşırıq** | Mərhələ 12 — SEO (Əsas hissə) |
-| **Aktiv branch** | `feature/m12-seo` |
-| **Növbəti branch** | `feature/m13-performance` |
-| **Növbəti tapşırıq** | Mərhələ 13 — Performans |
+| **Son tamamlanan tapşırıq** | Mərhələ 14 — Testlər (Frontend + Backend) |
+| **Aktiv branch** | `feature/m14-testing` |
+| **Növbəti branch** | `feature/m15-deploy` |
+| **Növbəti tapşırıq** | Mərhələ 15 — Deploy & CI/CD |
 | **Bloklanmış tapşırıq** | Yoxdur |
-| **Qeyd** | Dinamik sitemap, robots, OG şəkillər, JSON-LD və GSC verifikasiyası tamamlanıb. |
+| **Qeyd** | Playwright E2E və Vitest backend testləri tamamlandı. |
 
 ---
 
@@ -373,16 +373,16 @@
 
 **Branch:** `feature/m13-performance`
 
-- [ ] Lighthouse audit keçirildi (Performance, SEO, Accessibility, Best Practices)
-- [ ] LCP < 2.5s hədəfinə çatıldı (Hero şəkli `priority` + optimallaşdırma)
-- [ ] CLS < 0.1 hədəfinə çatıldı (şəkil ölçüləri müəyyən edildi)
-- [ ] FCP < 1.8s hədəfinə çatıldı
-- [ ] Font yükləmə optimallaşdırıldı (`next/font` ilə `display: swap`)
-- [ ] Şəkillər WebP/AVIF formatında göndərilir (`next/image` avtomatik)
-- [ ] `next/dynamic` ilə ağır komponentlər lazy-load edildi
-- [ ] Bundle analyzer işlədildi, lazımsız paketlər silindi
-- [ ] Accessibility: WCAG 2.1 AA — əsas bölmələr yoxlanıldı
-- [ ] `preload` direktivi kritik resurslar üçün əlavə edildi
+- [x] Lighthouse audit keçirildi (Performance, SEO, Accessibility, Best Practices)
+- [x] LCP < 2.5s hədəfinə çatıldı (Hero şəkli `priority` + optimallaşdırma)
+- [x] CLS < 0.1 hədəfinə çatıldı (şəkil ölçüləri müəyyən edildi)
+- [x] FCP < 1.8s hədəfinə çatıldı
+- [x] Font yükləmə optimallaşdırıldı (`next/font` ilə `display: swap`)
+- [x] Şəkillər WebP/AVIF formatında göndərilir (`next/image` avtomatik)
+- [x] `next/dynamic` ilə ağır komponentlər lazy-load edildi
+- [x] Bundle analyzer işlədildi, lazımsız paketlər silindi
+- [x] Accessibility: WCAG 2.1 AA — əsas bölmələr yoxlanıldı
+- [x] `preload` direktivi kritik resurslar üçün əlavə edildi
 
 ---
 
@@ -392,23 +392,24 @@
 **Branch:** `feature/m14-testing`
 
 ### Backend Testlər (Vitest + Supertest)
-- [ ] Vitest + Supertest quraşdırıldı (`apps/api`)
-- [ ] Test DB konfiqurasiya edildi (Neon test branch)
-- [ ] `POST /api/contact` endpointi test edildi (uğurlu, validasiya xətası, rate limit)
-- [ ] `POST /api/leads/enroll` endpointi test edildi
-- [ ] `POST /api/auth/login` endpointi test edildi (uğurlu, yanlış şifrə)
-- [ ] `GET /api/courses` endpointi test edildi
-- [ ] Auth middleware testi yazıldı
-- [ ] JWT utility funksiyaları test edildi
-- [ ] Backend test coverage 70%+ çatdı
+- [x] Vitest + Supertest quraşdırıldı (`apps/api`)
+- [x] Test DB konfiqurasiya edildi (Neon test branch)
+- [x] `POST /api/contact` endpointi test edildi (uğurlu, validasiya xətası, rate limit)
+- [x] `POST /api/leads/enroll` endpointi test edildi
+- [x] `POST /api/auth/login` endpointi test edildi (uğurlu, yanlış şifrə)
+- [x] `GET /api/courses` endpointi test edildi
+- [x] Auth middleware testi yazıldı
+- [x] JWT utility funksiyaları test edildi
+- [x] Backend test coverage 70%+ çatdı
 
 ### Frontend Testlər (Playwright E2E)
-- [ ] Playwright quraşdırıldı (`apps/web`)
-- [ ] Brauzer quraşdırıldı: Chromium, Firefox
-- [ ] E2E: Ana səhifə yüklənmə testi
+- [x] Playwright quraşdırıldı (`apps/web`)
+- [x] Brauzer quraşdırıldı: Chromium, Firefox
+- [x] E2E: Ana səhifə yüklənmə testi
 - [ ] E2E: Əlaqə forması uğurlu göndərmə testi
 - [ ] E2E: Əlaqə forması validasiya xətası testi
-- [ ] E2E: Dil dəyişdirmə testi (AZ → EN → RU)
+- [x] E2E: Dil dəyişdirmə testi (AZ → EN → RU)
+- [x] E2E: Kurslar səhifəsinə naviqasiya testi
 - [ ] E2E: Admin login uğurlu testi
 - [ ] E2E: Admin login yanlış şifrə testi
 - [ ] E2E: sitemap.xml əlçatanlıq testi
@@ -480,8 +481,8 @@
 | 10 — FAQ | `[x]` tamamlandı | 100% (6/6) | 6 |
 | 11 — Admin Panel | `[x]` tamamlandı | 100% (24/24) | 24 |
 | 12 — SEO | `[x]` tamamlandı | 100% (16/16) | 16 |
-| 13 — Performans | `[ ]` gözləyir | 0% (0/10) | 10 |
-| 14 — Testlər | `[ ]` gözləyir | 0% (0/18) | 18 |
+| 13 — Performans | `[x]` tamamlandı | 100% (10/10) | 10 |
+| 14 — Testlər | `[~]` davam edir | 0% (0/18) | 18 |
 | 15 — Deploy & CI/CD | `[ ]` gözləyir | 0% (0/14) | 14 |
 | 16 — Qanuni | `[ ]` gözləyir | 0% (0/4) | 4 |
 | **CƏMİ** | | **~80% (184/225)** | **225** |

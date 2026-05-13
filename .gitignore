@@ -30,3 +30,12 @@ yarn-error.log*
 # OS
 .DS_Store
 Thumbs.db
+# Testing
+/apps/web/test-results/
+/apps/web/playwright-report/
+/apps/web/blob-report/
+/apps/web/playwright/.cache/
+/apps/api/coverage/
+*.png
+*.jpg
+*.jpeg

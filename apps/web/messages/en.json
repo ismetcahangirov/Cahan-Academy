@@ -5,13 +5,18 @@
     "blog": "Blog",
     "about": "About",
     "contact": "Contact",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "enroll": "Enroll Now"
   },
   "hero": {
     "title": "The Gateway to a Knowledgeable Future",
     "subtitle": "Advance your career to the next level with professional instructors, practical lessons, and certified programs.",
     "cta_primary": "View Courses",
-    "cta_secondary": "Apply Now"
+    "cta_secondary": "Apply Now",
+    "badge": "No. 1 Professional Academy in Azerbaijan",
+    "view_video": "Watch Video",
+    "graduates": "Graduates",
+    "enroll": "Enroll Now"
   },
   "stats": {
     "students": "Students",
