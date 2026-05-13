@@ -28,6 +28,8 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { user, isLoading, logout } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
   const params = useParams();
   const locale = params.locale as string;
 
