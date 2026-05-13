@@ -34,6 +34,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Refresh token-i localStorage-da saxla
     if (refreshToken) {
       localStorage.setItem('refreshToken', refreshToken);
+      // Middleware üçün cookie təyin et (7 gün)
+      document.cookie = `refreshToken=${refreshToken}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax; Secure`;
     }
   };
 
@@ -45,6 +47,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setAccessToken(null);
       setUser(null);
       localStorage.removeItem('refreshToken');
+      // Cookie-ni sil
+      document.cookie = "refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
       router.push('/login');
     }
   };
@@ -64,6 +68,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Yeni refresh token gəlirsə yenilə
         if (data.data.refreshToken) {
           localStorage.setItem('refreshToken', data.data.refreshToken);
+          document.cookie = `refreshToken=${data.data.refreshToken}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax; Secure`;
         }
         if (data.data.user) {
           setUser(data.data.user);
