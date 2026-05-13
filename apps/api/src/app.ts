@@ -25,9 +25,12 @@ app.use(cors({
   origin: [
     'http://localhost:3000',
     'https://cahan-academy.vercel.app',
+    'https://cahan-academy-git-feature-m16-legal-ismetcahangirovs-projects.vercel.app', // Test üçün PR linki
     env.CLIENT_URL
   ].filter(Boolean),
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
 }));
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(cookieParser());
