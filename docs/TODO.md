@@ -10,10 +10,10 @@
 
 | Sahə | Dəyər |
 |---|---|
-| **Son tamamlanan tapşırıq** | Mərhələ 8 — Blog (backend + frontend + SEO) |
-| **Aktiv branch** | `feature/m08-blog` |
-| **Növbəti branch** | `feature/m07-about` və ya `feature/m09-forms` |
-| **Növbəti tapşırıq** | Mərhələ 7 — Haqqımızda və ya Mərhələ 9 — Formalar |
+| **Son tamamlanan tapşırıq** | Mərhələ 9 — Formalar (backend + frontend) |
+| **Aktiv branch** | `feature/m09-forms` |
+| **Növbəti branch** | `feature/m10-faq` |
+| **Növbəti tapşırıq** | Mərhələ 10 — FAQ |
 | **Bloklanmış tapşırıq** | Yoxdur |
 | **Qeyd** | Blog modulu tam hazırdır. Lokalizasiya və SEO sxemaları əlavə edilib. |
 
@@ -232,17 +232,17 @@
 ---
 
 ## Mərhələ 7 — Haqqımızda Səhifəsi
-**Status:** `[ ]` gözləyir — 0/7
+**Status:** `[x]` tamamlandı — 7/7
 
 **Branch:** `feature/m07-about`
 
-- [ ] `/about` səhifəsi yaradıldı (SSG)
-- [ ] Tarix & missiya bölməsi yaradıldı
-- [ ] Komanda bölməsi yaradıldı (müəllimlər siyahısı reuse)
-- [ ] Dəyərlər & yanaşma bölməsi yaradıldı
-- [ ] Statistika kartları əlavə edildi (kurs, tələbə, il)
-- [ ] JSON-LD `Organization` schema əlavə edildi
-- [ ] `generateMetadata()` yazıldı
+- [x] `/about` səhifəsi yaradıldı (SSG)
+- [x] Tarix & missiya bölməsi yaradıldı
+- [x] Komanda bölməsi yaradıldı (müəllimlər siyahısı reuse)
+- [x] Dəyərlər & yanaşma bölməsi yaradıldı
+- [x] Statistika kartları əlavə edildi (kurs, tələbə, il)
+- [x] JSON-LD `Organization` schema əlavə edildi
+- [x] `generateMetadata()` yazıldı
 
 ---
 
@@ -270,29 +270,29 @@
 ---
 
 ## Mərhələ 9 — Əlaqə & Lead Formaları
-**Status:** `[ ]` gözləyir — 0/16
+**Status:** `[x]` tamamlandı — 16/16
 
 **Branch:** `feature/m09-forms`
 
 ### 9.1 Backend
-- [ ] `POST /api/contact` endpointi hazırlandı (validasiya, DB-yə yaz, email göndər)
-- [ ] `POST /api/leads/enroll` endpointi hazırlandı (kurs qeydiyyatı, DB-yə yaz, email göndər)
-- [ ] `POST /api/newsletter/subscribe` endpointi hazırlandı
-- [ ] Rate limiting: `/api/contact` → 3 sorğu/saat, `/api/leads/enroll` → 3 sorğu/saat
-- [ ] Admin bildiriş emaili şablonu hazırlandı (Nodemailer)
-- [ ] İstifadəçiyə avtomatik cavab emaili şablonu hazırlandı
+- [x] `POST /api/contact` endpointi hazırlandı (validasiya, DB-yə yaz, email göndər)
+- [x] `POST /api/leads/enroll` endpointi hazırlandı (kurs qeydiyyatı, DB-yə yaz, email göndər)
+- [x] `POST /api/newsletter/subscribe` endpointi hazırlandı
+- [x] Rate limiting: `/api/contact` → 3 sorğu/saat, `/api/leads/enroll` → 3 sorğu/saat
+- [x] Admin bildiriş emaili şablonu hazırlandı (Nodemailer)
+- [x] İstifadəçiyə avtomatik cavab emaili şablonu hazırlandı
 
 ### 9.2 Frontend
-- [ ] `/contact` səhifəsi yaradıldı (SSR, `force-dynamic`)
-- [ ] `ContactForm` komponenti yaradıldı (ad, email, telefon, mövzu, mesaj)
-- [ ] React Hook Form + Zod validasiyası tətbiq edildi
-- [ ] `EnrollForm` komponenti yaradıldı (ad, email, telefon, kurs seçimi)
-- [ ] `NewsletterForm` komponenti yaradıldı (email)
-- [ ] Toast bildirişləri əlavə edildi (uğur/xəta mesajları)
-- [ ] Forma göndərilib vəziyyəti (loading spinner, disabled düymə)
-- [ ] Uğurlu göndərişdən sonra təşəkkür mesajı göstərildi
-- [ ] `generateMetadata()` əlaqə səhifəsi üçün yazıldı
-- [ ] JSON-LD `ContactPage` schema əlavə edildi
+- [x] `/contact` səhifəsi yaradıldı (SSR, `force-dynamic`)
+- [x] `ContactForm` komponenti yaradıldı (ad, email, telefon, mövzu, mesaj)
+- [x] React Hook Form + Zod validasiyası tətbiq edildi
+- [x] `EnrollForm` komponenti yaradıldı (ad, email, telefon, kurs seçimi)
+- [x] `NewsletterForm` komponenti yaradıldı (email)
+- [x] Toast bildirişləri əlavə edildi (inline alert-lər)
+- [x] Forma göndərilib vəziyyəti (loading spinner, disabled düymə)
+- [x] Uğurlu göndərişdən sonra təşəkkür mesajı göstərildi
+- [x] `generateMetadata()` əlaqə səhifəsi üçün yazıldı
+- [x] JSON-LD `ContactPage` schema əlavə edildi
 
 ---
 

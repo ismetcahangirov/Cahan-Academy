@@ -27,17 +27,21 @@ async function apiFetch<T>(
 
 // ─── Courses ────────────────────────────────────────────────────────────────
 export const getCourses = () =>
-  apiFetch<Course[]>('/courses', { tags: ['courses'], revalidate: 3600 });
+  apiFetch<{ data: Course[] }>('/courses', { tags: ['courses'], revalidate: 3600 })
+    .then(res => res.data);
 
 export const getCourse = (slug: string) =>
-  apiFetch<Course>(`/courses/${slug}`, { tags: [`course-${slug}`], revalidate: 3600 });
+  apiFetch<{ data: Course }>(`/courses/${slug}`, { tags: [`course-${slug}`], revalidate: 3600 })
+    .then(res => res.data);
 
 // ─── Teachers ────────────────────────────────────────────────────────────────
 export const getTeachers = () =>
-  apiFetch<Teacher[]>('/teachers', { tags: ['teachers'], revalidate: 86400 });
+  apiFetch<{ data: Teacher[] }>('/teachers', { tags: ['teachers'], revalidate: 86400 })
+    .then(res => res.data);
 
 export const getTeacher = (slug: string) =>
-  apiFetch<Teacher>(`/teachers/${slug}`, { tags: [`teacher-${slug}`], revalidate: 86400 });
+  apiFetch<{ data: Teacher }>(`/teachers/${slug}`, { tags: [`teacher-${slug}`], revalidate: 86400 })
+    .then(res => res.data);
 
 // ─── Blog ────────────────────────────────────────────────────────────────────
 export const getBlogPosts = (params?: { locale?: string; limit?: number; excludeSlug?: string }) => {
@@ -49,32 +53,32 @@ export const getBlogPosts = (params?: { locale?: string; limit?: number; exclude
   return apiFetch<{ data: BlogPost[] }>(`/blog?${query.toString()}`, { 
     tags: ['blog'], 
     revalidate: 600 
-  });
+  }).then(res => res.data);
 };
 
 export const getBlogPost = (slug: string, locale: string = 'az') =>
   apiFetch<{ data: BlogPost }>(`/blog/${slug}?locale=${locale}`, { 
     tags: [`blog-${slug}`], 
     revalidate: 3600 
-  });
+  }).then(res => res.data);
 
 // ─── Forms ────────────────────────────────────────────────────────────────────
 export const submitContactForm = (data: ContactFormData) =>
-  apiFetch<{ success: boolean }>('/contact', {
+  apiFetch('/contacts', {
     method: 'POST',
     body:   JSON.stringify(data),
     cache:  'no-store',
   });
 
 export const submitEnrollForm = (data: EnrollFormData) =>
-  apiFetch<{ success: boolean }>('/leads/enroll', {
+  apiFetch('/leads', {
     method: 'POST',
     body:   JSON.stringify(data),
     cache:  'no-store',
   });
 
 export const subscribeNewsletter = (email: string) =>
-  apiFetch<{ success: boolean }>('/newsletter/subscribe', {
+  apiFetch('/newsletter/subscribe', {
     method: 'POST',
     body:   JSON.stringify({ email }),
     cache:  'no-store',
@@ -88,11 +92,14 @@ interface Course {
   duration: string; price: number | null;
   imageUrl: string | null; isActive: boolean; createdAt: string;
 }
-interface Teacher {
-  id: string; slug: string;
-  name: string; title: Record<'az'|'en'|'ru', string>;
-  bio: Record<'az'|'en'|'ru', string>;
-  imageUrl: string | null; socialLinks?: Record<string, string>;
+export interface Teacher {
+  id: string; 
+  slug: string;
+  name: string; 
+  position: string;
+  bio: string;
+  image: string | null; 
+  socialLinks?: Record<string, string>;
 }
 interface BlogPost {
   id: string;
@@ -108,5 +115,5 @@ interface BlogPost {
     name: string;
   } | null;
 }
-interface ContactFormData { name: string; email: string; phone?: string; subject: string; message: string; }
-interface EnrollFormData   { name: string; email: string; phone: string; courseSlug?: string; }
+interface ContactFormData { name: string; email: string; subject: string; message: string; }
+interface EnrollFormData  { name: string; email: string; phone: string; course: string; }

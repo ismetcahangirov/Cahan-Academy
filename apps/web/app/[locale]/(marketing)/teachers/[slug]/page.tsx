@@ -140,7 +140,7 @@ export default async function TeacherDetailPage({ params }: PageProps) {
                 </h2>
                 <div className="grid sm:grid-cols-2 gap-8">
                   {teacher.courses.map((course: any) => (
-                    <CourseCard key={course.id} course={course} locale={locale} />
+                    <CourseCard key={course.id} course={course} />
                   ))}
                 </div>
               </div>

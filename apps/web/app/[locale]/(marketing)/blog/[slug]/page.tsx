@@ -17,8 +17,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale, slug } = await params;
   try {
-    const response = await getBlogPost(slug, locale);
-    const post = response.data;
+    const post = await getBlogPost(slug, locale);
     if (!post) return { title: 'Məqalə tapılmadı' };
     
     return {
@@ -32,8 +31,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export async function generateStaticParams() {
   try {
-    const response = await getBlogPosts({ limit: 100 });
-    const posts = response.data ?? [];
+    const posts = await getBlogPosts({ limit: 100 });
     const locales = ['az', 'en', 'ru'];
     
     return locales.flatMap((locale) =>
@@ -53,8 +51,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   let post;
   try {
-    const response = await getBlogPost(slug, locale);
-    post = response.data;
+    post = await getBlogPost(slug, locale);
   } catch (error) {
     notFound();
   }
@@ -64,8 +61,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   // Related posts
   let relatedPosts: any[] = [];
   try {
-    const relatedResponse = await getBlogPosts({ locale, limit: 3, excludeSlug: slug });
-    relatedPosts = relatedResponse.data ?? [];
+    relatedPosts = await getBlogPosts({ locale, limit: 3, excludeSlug: slug });
   } catch (error) {}
 
   const formattedDate = new Date(post.createdAt).toLocaleDateString(locale === 'az' ? 'az-AZ' : locale === 'en' ? 'en-US' : 'ru-RU', {

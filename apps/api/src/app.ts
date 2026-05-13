@@ -7,6 +7,9 @@ import { env } from './config/env.js';
 import courseRoutes from './routes/course.routes.js';
 import teacherRoutes from './routes/teacher.routes.js';
 import postRoutes from './routes/post.routes.js';
+import leadRoutes from './routes/lead.routes.js';
+import contactRoutes from './routes/contact.routes.js';
+import newsletterRoutes from './routes/newsletter.routes.js';
 
 const app = express();
 
@@ -29,6 +32,9 @@ app.get('/api/health', (req, res) => {
 app.use('/api/courses', courseRoutes);
 app.use('/api/teachers', teacherRoutes);
 app.use('/api/blog', postRoutes);
+app.use('/api/leads', leadRoutes);
+app.use('/api/contacts', contactRoutes);
+app.use('/api/newsletter', newsletterRoutes);
 
 // Error Handling
 app.use(globalErrorHandler);

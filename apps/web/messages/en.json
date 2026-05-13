@@ -59,8 +59,11 @@
     "courses_description": "Programming, design, language courses and more. Certified courses with professional instructors.",
     "teachers_title": "Teachers — Cahan Academy",
     "blog_title": "Blog — Cahan Academy",
+    "blog_description": "Latest articles from the world of technology, career and education.",
     "about_title": "About — Cahan Academy",
+    "about_description": "Detailed information about Cahan Academy, our mission and our team.",
     "contact_title": "Contact — Cahan Academy",
+    "contact_description": "Have questions? Contact us, our team will respond to you as soon as possible.",
     "faq_title": "FAQ — Cahan Academy"
   },
   "courses": {
@@ -104,5 +107,28 @@
     "share": "Share",
     "related_posts": "Related posts",
     "back_to_blog": "Back to all articles"
+  },
+  "about": {
+    "badge": "About Us",
+    "hero_title": "Building the Future Together",
+    "hero_subtitle": "At Cahan Academy, we strive to instill the latest technologies and knowledge in our students.",
+    "history_title": "Our Journey",
+    "history_desc_1": "Starting in 2020 with a small team, Cahan Academy has quickly become one of the region's leading technology training centers.",
+    "history_desc_2": "Today, we are a large family with hundreds of graduates, led by industry experts.",
+    "mission_title": "Mission & Vision",
+    "mission_badge": "Our Mission",
+    "mission_desc": "To create an accessible and high-quality educational environment for everyone wanting to build a career in technology.",
+    "vision_badge": "Our Vision",
+    "vision_desc": "To be the largest education and innovation center contributing to the development of the technological ecosystem in Azerbaijan.",
+    "values_title": "Our Values",
+    "value_quality_title": "High Quality",
+    "value_quality_desc": "Our training programs are prepared in accordance with international standards.",
+    "value_innovation_title": "Innovation",
+    "value_innovation_desc": "We always apply the latest technologies and methodologies.",
+    "value_student_title": "Student Success",
+    "value_student_desc": "Our graduates finding jobs and growing is our top priority.",
+    "team_title": "Our Professional Team",
+    "team_subtitle": "Field experts working to provide you with the best education.",
+    "all_teachers": "All teachers"
   }
 }

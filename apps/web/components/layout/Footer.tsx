@@ -1,6 +1,7 @@
 import { Link } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import NewsletterForm from '../forms/NewsletterForm';
 
 const navLinks = [
   { href: '/courses',  key: 'courses'  },
@@ -139,6 +140,15 @@ export default function Footer() {
                 </a>
               </li>
             </ul>
+          </div>
+
+          {/* Newsletter */}
+          <div className="lg:col-span-1">
+            <h3 className="font-heading font-semibold mb-4 text-background/90">Yeniliklərdən Xəbərdar Ol</h3>
+            <p className="text-background/60 text-xs mb-5 leading-relaxed">
+              Ən son təhsil xəbərləri və endirimlərdən ilk siz xəbərdar olun.
+            </p>
+            <NewsletterForm />
           </div>
         </div>
 

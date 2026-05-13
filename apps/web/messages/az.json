@@ -59,8 +59,11 @@
     "courses_description": "Proqramlaşdırma, dizayn, dil kursları və daha çox. Peşəkar müəllimlər ilə sertifikatlı kurslar.",
     "teachers_title": "Müəllimlər — Cahan Academy",
     "blog_title": "Blog — Cahan Academy",
+    "blog_description": "Texnologiya, karyera və təhsil dünyasından ən son məqalələr.",
     "about_title": "Haqqımızda — Cahan Academy",
+    "about_description": "Cahan Academy haqqında ətraflı məlumat, missiyamız və komandamız.",
     "contact_title": "Əlaqə — Cahan Academy",
+    "contact_description": "Suallarınız var? Bizimlə əlaqə saxlayın, komandamız sizə ən qısa zamanda cavab verəcəkdir.",
     "faq_title": "Tez-tez Verilən Suallar — Cahan Academy"
   },
   "courses": {
@@ -98,11 +101,34 @@
     "page_subtitle": "Texnologiya, karyera və təhsil dünyasından ən son məlumatlar",
     "search_placeholder": "Məqalə axtar...",
     "no_results": "Məqalə tapılmadı",
-    "read_more": "Davamını oxu",
+    "read_more": "Daha çox oxu",
     "home": "Ana Səhifə",
     "author_label": "Müəllif",
     "share": "Paylaş",
     "related_posts": "Oxşar məqalələr",
-    "back_to_blog": "Bütün məqalələrə qayıt"
+    "back_to_blog": "Bloqa qayıt"
+  },
+  "about": {
+    "badge": "Haqqımızda",
+    "hero_title": "Gələcəyi Birlikdə Qururuq",
+    "hero_subtitle": "Cahan Academy olaraq biz, tələbələrimizə ən müasir texnologiyaları və bilikləri aşılamaq üçün çalışırıq.",
+    "history_title": "Yolumuz",
+    "history_desc_1": "2020-ci ildə kiçik bir komanda ilə fəaliyyətə başlayan Cahan Academy, qısa müddət ərzində regionun qabaqcıl texnologiya tədrisi mərkəzlərindən birinə çevrildi.",
+    "history_desc_2": "Bu gün biz yüzlərlə məzunu olan və sənaye mütəxəssisləri tərəfindən idarə olunan böyük bir ailəyik.",
+    "mission_title": "Missiyamız & Vizyonumuz",
+    "mission_badge": "Missiyamız",
+    "mission_desc": "Texnologiya sahəsində karyera qurmaq istəyən hər kəs üçün əlçatan və yüksək keyfiyyətli təhsil mühiti yaratmaq.",
+    "vision_badge": "Vizyonumuz",
+    "vision_desc": "Azərbaycanda texnoloji ekosistemin inkişafına töhfə verən ən böyük təhsil və innovasiya mərkəzi olmaq.",
+    "values_title": "Dəyərlərimiz",
+    "value_quality_title": "Yüksək Keyfiyyət",
+    "value_quality_desc": "Tədris proqramlarımız beynəlxalq standartlara uyğun hazırlanır.",
+    "value_innovation_title": "İnnovasiya",
+    "value_innovation_desc": "Həmişə ən yeni texnologiyaları və metodikaları tətbiq edirik.",
+    "value_student_title": "Tələbə Uğuru",
+    "value_student_desc": "Məzunlarımızın iş tapması və inkişafı bizim əsas prioritetimizdir.",
+    "team_title": "Peşəkar Komandamız",
+    "team_subtitle": "Sizə ən yaxşı təhsili vermək üçün çalışan sahə mütəxəssisləri.",
+    "all_teachers": "Bütün müəllimlər"
   }
 }
