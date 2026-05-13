@@ -53,3 +53,25 @@ export const getPostBySlug = async (slug: string) => {
 
   return result.length > 0 ? result[0] : null;
 };
+export const createPost = async (data: any) => {
+  const result = await db.insert(posts).values(data).returning();
+  return result[0];
+};
+
+export const updatePost = async (id: string, data: any) => {
+  const result = await db.update(posts)
+    .set({ ...data, updatedAt: new Date() })
+    .where(eq(posts.id, id))
+    .returning();
+  return result[0];
+};
+
+export const deletePost = async (id: string) => {
+  const result = await db.delete(posts).where(eq(posts.id, id)).returning();
+  return result[0];
+};
+
+export const getPostById = async (id: string) => {
+  const result = await db.select().from(posts).where(eq(posts.id, id)).limit(1);
+  return result.length > 0 ? result[0] : null;
+};

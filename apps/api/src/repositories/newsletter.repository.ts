@@ -27,5 +27,5 @@ export const subscribe = async (data: NewNewsletterSub) => {
 };
 
 export const getAllSubscribers = async () => {
-  return await db.select().from(newsletterSubscribers);
+  return await db.select().from(newsletterSubscribers).orderBy(newsletterSubscribers.createdAt);
 };

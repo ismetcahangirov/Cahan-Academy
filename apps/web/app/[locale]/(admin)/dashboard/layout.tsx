@@ -1,0 +1,112 @@
+'use client';
+
+import React, { useEffect } from 'react';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
+import { 
+  LayoutDashboard, 
+  Users, 
+  FileText, 
+  Mail, 
+  HelpCircle, 
+  LogOut,
+  ChevronRight
+} from 'lucide-react';
+
+const menuItems = [
+  { name: 'Dashboard', icon: LayoutDashboard, href: '/admin/dashboard' },
+  { name: 'Müraciətlər', icon: Users, href: '/admin/dashboard/leads' },
+  { name: 'Bloq', icon: FileText, href: '/admin/dashboard/blog' },
+  { name: 'Newsletter', icon: Mail, href: '/admin/dashboard/newsletter' },
+  { name: 'FAQ', icon: HelpCircle, href: '/admin/dashboard/faq' },
+];
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { user, isLoading, logout } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/admin/login');
+    }
+  }, [user, isLoading, router]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
+      </div>
+    );
+  }
+
+  if (!user) return null;
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-200 flex">
+      {/* Sidebar */}
+      <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col fixed inset-y-0">
+        <div className="p-6">
+          <Link href="/admin/dashboard" className="text-xl font-bold text-white flex items-center gap-2">
+            <span className="w-8 h-8 bg-amber-500 rounded flex items-center justify-center text-slate-900">C</span>
+            Cahan Admin
+          </Link>
+        </div>
+
+        <nav className="flex-1 px-4 space-y-1">
+          {menuItems.map((item) => {
+            const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
+                  isActive 
+                    ? 'bg-amber-500/10 text-amber-500' 
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <item.icon size={18} />
+                  <span className="text-sm font-medium">{item.name}</span>
+                </div>
+                {isActive && <ChevronRight size={14} />}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="p-4 border-t border-slate-800">
+          <div className="flex items-center gap-3 px-3 py-2 mb-2">
+            <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold text-white">
+              {user.name.charAt(0)}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-white truncate">{user.name}</p>
+              <p className="text-xs text-slate-500 truncate">{user.email}</p>
+            </div>
+          </div>
+          <button
+            onClick={logout}
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:bg-red-500/10 hover:text-red-500 transition-colors text-sm font-medium"
+          >
+            <LogOut size={18} />
+            Çıxış
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="ml-64 flex-1">
+        <div className="p-8">
+          {children}
+        </div>
+      </main>
+    </div>
+  );
+}
