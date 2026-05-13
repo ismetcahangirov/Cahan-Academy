@@ -1,6 +1,7 @@
 {
   "name": "cahan-academy",
   "private": true,
+  "packageManager": "npm@10.9.2",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",

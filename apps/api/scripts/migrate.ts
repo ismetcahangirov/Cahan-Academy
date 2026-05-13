@@ -151,6 +151,30 @@ async function migrate() {
   `;
   console.log('  ✅ courses cədvəli hazır');
 
+  // Blog Posts table
+  await sql`
+    CREATE TABLE IF NOT EXISTS posts (
+      id            TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      title_az      VARCHAR(500) NOT NULL,
+      title_en      VARCHAR(500) NOT NULL,
+      title_ru      VARCHAR(500) NOT NULL,
+      slug          VARCHAR(500) NOT NULL UNIQUE,
+      content_az    TEXT NOT NULL,
+      content_en    TEXT NOT NULL,
+      content_ru    TEXT NOT NULL,
+      excerpt_az    TEXT,
+      excerpt_en    TEXT,
+      excerpt_ru    TEXT,
+      image         VARCHAR(1000),
+      author_id     TEXT REFERENCES admin_users(id),
+      reading_time  VARCHAR(50),
+      is_published  TEXT NOT NULL DEFAULT 'true',
+      created_at    TIMESTAMP NOT NULL DEFAULT NOW(),
+      updated_at    TIMESTAMP NOT NULL DEFAULT NOW()
+    );
+  `;
+  console.log('  ✅ posts cədvəli hazır');
+
   console.log('\n🎉 Migrasiya uğurla tamamlandı!');
   process.exit(0);
 }

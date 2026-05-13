@@ -22,8 +22,7 @@ export default async function BlogPage({ params }: PageProps) {
 
   let posts: BlogPost[] = [];
   try {
-    const response = await getBlogPosts({ locale });
-    posts = response.data ?? [];
+    posts = await getBlogPosts({ locale });
   } catch (error) {
     console.error('Error fetching blog posts:', error);
   }

@@ -45,7 +45,7 @@ export default function BlogCard({ post, index = 0 }: BlogCardProps) {
         <div className="flex items-center gap-4 text-[13px] text-muted-foreground mb-4">
           <div className="flex items-center gap-1.5">
             <Calendar size={15} className="text-primary" />
-            <span>{formattedDate}</span>
+            <span suppressHydrationWarning>{formattedDate}</span>
           </div>
           {post.readingTime && (
             <div className="flex items-center gap-1.5">
