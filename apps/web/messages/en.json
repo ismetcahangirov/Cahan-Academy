@@ -70,7 +70,11 @@
     "about_description": "Detailed information about Cahan Academy, our mission and our team.",
     "contact_title": "Contact — Cahan Academy",
     "contact_description": "Have questions? Contact us, our team will respond to you as soon as possible.",
-    "faq_title": "FAQ — Cahan Academy"
+    "faq_title": "FAQ — Cahan Academy",
+    "privacy_title": "Privacy Policy — Cahan Academy",
+    "privacy_description": "Information about Cahan Academy privacy policy and data protection.",
+    "terms_title": "Terms of Use — Cahan Academy",
+    "terms_description": "Terms and conditions for using the Cahan Academy website."
   },
   "courses": {
     "page_title": "All Courses",
@@ -143,5 +147,19 @@
     "description": "Find answers to the most common questions about our academy, courses, and registration process.",
     "meta_title": "Frequently Asked Questions | Cahan Academy",
     "meta_description": "Frequently asked questions and answers about Cahan Academy."
+  },
+  "legal": {
+    "privacy_policy_title": "Privacy Policy",
+    "terms_of_use_title": "Terms of Use",
+    "last_updated": "Last updated",
+    "privacy_content": "At Cahan Academy, your privacy is important to us. This document explains how your data is collected and protected...",
+    "terms_content": "By using this website, you agree to the following terms and conditions..."
+  },
+  "cookie": {
+    "title": "Cookie Notice",
+    "description": "We use cookies to provide you with a better service. By continuing to use our site, you accept this.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "learn_more": "Learn more"
   }
 }
