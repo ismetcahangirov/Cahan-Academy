@@ -38,7 +38,7 @@ export default function HeroSection() {
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-secondary/40 bg-secondary/10 text-secondary text-sm font-medium mb-8"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
-              Azərbaycanda №1 Peşəkar Akademiya
+                {t('badge')}
             </motion.div>
 
             {/* Heading */}
@@ -80,7 +80,7 @@ export default function HeroSection() {
                 <div className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center">
                   <Play size={12} fill="white" />
                 </div>
-                Video Bax
+                  {t('view_video')}
               </button>
             </motion.div>
           </div>
@@ -100,7 +100,7 @@ export default function HeroSection() {
               <div className="absolute inset-12 rounded-3xl overflow-hidden shadow-2xl shadow-black/50 rotate-3 group">
                 <Image 
                   src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1200"
-                  alt="Cahan Academy Learning"
+                  alt={t('enroll')}
                   fill
                   priority
                   className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -111,7 +111,7 @@ export default function HeroSection() {
               <div className="absolute top-0 right-0 bg-white/10 backdrop-blur-xl border border-white/20 p-4 rounded-2xl shadow-xl animate-bounce">
                  <div className="flex items-center gap-3">
                    <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-white font-bold">5K+</div>
-                   <div className="text-[10px] text-white/80 font-medium">Məzun Tələbə</div>
+                   <div className="text-[10px] text-white/80 font-medium">{t('graduates')}</div>
                  </div>
               </div>
             </div>

@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import * as jose from 'jose';
-import { env } from '../config/env.js';
+import { verifyAccessToken } from '../utils/jwt.js';
 import { apiResponse } from '../utils/apiResponse.js';
 
 export interface AuthRequest extends Request {
@@ -20,9 +19,7 @@ export const authMiddleware = async (req: AuthRequest, res: Response, next: Next
     }
 
     const token = authHeader.split(' ')[1];
-    const secret = new TextEncoder().encode(env.JWT_ACCESS_SECRET || 'super-secret');
-
-    const { payload } = await jose.jwtVerify(token, secret);
+    const { payload } = await verifyAccessToken(token);
 
     req.user = {
       id: payload.sub as string,

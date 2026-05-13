@@ -6,9 +6,7 @@ import { db } from '../config/db.js';
 import { adminUsers } from '../config/schema.js';
 import { env } from '../config/env.js';
 import { apiResponse } from '../utils/apiResponse.js';
-
-const ACCESS_TOKEN_SECRET = new TextEncoder().encode(env.JWT_ACCESS_SECRET);
-const REFRESH_TOKEN_SECRET = new TextEncoder().encode(env.JWT_REFRESH_SECRET);
+import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/jwt.js';
 
 export const login = async (req: Request, res: Response) => {
   try {
@@ -26,21 +24,13 @@ export const login = async (req: Request, res: Response) => {
       return;
     }
 
-    const accessToken = await new jose.SignJWT({ 
+    const accessToken = await generateAccessToken({ 
       sub: user.id, 
       email: user.email, 
       role: 'admin' 
-    })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setIssuedAt()
-      .setExpirationTime(env.JWT_EXPIRES_IN)
-      .sign(ACCESS_TOKEN_SECRET);
+    });
 
-    const refreshToken = await new jose.SignJWT({ sub: user.id })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setIssuedAt()
-      .setExpirationTime(env.JWT_REFRESH_EXPIRES_IN)
-      .sign(REFRESH_TOKEN_SECRET);
+    const refreshToken = await generateRefreshToken({ sub: user.id });
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
@@ -72,7 +62,7 @@ export const refresh = async (req: Request, res: Response) => {
       return;
     }
 
-    const { payload } = await jose.jwtVerify(refreshToken, REFRESH_TOKEN_SECRET);
+    const { payload } = await verifyRefreshToken(refreshToken);
     const userId = payload.sub as string;
 
     const [user] = await db.select().from(adminUsers).where(eq(adminUsers.id, userId));
@@ -82,15 +72,11 @@ export const refresh = async (req: Request, res: Response) => {
       return;
     }
 
-    const accessToken = await new jose.SignJWT({ 
+    const accessToken = await generateAccessToken({ 
       sub: user.id, 
       email: user.email, 
       role: 'admin' 
-    })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setIssuedAt()
-      .setExpirationTime(env.JWT_EXPIRES_IN)
-      .sign(ACCESS_TOKEN_SECRET);
+    });
 
     res.status(200).json(apiResponse(true, 'Token yeniləndi.', { accessToken }));
   } catch (error) {
