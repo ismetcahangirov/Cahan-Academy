@@ -1,4 +1,4 @@
-import { pgTable, text, varchar, timestamp, pgEnum } from 'drizzle-orm/pg-core';
+import { pgTable, text, varchar, timestamp, pgEnum, uuid, integer, boolean, jsonb } from 'drizzle-orm/pg-core';
 
 // ─── Enums ───────────────────────────────────────────────────────────────────
 export const leadStatusEnum = pgEnum('lead_status', [
@@ -129,6 +129,17 @@ export const posts = pgTable('posts', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
+// ─── FAQs ────────────────────────────────────────────────────────────────────
+export const faqs = pgTable('faqs', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  question: jsonb('question').$type<Record<'az' | 'en' | 'ru', string>>().notNull(),
+  answer: jsonb('answer').$type<Record<'az' | 'en' | 'ru', string>>().notNull(),
+  order: integer('order').default(0).notNull(),
+  isActive: boolean('is_active').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 // ─── Type Exports ─────────────────────────────────────────────────────────────
 export type Lead = typeof leads.$inferSelect;
 export type NewLead = typeof leads.$inferInsert;
@@ -146,3 +157,5 @@ export type Course = typeof courses.$inferSelect;
 export type NewCourse = typeof courses.$inferInsert;
 export type Post = typeof posts.$inferSelect;
 export type NewPost = typeof posts.$inferInsert;
+export type FAQ = typeof faqs.$inferSelect;
+export type NewFAQ = typeof faqs.$inferInsert;

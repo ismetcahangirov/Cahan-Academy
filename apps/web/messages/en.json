@@ -130,5 +130,12 @@
     "team_title": "Our Professional Team",
     "team_subtitle": "Field experts working to provide you with the best education.",
     "all_teachers": "All teachers"
+  },
+  "faq": {
+    "badge": "Have Questions?",
+    "title": "Frequently Asked Questions",
+    "description": "Find answers to the most common questions about our academy, courses, and registration process.",
+    "meta_title": "Frequently Asked Questions | Cahan Academy",
+    "meta_description": "Frequently asked questions and answers about Cahan Academy."
   }
 }

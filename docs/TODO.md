@@ -11,11 +11,11 @@
 | Sahə | Dəyər |
 |---|---|
 | **Son tamamlanan tapşırıq** | Mərhələ 9 — Formalar (backend + frontend) |
-| **Aktiv branch** | `feature/m09-forms` |
-| **Növbəti branch** | `feature/m10-faq` |
+| **Aktiv branch** | `feature/m10-faq` |
+| **Növbəti branch** | `feature/m11-admin` |
 | **Növbəti tapşırıq** | Mərhələ 10 — FAQ |
 | **Bloklanmış tapşırıq** | Yoxdur |
-| **Qeyd** | Blog modulu tam hazırdır. Lokalizasiya və SEO sxemaları əlavə edilib. |
+| **Qeyd** | Haqqımızda və Formalar modulları tamamlanıb. Növbəti FAQ. |
 
 ---
 
@@ -474,9 +474,9 @@
 | 4 — Ana səhifə | `[x]` tamamlandı | 100% (14/14) | 14 |
 | 5 — Kurslar | `[x]` tamamlandı | 100% (14/14) | 14 |
 | 6 — Müəllimlər | `[x]` tamamlandı | 100% (10/10) | 10 |
-| 7 — Haqqımızda | `[ ]` gözləyir | 0% (0/7) | 7 |
+| 7 — Haqqımızda | `[x]` tamamlandı | 100% (7/7) | 7 |
 | 8 — Blog | `[x]` tamamlandı | 100% (13/13) | 13 |
-| 9 — Formalar | `[ ]` gözləyir | 0% (0/16) | 16 |
+| 9 — Formalar | `[x]` tamamlandı | 100% (16/16) | 16 |
 | 10 — FAQ | `[ ]` gözləyir | 0% (0/6) | 6 |
 | 11 — Admin Panel | `[ ]` gözləyir | 0% (0/24) | 24 |
 | 12 — SEO | `[ ]` gözləyir | 0% (0/16) | 16 |
@@ -484,7 +484,7 @@
 | 14 — Testlər | `[ ]` gözləyir | 0% (0/18) | 18 |
 | 15 — Deploy & CI/CD | `[ ]` gözləyir | 0% (0/14) | 14 |
 | 16 — Qanuni | `[ ]` gözləyir | 0% (0/4) | 4 |
-| **CƏMİ** | | **~52% (116/225)** | **225** |
+| **CƏMİ** | | **~62% (139/225)** | **225** |
 
 ---
 

@@ -1,6 +1,6 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api';
 
-async function apiFetch<T>(
+export async function apiFetch<T>(
   endpoint: string,
   options?: RequestInit & { tags?: string[]; revalidate?: number }
 ): Promise<T> {
@@ -24,6 +24,11 @@ async function apiFetch<T>(
 
   return res.json();
 }
+
+// ─── FAQ ─────────────────────────────────────────────────────────────────────
+export const getFaqs = () =>
+  apiFetch<{ data: any[] }>('/faqs', { tags: ['faqs'], revalidate: 3600 })
+    .then(res => res.data);
 
 // ─── Courses ────────────────────────────────────────────────────────────────
 export const getCourses = () =>
