@@ -72,6 +72,7 @@ export default function BlogCard({ post, index = 0 }: BlogCardProps) {
           </div>
           <Link 
             href={`/blog/${post.slug}`}
+            aria-label={`${post.title} — ${t('read_more')}`}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accent hover:bg-primary hover:text-white transition-all duration-300 font-semibold text-sm group/btn"
           >
             {t('read_more')}

@@ -44,6 +44,7 @@
     "title": "Stay Up to Date",
     "placeholder": "Your email address",
     "subscribe": "Subscribe",
+    "button": "Subscribe",
     "success": "Your subscription has been confirmed!",
     "error": "An error occurred."
   },

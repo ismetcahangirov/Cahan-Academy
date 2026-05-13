@@ -6,47 +6,70 @@ export async function apiFetch<T>(
 ): Promise<T> {
   const { tags, revalidate, ...init } = options ?? {};
 
-  const res = await fetch(`${API_URL}${endpoint}`, {
-    ...init,
-    headers: {
-      'Content-Type': 'application/json',
-      ...init.headers,
-    },
-    next: {
-      tags,
-      revalidate,
-    },
-  });
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), 5000);
 
-  if (!res.ok) {
-    throw new Error(`API xətası: ${res.status} — ${endpoint}`);
+  try {
+    const res = await fetch(`${API_URL}${endpoint}`, {
+      ...init,
+      headers: {
+        'Content-Type': 'application/json',
+        ...init.headers,
+      },
+      next: {
+        tags,
+        revalidate,
+      },
+      signal: controller.signal,
+    });
+
+    clearTimeout(id);
+
+    if (!res.ok) {
+      throw new Error(`API xətası: ${res.status} — ${endpoint}`);
+    }
+
+    return res.json();
+  } catch (error: any) {
+    clearTimeout(id);
+    if (error.name === 'AbortError') {
+      throw new Error(`API timeout: ${endpoint} (5000ms)`);
+    }
+    throw error;
   }
-
-  return res.json();
 }
 
 // ─── FAQ ─────────────────────────────────────────────────────────────────────
 export const getFaqs = () =>
   apiFetch<{ data: any[] }>('/faqs', { tags: ['faqs'], revalidate: 3600 })
-    .then(res => res.data);
+    .then(res => res.data)
+    .catch(() => []);
 
 // ─── Courses ────────────────────────────────────────────────────────────────
 export const getCourses = () =>
   apiFetch<{ data: Course[] }>('/courses', { tags: ['courses'], revalidate: 3600 })
-    .then(res => res.data);
+    .then(res => res.data)
+    .catch(() => []);
 
 export const getCourse = (slug: string) =>
   apiFetch<{ data: Course }>(`/courses/${slug}`, { tags: [`course-${slug}`], revalidate: 3600 })
-    .then(res => res.data);
+    .then(res => res.data)
+    .catch(() => null);
 
 // ─── Teachers ────────────────────────────────────────────────────────────────
-export const getTeachers = () =>
-  apiFetch<{ data: Teacher[] }>('/teachers', { tags: ['teachers'], revalidate: 86400 })
-    .then(res => res.data);
+export const getTeachers = (locale?: string) =>
+  apiFetch<{ data: Teacher[] }>(`/teachers${locale ? `?locale=${locale}` : ''}`, { 
+    tags: ['teachers'], 
+    revalidate: 86400 
+  }).then(res => res.data)
+    .catch(() => []);
 
-export const getTeacher = (slug: string) =>
-  apiFetch<{ data: Teacher }>(`/teachers/${slug}`, { tags: [`teacher-${slug}`], revalidate: 86400 })
-    .then(res => res.data);
+export const getTeacher = (slug: string, locale?: string) =>
+  apiFetch<{ data: TeacherDetail }>(`/teachers/${slug}${locale ? `?locale=${locale}` : ''}`, { 
+    tags: [`teacher-${slug}`], 
+    revalidate: 86400 
+  }).then(res => res.data)
+    .catch(() => null);
 
 // ─── Blog ────────────────────────────────────────────────────────────────────
 export const getBlogPosts = (params?: { locale?: string; limit?: number; excludeSlug?: string }) => {
@@ -58,14 +81,16 @@ export const getBlogPosts = (params?: { locale?: string; limit?: number; exclude
   return apiFetch<{ data: BlogPost[] }>(`/blog?${query.toString()}`, { 
     tags: ['blog'], 
     revalidate: 600 
-  }).then(res => res.data);
+  }).then(res => res.data)
+    .catch(() => []);
 };
 
 export const getBlogPost = (slug: string, locale: string = 'az') =>
   apiFetch<{ data: BlogPost }>(`/blog/${slug}?locale=${locale}`, { 
     tags: [`blog-${slug}`], 
     revalidate: 3600 
-  }).then(res => res.data);
+  }).then(res => res.data)
+    .catch(() => null);
 
 // ─── Forms ────────────────────────────────────────────────────────────────────
 export const submitContactForm = (data: ContactFormData) =>
@@ -105,6 +130,9 @@ export interface Teacher {
   bio: string;
   image: string | null; 
   socialLinks?: Record<string, string>;
+}
+export interface TeacherDetail extends Teacher {
+  courses: Course[];
 }
 interface BlogPost {
   id: string;
