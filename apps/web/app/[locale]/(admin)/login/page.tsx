@@ -22,7 +22,7 @@ export default function LoginPage() {
       const { data } = await adminApi.post('/auth/login', { email, password });
       
       if (data.success) {
-        login(data.data.accessToken, data.data.user);
+        login(data.data.accessToken, data.data.user, data.data.refreshToken);
         router.push('/dashboard');
       } else {
         setError(data.message || 'Giriş uğursuz oldu');

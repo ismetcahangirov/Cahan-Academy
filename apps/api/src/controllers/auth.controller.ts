@@ -32,15 +32,9 @@ export const login = async (req: Request, res: Response) => {
 
     const refreshToken = await generateRefreshToken({ sub: user.id });
 
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: true, // Həmişə true (Vercel-də həmişə HTTPS-dir)
-      sameSite: 'none', // Cross-site üçün mütləqdir
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
-
     res.status(200).json(apiResponse(true, 'Giriş uğurludur.', {
       accessToken,
+      refreshToken,
       user: {
         id: user.id,
         email: user.email,
@@ -55,7 +49,8 @@ export const login = async (req: Request, res: Response) => {
 
 export const refresh = async (req: Request, res: Response) => {
   try {
-    const refreshToken = req.cookies.refreshToken;
+    // Body-dən refresh token oxu (cookie yerinə)
+    const refreshToken = req.body?.refreshToken || req.cookies?.refreshToken;
 
     if (!refreshToken) {
       res.status(401).json(apiResponse(false, 'Yeniləmə tokeni tapılmadı.'));
@@ -78,7 +73,12 @@ export const refresh = async (req: Request, res: Response) => {
       role: 'admin' 
     });
 
-    res.status(200).json(apiResponse(true, 'Token yeniləndi.', { accessToken }));
+    const newRefreshToken = await generateRefreshToken({ sub: user.id });
+
+    res.status(200).json(apiResponse(true, 'Token yeniləndi.', { 
+      accessToken,
+      refreshToken: newRefreshToken 
+    }));
   } catch (error) {
     console.error('Refresh error:', error);
     res.status(401).json(apiResponse(false, 'Yanlış və ya vaxtı keçmiş yeniləmə tokeni.'));
