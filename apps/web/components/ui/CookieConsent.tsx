@@ -13,13 +13,13 @@ const COOKIE_EXPIRE_DAYS = 365;
 
 export default function CookieConsent() {
   const [isVisible, setIsVisible] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   const t = useTranslations('cookie');
   const locale = useLocale();
 
   useEffect(() => {
     const consent = Cookies.get(COOKIE_NAME);
     if (!consent) {
-      // Bir az gecikmə ilə göstərək ki, səhifə yüklənəndə qəfil çıxmasın
       const timer = setTimeout(() => setIsVisible(true), 2000);
       return () => clearTimeout(timer);
     }
@@ -31,7 +31,11 @@ export default function CookieConsent() {
   };
 
   const handleDecline = () => {
-    setIsVisible(false);
+    if (!showDetails) {
+      setShowDetails(true);
+    } else {
+      setIsVisible(false);
+    }
   };
 
   return (
@@ -57,15 +61,27 @@ export default function CookieConsent() {
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                   {t('title')}
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
-                  {t('description')}{' '}
-                  <Link 
-                    href={`/${locale}/privacy-policy`}
-                    className="text-bordo hover:underline font-medium"
-                  >
-                    {t('learn_more')}
-                  </Link>
-                </p>
+                
+                <AnimatePresence>
+                  {showDetails && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+                        {t('description')}{' '}
+                        <Link 
+                          href={`/${locale}/privacy-policy`}
+                          className="text-bordo hover:underline font-medium"
+                        >
+                          {t('learn_more')}
+                        </Link>
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
                 
                 <div className="flex gap-3">
                   <button
@@ -78,13 +94,13 @@ export default function CookieConsent() {
                     onClick={handleDecline}
                     className="py-2.5 px-4 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold text-sm transition-all active:scale-95"
                   >
-                    {t('decline')}
+                    {showDetails ? t('decline') : t('learn_more')}
                   </button>
                 </div>
               </div>
               
               <button 
-                onClick={handleDecline}
+                onClick={() => setIsVisible(false)}
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
               >
                 <X className="w-5 h-5" />
