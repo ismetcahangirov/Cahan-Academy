@@ -22,7 +22,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const courseRoutes = courses.flatMap((course) => 
     locales.map((locale) => ({
       url: `${baseUrl}/${locale}/courses/${course.slug}`,
-      lastModified: new Date(course.createdAt),
+      lastModified: course.createdAt ? new Date(course.createdAt) : new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     }))
@@ -44,7 +44,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blogRoutes = posts.flatMap((post) => 
     locales.map((locale) => ({
       url: `${baseUrl}/${locale}/blog/${post.slug}`,
-      lastModified: new Date(post.createdAt),
+      lastModified: post.createdAt ? new Date(post.createdAt) : new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.6,
     }))
