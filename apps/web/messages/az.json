@@ -130,5 +130,12 @@
     "team_title": "Peşəkar Komandamız",
     "team_subtitle": "Sizə ən yaxşı təhsili vermək üçün çalışan sahə mütəxəssisləri.",
     "all_teachers": "Bütün müəllimlər"
+  },
+  "faq": {
+    "badge": "Suallarınız Var?",
+    "title": "Tez-tez Verilən Suallar",
+    "description": "Akademiyamız, dərslərimiz və qeydiyyat prosesi haqqında ən çox soruşulan sualların cavablarını burada tapa bilərsiniz.",
+    "meta_title": "Tez-tez Verilən Suallar | Cahan Academy",
+    "meta_description": "Cahan Academy haqqında tez-tez verilən suallar və cavabları."
   }
 }

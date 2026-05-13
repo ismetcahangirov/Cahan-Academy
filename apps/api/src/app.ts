@@ -10,6 +10,7 @@ import postRoutes from './routes/post.routes.js';
 import leadRoutes from './routes/lead.routes.js';
 import contactRoutes from './routes/contact.routes.js';
 import newsletterRoutes from './routes/newsletter.routes.js';
+import faqRoutes from './routes/faq.routes.js';
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use('/api/blog', postRoutes);
 app.use('/api/leads', leadRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/newsletter', newsletterRoutes);
+app.use('/api/faqs', faqRoutes);
 
 // Error Handling
 app.use(globalErrorHandler);
