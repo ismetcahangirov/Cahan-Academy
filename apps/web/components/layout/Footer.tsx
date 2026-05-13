@@ -102,12 +102,11 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Legal */}
           <div>
             <h3 className="font-heading font-semibold mb-4 text-background/90">Hüquqi</h3>
             <ul className="space-y-2.5">
               <li>
-                <Link href="/privacy" className="text-sm text-background/60 hover:text-secondary transition-colors">
+                <Link href="/privacy-policy" className="text-sm text-background/60 hover:text-secondary transition-colors">
                   {tFt('privacy')}
                 </Link>
               </li>

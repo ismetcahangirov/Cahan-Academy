@@ -70,7 +70,11 @@
     "about_description": "Cahan Academy haqqında ətraflı məlumat, missiyamız və komandamız.",
     "contact_title": "Əlaqə — Cahan Academy",
     "contact_description": "Suallarınız var? Bizimlə əlaqə saxlayın, komandamız sizə ən qısa zamanda cavab verəcəkdir.",
-    "faq_title": "Tez-tez Verilən Suallar — Cahan Academy"
+    "faq_title": "Tez-tez Verilən Suallar — Cahan Academy",
+    "privacy_title": "Məxfilik Siyasəti — Cahan Academy",
+    "privacy_description": "Cahan Academy məxfilik siyasəti və məlumatların qorunması haqqında məlumat.",
+    "terms_title": "İstifadə Şərtləri — Cahan Academy",
+    "terms_description": "Cahan Academy veb-saytından istifadə şərtləri və qaydaları."
   },
   "courses": {
     "page_title": "Bütün Kurslar",
@@ -143,5 +147,19 @@
     "description": "Akademiyamız, dərslərimiz və qeydiyyat prosesi haqqında ən çox soruşulan sualların cavablarını burada tapa bilərsiniz.",
     "meta_title": "Tez-tez Verilən Suallar | Cahan Academy",
     "meta_description": "Cahan Academy haqqında tez-tez verilən suallar və cavabları."
+  },
+  "legal": {
+    "privacy_policy_title": "Məxfilik Siyasəti",
+    "terms_of_use_title": "İstifadə Şərtləri",
+    "last_updated": "Son yenilənmə",
+    "privacy_content": "Cahan Academy olaraq sizin məxfiliyiniz bizim üçün önəmlidir. Bu sənəddə məlumatlarınızın necə toplandığı və qorunduğu barədə məlumat verilir...",
+    "terms_content": "Bu veb-saytdan istifadə etməklə siz aşağıdakı şərtləri qəbul etmiş hesab olunursunuz..."
+  },
+  "cookie": {
+    "title": "Kukla (Cookie) Bildirişi",
+    "description": "Biz sizə daha yaxşı xidmət göstərmək üçün kuklalardan istifadə edirik. Saytımızdan istifadə etməyə davam edərək bunu qəbul edirsiniz.",
+    "accept": "Qəbul Et",
+    "decline": "Rədd Et",
+    "learn_more": "Daha ətraflı"
   }
 }

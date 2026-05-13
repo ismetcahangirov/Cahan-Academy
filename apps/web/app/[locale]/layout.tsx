@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { playfair, inter } from '@/lib/fonts';
 import { Metadata } from 'next';
+import CookieConsent from '@/components/ui/CookieConsent';
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -46,6 +47,7 @@ export default async function LocaleLayout({
       <body className="antialiased">
         <NextIntlClientProvider messages={messages}>
           {children}
+          <CookieConsent />
         </NextIntlClientProvider>
       </body>
     </html>

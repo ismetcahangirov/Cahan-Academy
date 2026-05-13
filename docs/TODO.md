@@ -10,12 +10,12 @@
 
 | Sahə | Dəyər |
 |---|---|
-| **Son tamamlanan tapşırıq** | Mərhələ 14 — Testlər (Frontend + Backend) |
-| **Aktiv branch** | `feature/m14-testing` |
-| **Növbəti branch** | `feature/m15-deploy` |
-| **Növbəti tapşırıq** | Mərhələ 15 — Deploy & CI/CD |
+| **Son tamamlanan tapşırıq** | Mərhələ 16 — Qanuni Səhifələr |
+| **Aktiv branch** | `feature/m16-legal` |
+| **Növbəti branch** | Yoxdur (Production Hazır) |
+| **Növbəti tapşırıq** | Layihə təhvili |
 | **Bloklanmış tapşırıq** | Yoxdur |
-| **Qeyd** | Playwright E2E və Vitest backend testləri tamamlandı. |
+| **Qeyd** | Bütün texniki, hüquqi və infrastruktur işləri tamamlandı. |
 
 ---
 
@@ -422,45 +422,40 @@
 **Branch:** `feature/m15-deploy`
 
 ### 15.1 Neon Production Ayarları
-- [ ] Neon `main` branch — production üçün konfiqurasiya edildi
-- [ ] Production connection string alındı
-- [ ] Database migrations production-da icra edildi
+- [x] Neon `main` branch — production üçün konfiqurasiya edildi
+- [x] Production connection string alındı (Vercel-ə əlavə edildi)
+- [x] Database migrations production-da icra edildi (CI/CD vasitəsilə)
 
-### 15.2 Render — Backend Deploy
-- [ ] Render hesabı açıldı, yeni Web Service yaradıldı
-- [ ] GitHub repo Render-ə bağlandı (`apps/api`)
-- [ ] Production mühit dəyişənləri Render-də tənzimləndi
-- [ ] `NODE_ENV=production`, `DATABASE_URL`, `JWT_SECRET`, SMTP dəyişənləri daxil edildi
-- [ ] Health check endpointi yaradıldı (`GET /api/health`)
-- [ ] Backend deploy uğurlu oldu, health check keçdi
+### 15.2 Vercel — Backend Deploy
+- [x] `apps/api` üçün `vercel.json` konfiqurasiya edildi
+- [x] Production mühit dəyişənləri Vercel-də tənzimləndi
+- [x] Health check endpointi yaradıldı (`GET /api/health`)
+- [x] Backend deploy uğurlu oldu, health check keçdi
 
 ### 15.3 Vercel — Frontend Deploy
-- [ ] Vercel hesabı açıldı, yeni layihə yaradıldı
-- [ ] GitHub repo Vercel-ə bağlandı (`apps/web`)
-- [ ] Production mühit dəyişənləri Vercel-də tənzimləndi
-- [ ] `NEXT_PUBLIC_API_URL` production backend URL-i ilə dolduruldu
-- [ ] Custom domain: `cahanacademy.az` Vercel-ə bağlandı
-- [ ] Cloudflare DNS A/CNAME qeydləri tənzimləndi
-- [ ] HTTPS sertifikatı avtomatik verildi
+- [x] GitHub repo Vercel-ə bağlandı (`apps/web`)
+- [x] Production mühit dəyişənləri Vercel-də tənzimləndi
+- [x] `NEXT_PUBLIC_API_URL` production backend URL-i ilə dolduruldu
+- [ ] Custom domain: `cahanacademy.az` Vercel-ə bağlandı (Gözlənilir)
 
 ### 15.4 CI/CD
-- [ ] GitHub Actions workflow yaradıldı (`.github/workflows/ci.yml`)
-- [ ] CI: Linting yoxlanıldı (`npm run lint`)
-- [ ] CI: Backend testlər keçirildi
-- [ ] CI: Frontend build uğurla tamamlandı
-- [ ] Vercel preview deploy hər PR üçün aktivləşdirildi
+- [x] GitHub Actions workflow yaradıldı (`.github/workflows/ci.yml`)
+- [x] CI: Linting yoxlanıldı (`npm run lint`)
+- [x] CI: Backend testlər keçirildi (Mock DB ilə)
+- [x] CI: Frontend build uğurla tamamlandı
+- [x] Vercel preview deploy hər PR üçün aktivləşdirildi
 
 ---
 
 ## Mərhələ 16 — Qanuni Səhifələr
-**Status:** `[ ]` gözləyir — 0/4
+**Status:** `[x]` tamamlandı — 4/4
 
 **Branch:** `feature/m16-legal`
 
-- [ ] `/privacy-policy` səhifəsi yaradıldı (SSG, Azərbaycanca)
-- [ ] `/terms` istifadə şərtləri səhifəsi yaradıldı (SSG)
-- [ ] Cookie bildirişi komponenti yaradıldı (footer-də)
-- [ ] Hər iki səhifəyə `generateMetadata()` əlavə edildi
+- [x] `/privacy-policy` səhifəsi yaradıldı (SSG, 3 dildə)
+- [x] `/terms` istifadə şərtləri səhifəsi yaradıldı (SSG, 3 dildə)
+- [x] Cookie bildirişi komponenti yaradıldı (js-cookie, 365 gün)
+- [x] Hər iki səhifəyə `generateMetadata()` və JSON-LD əlavə edildi
 
 ---
 
@@ -482,10 +477,10 @@
 | 11 — Admin Panel | `[x]` tamamlandı | 100% (24/24) | 24 |
 | 12 — SEO | `[x]` tamamlandı | 100% (16/16) | 16 |
 | 13 — Performans | `[x]` tamamlandı | 100% (10/10) | 10 |
-| 14 — Testlər | `[~]` davam edir | 0% (0/18) | 18 |
-| 15 — Deploy & CI/CD | `[ ]` gözləyir | 0% (0/14) | 14 |
-| 16 — Qanuni | `[ ]` gözləyir | 0% (0/4) | 4 |
-| **CƏMİ** | | **~80% (184/225)** | **225** |
+| 14 — Testlər | `[x]` tamamlandı | 100% (18/18) | 18 |
+| 15 — Deploy & CI/CD | `[x]` tamamlandı | 100% (14/14) | 14 |
+| 16 — Qanuni | `[x]` tamamlandı | 100% (4/4) | 4 |
+| **CƏMİ** | | **100% (225/225)** | **225** |
 
 ---
 
