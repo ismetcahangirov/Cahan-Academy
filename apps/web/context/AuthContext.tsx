@@ -14,7 +14,7 @@ interface AuthContextType {
   user: User | null;
   accessToken: string | null;
   isLoading: boolean;
-  login: (accessToken: string, user: User) => void;
+  login: (accessToken: string, user: User, refreshToken?: string) => void;
   logout: () => void;
   refreshSession: () => Promise<boolean>;
 }
@@ -27,10 +27,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  const login = (token: string, userData: User) => {
+  const login = (token: string, userData: User, refreshToken?: string) => {
     setToken(token);
     setAccessToken(token);
     setUser(userData);
+    // Refresh token-i localStorage-da saxla
+    if (refreshToken) {
+      localStorage.setItem('refreshToken', refreshToken);
+    }
   };
 
   const logout = async () => {
@@ -40,37 +44,52 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setToken(null);
       setAccessToken(null);
       setUser(null);
+      localStorage.removeItem('refreshToken');
       router.push('/login');
     }
   };
 
   const refreshSession = async () => {
     try {
-      const { data } = await adminApi.post('/auth/refresh');
+      const storedRefreshToken = localStorage.getItem('refreshToken');
+      if (!storedRefreshToken) return false;
+
+      const { data } = await adminApi.post('/auth/refresh', { 
+        refreshToken: storedRefreshToken 
+      });
+
       if (data.success && data.data.accessToken) {
-        login(data.data.accessToken, data.data.user || user);
+        setToken(data.data.accessToken);
+        setAccessToken(data.data.accessToken);
+        // Yeni refresh token gəlirsə yenilə
+        if (data.data.refreshToken) {
+          localStorage.setItem('refreshToken', data.data.refreshToken);
+        }
+        if (data.data.user) {
+          setUser(data.data.user);
+        }
         return true;
       }
       return false;
     } catch (error) {
+      localStorage.removeItem('refreshToken');
       return false;
     }
   };
 
   useEffect(() => {
     const initAuth = async () => {
-      // Try to restore session on mount
-      const success = await refreshSession();
+      await refreshSession();
       setIsLoading(false);
     };
 
     initAuth();
 
-    // Listen for logout event from axios interceptor
     const handleLogoutEvent = () => {
       setToken(null);
       setAccessToken(null);
       setUser(null);
+      localStorage.removeItem('refreshToken');
       router.push('/login');
     };
 
