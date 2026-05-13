@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { TeacherDetail } from '@/types/teacher';
 import CourseCard from '@/components/cards/CourseCard';
+import JsonLd from '@/components/seo/JsonLd';
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -63,12 +64,35 @@ export default async function TeacherDetailPage({ params }: PageProps) {
     },
   };
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Ana Səhifə',
+        item: `https://cahanacademy.az/${locale}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: t('page_title'),
+        item: `https://cahanacademy.az/${locale}/teachers`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: teacher.name,
+        item: `https://cahanacademy.az/${locale}/teachers/${teacher.slug}`,
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen pt-28 pb-20">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}

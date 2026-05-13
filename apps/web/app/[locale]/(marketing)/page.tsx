@@ -7,6 +7,7 @@ import FeaturesSection     from '@/components/sections/FeaturesSection';
 import CoursesPreview      from '@/components/sections/CoursesPreview';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
 import CTASection          from '@/components/sections/CTASection';
+import JsonLd             from '@/components/seo/JsonLd';
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -42,27 +43,30 @@ export default async function HomePage({ params }: Props) {
   return (
     <>
       {/* JSON-LD Organization */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context':   'https://schema.org',
-            '@type':      'EducationalOrganization',
-            name:         'Cahan Academy',
-            url:          'https://cahanacademy.az',
-            logo:         'https://cahanacademy.az/logo.png',
-            description:  'Azərbaycanda peşəkar texnologiya təhsili — proqramlaşdırma, dizayn, marketinq.',
-            address: {
-              '@type':           'PostalAddress',
-              addressLocality:   'Bakı',
-              addressCountry:    'AZ',
-            },
-            contactPoint: {
-              '@type':       'ContactPoint',
-              telephone:     '+994-50-123-45-67',
-              contactType:   'customer service',
-            },
-          }),
+      <JsonLd
+        data={{
+          '@context':   'https://schema.org',
+          '@type':      'EducationalOrganization',
+          name:         'Cahan Academy',
+          url:          'https://cahanacademy.az',
+          logo:         'https://cahanacademy.az/logo.png',
+          description:  'Azərbaycanda peşəkar texnologiya təhsili — proqramlaşdırma, dizayn, marketinq.',
+          address: {
+            '@type':           'PostalAddress',
+            addressLocality:   'Bakı',
+            addressCountry:    'AZ',
+          },
+          contactPoint: {
+            '@type':       'ContactPoint',
+            telephone:     '+994-50-123-45-67',
+            contactType:   'customer service',
+          },
+          sameAs: [
+            'https://facebook.com/cahanacademy',
+            'https://instagram.com/cahanacademy',
+            'https://linkedin.com/company/cahanacademy',
+            'https://youtube.com/@cahanacademy'
+          ]
         }}
       />
 

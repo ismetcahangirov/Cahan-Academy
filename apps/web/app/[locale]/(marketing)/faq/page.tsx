@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { getFaqs } from '@/lib/api';
 import FAQAccordion from '@/components/ui/FAQAccordion';
 import { Metadata } from 'next';
+import JsonLd from '@/components/seo/JsonLd';
 
 export const revalidate = 3600; // ISR - Every 1 hour
 
@@ -48,10 +49,7 @@ export default async function FAQPage({ params }: { params: Promise<{ locale: st
   return (
     <main className="min-h-screen pt-32 pb-20">
       {/* Schema.org */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
+      <JsonLd data={faqSchema} />
 
       <div className="container mx-auto px-4">
         {/* Header */}

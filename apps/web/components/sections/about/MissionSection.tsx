@@ -23,7 +23,7 @@ export default function MissionSection() {
             <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl z-10 border-8 border-white dark:border-white/5">
               <Image
                 src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1200"
-                alt="Mission"
+                alt={t('mission_title')}
                 fill
                 className="object-cover"
               />
