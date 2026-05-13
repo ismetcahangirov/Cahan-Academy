@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import adminApi, { setAccessToken } from '../lib/adminApi';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 
 interface User {
   id: string;
@@ -26,6 +26,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [accessToken, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const params = useParams();
+  const locale = (params?.locale as string) || 'az';
 
   const login = (token: string, userData: User, refreshToken?: string) => {
     setToken(token);
@@ -49,7 +51,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.removeItem('refreshToken');
       // Cookie-ni sil
       document.cookie = "refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-      router.push('/login');
+      router.push(`/${locale}/login`);
     }
   };
 
@@ -95,7 +97,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setAccessToken(null);
       setUser(null);
       localStorage.removeItem('refreshToken');
-      router.push('/login');
+      router.push(`/${locale}/login`);
     };
 
     window.addEventListener('auth-logout', handleLogoutEvent);

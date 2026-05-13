@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { 
   LayoutDashboard, 
@@ -15,11 +15,11 @@ import {
 } from 'lucide-react';
 
 const menuItems = [
-  { name: 'Dashboard', icon: LayoutDashboard, href: '/admin/dashboard' },
-  { name: 'Müraciətlər', icon: Users, href: '/admin/dashboard/leads' },
-  { name: 'Bloq', icon: FileText, href: '/admin/dashboard/blog' },
-  { name: 'Newsletter', icon: Mail, href: '/admin/dashboard/newsletter' },
-  { name: 'FAQ', icon: HelpCircle, href: '/admin/dashboard/faq' },
+  { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
+  { name: 'Müraciətlər', icon: Users, href: '/dashboard/leads' },
+  { name: 'Bloq', icon: FileText, href: '/dashboard/blog' },
+  { name: 'Newsletter', icon: Mail, href: '/dashboard/newsletter' },
+  { name: 'FAQ', icon: HelpCircle, href: '/dashboard/faq' },
 ];
 
 export default function DashboardLayout({
@@ -28,14 +28,14 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { user, isLoading, logout } = useAuth();
-  const router = useRouter();
-  const pathname = usePathname();
+  const params = useParams();
+  const locale = params.locale as string;
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push('/admin/login');
+      router.push(`/${locale}/login`);
     }
-  }, [user, isLoading, router]);
+  }, [user, isLoading, router, locale]);
 
   if (isLoading) {
     return (
@@ -52,7 +52,7 @@ export default function DashboardLayout({
       {/* Sidebar */}
       <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col fixed inset-y-0">
         <div className="p-6">
-          <Link href="/admin/dashboard" className="text-xl font-bold text-white flex items-center gap-2">
+          <Link href={`/${locale}/dashboard`} className="text-xl font-bold text-white flex items-center gap-2">
             <span className="w-8 h-8 bg-amber-500 rounded flex items-center justify-center text-slate-900">C</span>
             Cahan Admin
           </Link>
@@ -60,11 +60,12 @@ export default function DashboardLayout({
 
         <nav className="flex-1 px-4 space-y-1">
           {menuItems.map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+            const fullHref = `/${locale}${item.href}`;
+            const isActive = pathname === fullHref || pathname.startsWith(fullHref + '/');
             return (
               <Link
                 key={item.name}
-                href={item.href}
+                href={fullHref}
                 className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
                   isActive 
                     ? 'bg-amber-500/10 text-amber-500' 

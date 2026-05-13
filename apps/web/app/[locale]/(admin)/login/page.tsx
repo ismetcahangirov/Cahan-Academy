@@ -23,7 +23,7 @@ export default function LoginPage() {
       
       if (data.success) {
         login(data.data.accessToken, data.data.user, data.data.refreshToken);
-        router.push('/dashboard');
+        router.push(`/${locale}/dashboard`);
       } else {
         setError(data.message || 'Giriş uğursuz oldu');
       }
