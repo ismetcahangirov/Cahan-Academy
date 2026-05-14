@@ -32,6 +32,13 @@ export const login = async (req: Request, res: Response) => {
 
     const refreshToken = await generateRefreshToken({ sub: user.id });
 
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
     res.status(200).json(apiResponse(true, 'Giriş uğurludur.', {
       accessToken,
       refreshToken,
@@ -75,9 +82,21 @@ export const refresh = async (req: Request, res: Response) => {
 
     const newRefreshToken = await generateRefreshToken({ sub: user.id });
 
+    res.cookie('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
     res.status(200).json(apiResponse(true, 'Token yeniləndi.', { 
       accessToken,
-      refreshToken: newRefreshToken 
+      refreshToken: newRefreshToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name
+      }
     }));
   } catch (error) {
     console.error('Refresh error:', error);
@@ -86,6 +105,10 @@ export const refresh = async (req: Request, res: Response) => {
 };
 
 export const logout = async (req: Request, res: Response) => {
-  res.clearCookie('refreshToken');
+  res.clearCookie('refreshToken', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none'
+  });
   res.status(200).json(apiResponse(true, 'Çıxış uğurludur.'));
 };
