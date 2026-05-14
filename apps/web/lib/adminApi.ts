@@ -4,7 +4,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api';
 
 const adminApi = axios.create({
   baseURL: API_URL,
-  withCredentials: false, // Cookie yoxdur, localStorage istifadə edirik
+  withCredentials: true, // Backend ilə cookie (HttpOnly) mübadiləsi üçün
 });
 
 // Access token yaddaşda saxlanılır (React state vasitəsilə)
@@ -30,22 +30,12 @@ adminApi.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const storedRefreshToken = localStorage.getItem('refreshToken');
-        if (!storedRefreshToken) throw new Error('No refresh token');
-
-        // Refresh token-i body-dən göndər (cookie yox)
-        const { data } = await axios.post(`${API_URL}/auth/refresh`, { 
-          refreshToken: storedRefreshToken 
-        });
+        // HttpOnly cookie avtomatik göndəriləcək
+        const { data } = await axios.post(`${API_URL}/auth/refresh`, {}, { withCredentials: true });
         
         if (data.success && data.data.accessToken) {
           const newToken = data.data.accessToken;
           setAccessToken(newToken);
-
-          // Yeni refresh token gəlibsə yenilə
-          if (data.data.refreshToken) {
-            localStorage.setItem('refreshToken', data.data.refreshToken);
-          }
 
           // Yeni token ilə sorğunu yenidən göndər
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
@@ -53,7 +43,6 @@ adminApi.interceptors.response.use(
         }
       } catch (refreshError) {
         setAccessToken(null);
-        localStorage.removeItem('refreshToken');
         window.dispatchEvent(new Event('auth-logout'));
         return Promise.reject(refreshError);
       }

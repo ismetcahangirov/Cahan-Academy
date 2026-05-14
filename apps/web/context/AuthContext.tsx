@@ -29,16 +29,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const params = useParams();
   const locale = (params?.locale as string) || 'az';
 
-  const login = (token: string, userData: User, refreshToken?: string) => {
+  const login = (token: string, userData: User) => {
     setToken(token);
     setAccessToken(token);
     setUser(userData);
-    // Refresh token-i localStorage-da saxla
-    if (refreshToken) {
-      localStorage.setItem('refreshToken', refreshToken);
-      // Middleware üçün cookie təyin et (7 gün)
-      document.cookie = `refreshToken=${refreshToken}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax; Secure`;
-    }
   };
 
   const logout = async () => {
@@ -48,30 +42,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setToken(null);
       setAccessToken(null);
       setUser(null);
-      localStorage.removeItem('refreshToken');
-      // Cookie-ni sil
-      document.cookie = "refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
       router.push(`/${locale}/login`);
     }
   };
 
   const refreshSession = async () => {
     try {
-      const storedRefreshToken = localStorage.getItem('refreshToken');
-      if (!storedRefreshToken) return false;
-
-      const { data } = await adminApi.post('/auth/refresh', { 
-        refreshToken: storedRefreshToken 
-      });
+      const { data } = await adminApi.post('/auth/refresh');
 
       if (data.success && data.data.accessToken) {
         setToken(data.data.accessToken);
         setAccessToken(data.data.accessToken);
-        // Yeni refresh token gəlirsə yenilə
-        if (data.data.refreshToken) {
-          localStorage.setItem('refreshToken', data.data.refreshToken);
-          document.cookie = `refreshToken=${data.data.refreshToken}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax; Secure`;
-        }
         if (data.data.user) {
           setUser(data.data.user);
         }
@@ -79,7 +60,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       return false;
     } catch (error) {
-      localStorage.removeItem('refreshToken');
       return false;
     }
   };
@@ -96,7 +76,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setToken(null);
       setAccessToken(null);
       setUser(null);
-      localStorage.removeItem('refreshToken');
       router.push(`/${locale}/login`);
     };
 

@@ -11,7 +11,8 @@ import {
   Mail, 
   HelpCircle, 
   LogOut,
-  ChevronRight
+  ChevronRight,
+  Home
 } from 'lucide-react';
 
 const menuItems = [
@@ -63,7 +64,9 @@ export default function DashboardLayout({
         <nav className="flex-1 px-4 space-y-1">
           {menuItems.map((item) => {
             const fullHref = `/${locale}${item.href}`;
-            const isActive = pathname === fullHref || pathname.startsWith(fullHref + '/');
+            const isActive = item.href === '/dashboard' 
+              ? pathname === fullHref 
+              : pathname === fullHref || pathname.startsWith(fullHref + '/');
             return (
               <Link
                 key={item.name}
@@ -94,13 +97,24 @@ export default function DashboardLayout({
               <p className="text-xs text-slate-500 truncate">{user.email}</p>
             </div>
           </div>
-          <button
-            onClick={logout}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:bg-red-500/10 hover:text-red-500 transition-colors text-sm font-medium"
-          >
-            <LogOut size={18} />
-            Çıxış
-          </button>
+          
+          <div className="space-y-1">
+            <Link
+              href={`/${locale}`}
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors text-sm font-medium"
+            >
+              <Home size={18} />
+              Ana səhifəyə qayıt
+            </Link>
+            
+            <button
+              onClick={logout}
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:bg-red-500/10 hover:text-red-500 transition-colors text-sm font-medium"
+            >
+              <LogOut size={18} />
+              Çıxış
+            </button>
+          </div>
         </div>
       </aside>
 
