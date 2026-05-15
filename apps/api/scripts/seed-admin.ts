@@ -13,9 +13,9 @@ async function seedAdmin() {
   const passwordHash = await bcrypt.hash(password, 12);
 
   await sql`
-    INSERT INTO admin_users (email, password_hash, name)
-    VALUES (${email}, ${passwordHash}, 'Admin')
-    ON CONFLICT (email) DO NOTHING
+    INSERT INTO admin_users (email, password_hash, name, is_super_admin)
+    VALUES (${email}, ${passwordHash}, 'Admin', true)
+    ON CONFLICT (email) DO UPDATE SET is_super_admin = true
   `;
 
   console.log(`✅ Admin yaradıldı: ${email}`);

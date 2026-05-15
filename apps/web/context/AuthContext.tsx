@@ -8,6 +8,7 @@ interface User {
   id: string;
   email: string;
   name: string;
+  isSuperAdmin?: boolean;
 }
 
 interface AuthContextType {
@@ -17,6 +18,7 @@ interface AuthContextType {
   login: (accessToken: string, user: User, refreshToken?: string) => void;
   logout: () => void;
   refreshSession: () => Promise<boolean>;
+  updateUser: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -32,6 +34,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = (token: string, userData: User) => {
     setToken(token);
     setAccessToken(token);
+    setUser(userData);
+  };
+
+  const updateUser = (userData: User) => {
     setUser(userData);
   };
 
@@ -84,7 +90,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, accessToken, isLoading, login, logout, refreshSession }}>
+    <AuthContext.Provider value={{ user, accessToken, isLoading, login, logout, refreshSession, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

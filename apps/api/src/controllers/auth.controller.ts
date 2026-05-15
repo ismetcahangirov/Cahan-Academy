@@ -27,7 +27,8 @@ export const login = async (req: Request, res: Response) => {
     const accessToken = await generateAccessToken({ 
       sub: user.id, 
       email: user.email, 
-      role: 'admin' 
+      role: 'admin',
+      isSuperAdmin: user.isSuperAdmin
     });
 
     const refreshToken = await generateRefreshToken({ sub: user.id });
@@ -45,7 +46,8 @@ export const login = async (req: Request, res: Response) => {
       user: {
         id: user.id,
         email: user.email,
-        name: user.name
+        name: user.name,
+        isSuperAdmin: user.isSuperAdmin
       }
     }));
   } catch (error) {
@@ -77,7 +79,8 @@ export const refresh = async (req: Request, res: Response) => {
     const accessToken = await generateAccessToken({ 
       sub: user.id, 
       email: user.email, 
-      role: 'admin' 
+      role: 'admin',
+      isSuperAdmin: user.isSuperAdmin
     });
 
     const newRefreshToken = await generateRefreshToken({ sub: user.id });
@@ -95,7 +98,8 @@ export const refresh = async (req: Request, res: Response) => {
       user: {
         id: user.id,
         email: user.email,
-        name: user.name
+        name: user.name,
+        isSuperAdmin: user.isSuperAdmin
       }
     }));
   } catch (error) {
