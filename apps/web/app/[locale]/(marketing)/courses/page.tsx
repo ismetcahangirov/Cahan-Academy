@@ -25,7 +25,7 @@ export default async function CoursesPage({ params }: PageProps) {
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api';
     const [coursesRes, catsRes] = await Promise.all([
-      fetch(`${apiUrl}/courses?locale=${locale}`, { next: { revalidate: 60 } }),
+      fetch(`${apiUrl}/courses?locale=${locale}`, { next: { revalidate: 10 } }),
       fetch(`${apiUrl}/courses/categories`,         { next: { revalidate: 300 } }),
     ]);
     if (coursesRes.ok)   courses    = (await coursesRes.json()).data   ?? [];

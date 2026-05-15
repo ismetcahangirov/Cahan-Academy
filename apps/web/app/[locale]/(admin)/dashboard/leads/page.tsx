@@ -148,14 +148,14 @@ export default function LeadsPage() {
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        lead.status === 'pending' ? 'bg-amber-500/10 text-amber-500' :
+                        lead.status === 'new' ? 'bg-amber-500/10 text-amber-500' :
                         lead.status === 'contacted' ? 'bg-blue-500/10 text-blue-500' :
-                        lead.status === 'completed' ? 'bg-emerald-500/10 text-emerald-500' :
+                        lead.status === 'enrolled' ? 'bg-emerald-500/10 text-emerald-500' :
                         'bg-red-500/10 text-red-500'
                       }`}>
-                        {lead.status === 'pending' ? 'Gözləyir' :
+                        {lead.status === 'new' ? 'Gözləyir' :
                          lead.status === 'contacted' ? 'Əlaqə saxlanılıb' :
-                         lead.status === 'completed' ? 'Tamamlanıb' : 'Ləğv edilib'}
+                         lead.status === 'enrolled' ? 'Qeydiyyatdan keçib' : 'Ləğv edilib'}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
@@ -164,9 +164,9 @@ export default function LeadsPage() {
                         onChange={(e) => handleStatusChange(lead.id, e.target.value)}
                         className="bg-slate-800 border border-slate-700 text-slate-300 text-xs rounded-lg focus:ring-amber-500 focus:border-amber-500 p-1 cursor-pointer"
                       >
-                        <option value="pending">Gözləyir</option>
+                        <option value="new">Gözləyir</option>
                         <option value="contacted">Əlaqə saxlanılıb</option>
-                        <option value="completed">Tamamlanıb</option>
+                        <option value="enrolled">Qeydiyyatdan keçib</option>
                         <option value="cancelled">Ləğv et</option>
                       </select>
                     </td>

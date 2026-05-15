@@ -184,7 +184,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
           {/* Content */}
           <div 
-            className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-heading prose-headings:font-bold prose-p:leading-relaxed prose-a:text-primary mb-20"
+            className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-heading prose-headings:font-bold prose-p:leading-relaxed prose-a:text-primary mb-20 break-words whitespace-pre-wrap overflow-hidden"
             dangerouslySetInnerHTML={{ __html: post.content || '' }}
           />
 

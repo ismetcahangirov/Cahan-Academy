@@ -1,9 +1,6 @@
-import { neon } from '@neondatabase/serverless';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const sql = neon(process.env.DATABASE_URL!);
+import { db } from '../config/db.js';
+import { courses, categories, teachers, NewCourse } from '../config/schema.js';
+import { eq, desc } from 'drizzle-orm';
 
 export interface CourseRow {
   id: string;
@@ -34,73 +31,129 @@ export interface CourseRow {
   teacher_position_az?: string;
   teacher_position_en?: string;
   teacher_position_ru?: string;
+  teacher_bio_az?: string;
+  teacher_bio_en?: string;
+  teacher_bio_ru?: string;
+  syllabus_az?: string | null;
+  syllabus_en?: string | null;
+  syllabus_ru?: string | null;
+}
+
+function mapToCourseRow(record: any): CourseRow {
+  const c = record.course;
+  const cat = record.category;
+  const t = record.teacher;
+
+  return {
+    id: c.id,
+    title_az: c.titleAz,
+    title_en: c.titleEn,
+    title_ru: c.titleRu,
+    slug: c.slug,
+    description_az: c.descriptionAz,
+    description_en: c.descriptionEn,
+    description_ru: c.descriptionRu,
+    category_id: c.categoryId,
+    teacher_id: c.teacherId,
+    price: c.price,
+    duration: c.duration,
+    level: c.level as any,
+    image: c.image,
+    is_popular: c.isPopular,
+    rating: c.rating,
+    students_count: c.studentsCount,
+    syllabus_az: c.syllabusAz,
+    syllabus_en: c.syllabusEn,
+    syllabus_ru: c.syllabusRu,
+    created_at: c.createdAt,
+    
+    category_az: cat?.nameAz,
+    category_en: cat?.nameEn,
+    category_ru: cat?.nameRu,
+    category_slug: cat?.slug,
+    
+    teacher_name: t?.name,
+    teacher_image: t?.image,
+    teacher_position_az: t?.positionAz,
+    teacher_position_en: t?.positionEn,
+    teacher_position_ru: t?.positionRu,
+    teacher_bio_az: t?.bioAz,
+    teacher_bio_en: t?.bioEn,
+    teacher_bio_ru: t?.bioRu,
+  };
 }
 
 export async function getAllCourses(locale = 'az'): Promise<CourseRow[]> {
-  const rows = await sql`
-    SELECT
-      c.*,
-      cat.name_az  AS category_az,
-      cat.name_en  AS category_en,
-      cat.name_ru  AS category_ru,
-      cat.slug     AS category_slug,
-      t.name       AS teacher_name,
-      t.image      AS teacher_image,
-      t.position_az AS teacher_position_az,
-      t.position_en AS teacher_position_en,
-      t.position_ru AS teacher_position_ru
-    FROM courses c
-    LEFT JOIN categories cat ON c.category_id = cat.id
-    LEFT JOIN teachers t ON c.teacher_id = t.id
-    ORDER BY c.is_popular DESC, c.created_at DESC
-  `;
-  return rows as CourseRow[];
+  const results = await db
+    .select({
+      course: courses,
+      category: categories,
+      teacher: teachers,
+    })
+    .from(courses)
+    .leftJoin(categories, eq(courses.categoryId, categories.id))
+    .leftJoin(teachers, eq(courses.teacherId, teachers.id))
+    .orderBy(desc(courses.isPopular), desc(courses.createdAt));
+
+  return results.map(mapToCourseRow);
 }
 
 export async function getCourseBySlug(slug: string): Promise<CourseRow | null> {
-  const rows = await sql`
-    SELECT
-      c.*,
-      cat.name_az  AS category_az,
-      cat.name_en  AS category_en,
-      cat.name_ru  AS category_ru,
-      cat.slug     AS category_slug,
-      t.name       AS teacher_name,
-      t.image      AS teacher_image,
-      t.bio_az     AS teacher_bio_az,
-      t.bio_en     AS teacher_bio_en,
-      t.bio_ru     AS teacher_bio_ru,
-      t.position_az AS teacher_position_az,
-      t.position_en AS teacher_position_en,
-      t.position_ru AS teacher_position_ru
-    FROM courses c
-    LEFT JOIN categories cat ON c.category_id = cat.id
-    LEFT JOIN teachers t ON c.teacher_id = t.id
-    WHERE c.slug = ${slug}
-    LIMIT 1
-  `;
-  return (rows[0] as CourseRow) ?? null;
+  const results = await db
+    .select({
+      course: courses,
+      category: categories,
+      teacher: teachers,
+    })
+    .from(courses)
+    .leftJoin(categories, eq(courses.categoryId, categories.id))
+    .leftJoin(teachers, eq(courses.teacherId, teachers.id))
+    .where(eq(courses.slug, slug))
+    .limit(1);
+
+  if (results.length === 0) return null;
+  return mapToCourseRow(results[0]);
 }
 
 export async function getCoursesByCategory(categorySlug: string): Promise<CourseRow[]> {
-  const rows = await sql`
-    SELECT
-      c.*,
-      cat.name_az  AS category_az,
-      cat.name_en  AS category_en,
-      cat.name_ru  AS category_ru,
-      cat.slug     AS category_slug,
-      t.name       AS teacher_name,
-      t.image      AS teacher_image
-    FROM courses c
-    LEFT JOIN categories cat ON c.category_id = cat.id
-    LEFT JOIN teachers t ON c.teacher_id = t.id
-    WHERE cat.slug = ${categorySlug}
-    ORDER BY c.created_at DESC
-  `;
-  return rows as CourseRow[];
+  const results = await db
+    .select({
+      course: courses,
+      category: categories,
+      teacher: teachers,
+    })
+    .from(courses)
+    .leftJoin(categories, eq(courses.categoryId, categories.id))
+    .leftJoin(teachers, eq(courses.teacherId, teachers.id))
+    .where(eq(categories.slug, categorySlug))
+    .orderBy(desc(courses.createdAt));
+
+  return results.map(mapToCourseRow);
 }
 
 export async function getAllCategories() {
-  return await sql`SELECT * FROM categories ORDER BY name_az`;
+  return await db.select().from(categories).orderBy(categories.nameAz);
+}
+
+// Admin CRUD operations
+export async function createCourse(data: NewCourse) {
+  const [newCourse] = await db.insert(courses).values(data).returning();
+  return newCourse;
+}
+
+export async function updateCourse(id: string, data: Partial<NewCourse>) {
+  const [updatedCourse] = await db
+    .update(courses)
+    .set({ ...data, updatedAt: new Date() })
+    .where(eq(courses.id, id))
+    .returning();
+  return updatedCourse;
+}
+
+export async function deleteCourse(id: string) {
+  const [deletedCourse] = await db
+    .delete(courses)
+    .where(eq(courses.id, id))
+    .returning();
+  return deletedCourse;
 }

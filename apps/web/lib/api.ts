@@ -80,7 +80,7 @@ export const getBlogPosts = (params?: { locale?: string; limit?: number; exclude
   
   return apiFetch<{ data: BlogPost[] }>(`/blog?${query.toString()}`, { 
     tags: ['blog'], 
-    revalidate: 600 
+    revalidate: 10 
   }).then(res => res.data)
     .catch(() => []);
 };
@@ -88,7 +88,7 @@ export const getBlogPosts = (params?: { locale?: string; limit?: number; exclude
 export const getBlogPost = (slug: string, locale: string = 'az') =>
   apiFetch<{ data: BlogPost }>(`/blog/${slug}?locale=${locale}`, { 
     tags: [`blog-${slug}`], 
-    revalidate: 3600 
+    revalidate: 10 
   }).then(res => res.data)
     .catch(() => null);
 

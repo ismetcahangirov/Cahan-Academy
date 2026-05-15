@@ -54,7 +54,6 @@ export const listCategories = asyncHandler(async (_req: Request, res: Response) 
   return apiResponse.success(res, { data: categories });
 });
 
-// GET /api/courses/:slug?locale=az
 export const getCourse = asyncHandler(async (req: Request, res: Response) => {
   const slug   = req.params.slug as string;
   const locale = (req.query.locale as string) ?? 'az';
@@ -81,7 +80,7 @@ export const getCourse = asyncHandler(async (req: Request, res: Response) => {
       duration:     c.duration,
       level:        c.level,
       image:        c.image,
-      isPopular:    c.is_popular === 'true',
+      isPopular:    c.is_popular === 'true' || c.is_popular === true,
       rating:       c.rating,
       studentsCount: c.students_count,
       syllabus:     c[`syllabus_${locale}`] ?? c.syllabus_az,
@@ -97,4 +96,38 @@ export const getCourse = asyncHandler(async (req: Request, res: Response) => {
       },
     },
   });
+});
+
+// Admin methods
+export const listCoursesAdmin = asyncHandler(async (req: Request, res: Response) => {
+  // Returns raw unshaped data for admin form
+  const courses = await getAllCourses('az'); // We just get all
+  return apiResponse.success(res, { data: courses });
+});
+
+import { createCourse, updateCourse, deleteCourse } from '../repositories/course.repository.js';
+
+export const createCourseAdmin = asyncHandler(async (req: Request, res: Response) => {
+  const data = req.body;
+  const newCourse = await createCourse(data);
+  return apiResponse.success(res, { data: newCourse, message: 'Kurs uğurla yaradıldı' }, 201);
+});
+
+export const updateCourseAdmin = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const data = req.body;
+  const updated = await updateCourse(id, data);
+  if (!updated) {
+    return apiResponse.error(res, { message: 'Kurs tapılmadı', status: 404 });
+  }
+  return apiResponse.success(res, { data: updated, message: 'Kurs uğurla yeniləndi' });
+});
+
+export const deleteCourseAdmin = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const deleted = await deleteCourse(id);
+  if (!deleted) {
+    return apiResponse.error(res, { message: 'Kurs tapılmadı', status: 404 });
+  }
+  return apiResponse.success(res, { data: deleted, message: 'Kurs uğurla silindi' });
 });

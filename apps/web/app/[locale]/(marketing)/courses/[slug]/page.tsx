@@ -19,7 +19,7 @@ async function getCourse(slug: string, locale: string): Promise<Course | null> {
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api';
     const res = await fetch(`${apiUrl}/courses/${slug}?locale=${locale}`, {
-      next: { revalidate: 60 },
+      next: { revalidate: 10 },
     });
     if (!res.ok) return null;
     const data = await res.json();

@@ -77,8 +77,24 @@ export const listAllPostsAdmin = asyncHandler(async (req: Request, res: Response
   return apiResponse.success(res, { data: posts });
 });
 
+export const getPostAdmin = asyncHandler(async (req: Request, res: Response) => {
+  const slug = req.params.slug as string;
+  const data = await PostRepository.getPostBySlug(slug);
+  if (!data) return apiResponse.error(res, { message: 'Məqalə tapılmadı', status: 404 });
+  return apiResponse.success(res, { data: data.post });
+});
+
+
 export const createPost = asyncHandler(async (req: Request, res: Response) => {
-  const post = await PostRepository.createPost(req.body);
+  const authReq = req as any; // Or use AuthRequest type
+  const authorId = authReq.user?.id;
+  
+  const postData = {
+    ...req.body,
+    authorId,
+  };
+
+  const post = await PostRepository.createPost(postData);
   return apiResponse.success(res, { data: post, status: 201 });
 });
 
