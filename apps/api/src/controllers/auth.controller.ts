@@ -1,10 +1,8 @@
 import { Request, Response } from 'express';
-import * as jose from 'jose';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { db } from '../config/db.js';
 import { adminUsers } from '../config/schema.js';
-import { env } from '../config/env.js';
 import { apiResponse } from '../utils/apiResponse.js';
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/jwt.js';
 

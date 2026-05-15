@@ -33,7 +33,7 @@ export const getSubscribers = async (req: Request, res: Response) => {
   try {
     const subscribers = await NewsletterRepository.getAllSubscribers();
     res.status(200).json(apiResponse(true, 'Abunəçilər gətirildi', subscribers));
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json(apiResponse(false, 'Abunəçiləri gətirmək mümkün olmadı'));
   }
 };

@@ -1,6 +1,6 @@
 import { eq, sql } from 'drizzle-orm';
 import { db } from '../config/db.js';
-import { adminUsers, AdminUser, NewAdminUser } from '../config/schema.js';
+import { adminUsers, NewAdminUser } from '../config/schema.js';
 
 export class AdminRepository {
   async findAll() {
@@ -57,7 +57,7 @@ export class AdminRepository {
   }
 
   async count() {
-    const [result] = await db.select({ count: sql<number>\`count(*)\` }).from(adminUsers);
+    const [result] = await db.select({ count: sql<number>`count(*)` }).from(adminUsers);
     return result.count;
   }
 }

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { generateAccessToken, generateRefreshToken, verifyAccessToken } from '../utils/jwt.js';
 import * as jose from 'jose';
 import { env } from '../config/env.js';

@@ -39,7 +39,7 @@ export const getLeads = async (req: Request, res: Response) => {
   try {
     const leads = await LeadRepository.getAllLeads();
     res.status(200).json(apiResponse(true, 'Müraciətlər gətirildi', leads));
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json(apiResponse(false, 'Müraciətləri gətirmək mümkün olmadı'));
   }
 };
@@ -55,7 +55,7 @@ export const updateStatus = async (req: Request, res: Response) => {
     }
 
     res.status(200).json(apiResponse(true, 'Status yeniləndi', lead));
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json(apiResponse(false, 'Statusu yeniləmək mümkün olmadı'));
   }
 };
@@ -73,7 +73,7 @@ export const exportLeadsCSV = async (req: Request, res: Response) => {
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', 'attachment; filename=leads-export.csv');
     res.status(200).send(csv);
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json(apiResponse(false, 'CSV eksport xətası'));
   }
 };
