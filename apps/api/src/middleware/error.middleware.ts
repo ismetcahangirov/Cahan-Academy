@@ -1,9 +1,8 @@
-import { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
-import { AppError } from '../utils/AppError.js';
+import { ErrorRequestHandler } from 'express';
 import { apiResponse } from '../utils/apiResponse.js';
 import { env } from '../config/env.js';
 
-export const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
+export const globalErrorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   const statusCode = err.statusCode || 500;
   const message    = err.isOperational ? err.message : 'Xidmət müvəqqəti əlçatmazdır';
 

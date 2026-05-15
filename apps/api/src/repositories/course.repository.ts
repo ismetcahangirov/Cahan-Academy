@@ -83,7 +83,7 @@ function mapToCourseRow(record: any): CourseRow {
   };
 }
 
-export async function getAllCourses(locale = 'az'): Promise<CourseRow[]> {
+export async function getAllCourses(_locale = 'az'): Promise<CourseRow[]> {
   const results = await db
     .select({
       course: courses,

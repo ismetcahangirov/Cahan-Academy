@@ -64,9 +64,14 @@ async function migrate() {
       email         VARCHAR(255) NOT NULL UNIQUE,
       password_hash VARCHAR(255) NOT NULL,
       name          VARCHAR(255),
+      is_super_admin BOOLEAN NOT NULL DEFAULT false,
       created_at    TIMESTAMP NOT NULL DEFAULT NOW(),
       updated_at    TIMESTAMP NOT NULL DEFAULT NOW()
     );
+  `;
+  
+  await sql`
+    ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS is_super_admin BOOLEAN NOT NULL DEFAULT false;
   `;
 
   console.log('  ✅ admin_users cədvəli hazır');

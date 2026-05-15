@@ -1,6 +1,6 @@
 import { db } from '../config/db.js';
-import { faqs, FAQ, NewFAQ } from '../schemas/faq.schema.js';
-import { eq, asc, desc } from 'drizzle-orm';
+import { faqs, NewFAQ } from '../schemas/faq.schema.js';
+import { eq, asc } from 'drizzle-orm';
 
 export class FAQRepository {
   async getAll(onlyActive = true) {

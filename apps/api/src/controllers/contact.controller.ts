@@ -39,7 +39,7 @@ export const getMessages = async (req: Request, res: Response) => {
   try {
     const messages = await ContactRepository.getAllContactMessages();
     res.status(200).json(apiResponse(true, 'Mesajlar gətirildi', messages));
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json(apiResponse(false, 'Mesajları gətirmək mümkün olmadı'));
   }
 };
@@ -52,7 +52,7 @@ export const markAsRead = async (req: Request, res: Response) => {
       return res.status(404).json(apiResponse(false, 'Mesaj tapılmadı'));
     }
     res.status(200).json(apiResponse(true, 'Mesaj oxunmuş kimi qeyd edildi', message));
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json(apiResponse(false, 'Xəta baş verdi'));
   }
 };

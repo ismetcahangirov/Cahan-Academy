@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter, usePathname, useParams } from 'next/navigation';
 import Link from 'next/link';
+import { Toaster } from 'react-hot-toast';
 import { 
   LayoutDashboard, 
   Users, 
@@ -14,7 +15,9 @@ import {
   LogOut,
   ChevronRight,
   Home,
-  BookOpen
+  BookOpen,
+  UserCog,
+  Settings
 } from 'lucide-react';
 
 const menuItems = [
@@ -25,6 +28,8 @@ const menuItems = [
   { name: 'Bloq', icon: FileText, href: '/dashboard/blog' },
   { name: 'Newsletter', icon: Mail, href: '/dashboard/newsletter' },
   { name: 'FAQ', icon: HelpCircle, href: '/dashboard/faq' },
+  { name: 'İstifadəçilər', icon: UserCog, href: '/dashboard/users' },
+  { name: 'Tənzimləmələr', icon: Settings, href: '/dashboard/settings' },
 ];
 
 export default function DashboardLayout({
@@ -128,6 +133,7 @@ export default function DashboardLayout({
           {children}
         </div>
       </main>
+      <Toaster position="top-right" />
     </div>
   );
 }
