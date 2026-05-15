@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import adminApi from '@/lib/adminApi';
 import { FileText, Plus, Edit, Trash2, ExternalLink, RefreshCcw, Eye, EyeOff } from 'lucide-react';
-import Link from 'next/link';
+import BlogModal from '@/components/admin/BlogModal';
 
 interface BlogPost {
   post: {
@@ -21,6 +21,8 @@ interface BlogPost {
 export default function BlogAdminPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [postToEdit, setPostToEdit] = useState<any | null>(null);
 
   const fetchPosts = async () => {
     setIsLoading(true);
@@ -65,6 +67,24 @@ export default function BlogAdminPage() {
     }
   };
 
+  const handleEdit = async (slug: string) => {
+    try {
+      // Fetch full post details before opening modal
+      const { data } = await adminApi.get(`/blog/admin/${slug}`);
+      if (data.success) {
+        setPostToEdit(data.data);
+        setIsModalOpen(true);
+      }
+    } catch (error) {
+      console.error('Failed to fetch post details:', error);
+      alert('Məqalə detallarını yükləmək mümkün olmadı');
+    }
+  };
+
+  const handleModalSuccess = () => {
+    fetchPosts();
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -79,13 +99,16 @@ export default function BlogAdminPage() {
           >
             <RefreshCcw size={18} />
           </button>
-          <Link
-            href="/admin/dashboard/blog/new"
+          <button
+            onClick={() => {
+              setPostToEdit(null);
+              setIsModalOpen(true);
+            }}
             className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-lg font-medium transition-colors"
           >
             <Plus size={18} />
             Yeni Məqalə
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -155,13 +178,13 @@ export default function BlogAdminPage() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <Link
-                          href={`/admin/dashboard/blog/edit/${item.post.id}`}
+                        <button
+                          onClick={() => handleEdit(item.post.slug)}
                           className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
                           title="Redaktə et"
                         >
                           <Edit size={16} />
-                        </Link>
+                        </button>
                         <button
                           onClick={() => handleDelete(item.post.id)}
                           className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
@@ -178,6 +201,13 @@ export default function BlogAdminPage() {
           </table>
         </div>
       </div>
+
+      <BlogModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={handleModalSuccess}
+        postToEdit={postToEdit}
+      />
     </div>
   );
 }

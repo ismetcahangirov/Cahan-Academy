@@ -9,15 +9,19 @@ import {
   Users, 
   FileText, 
   Mail, 
+  MessageSquare,
   HelpCircle, 
   LogOut,
   ChevronRight,
-  Home
+  Home,
+  BookOpen
 } from 'lucide-react';
 
 const menuItems = [
   { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
   { name: 'Müraciətlər', icon: Users, href: '/dashboard/leads' },
+  { name: 'Mesajlar', icon: MessageSquare, href: '/dashboard/contacts' },
+  { name: 'Kurslar', icon: BookOpen, href: '/dashboard/courses' },
   { name: 'Bloq', icon: FileText, href: '/dashboard/blog' },
   { name: 'Newsletter', icon: Mail, href: '/dashboard/newsletter' },
   { name: 'FAQ', icon: HelpCircle, href: '/dashboard/faq' },
