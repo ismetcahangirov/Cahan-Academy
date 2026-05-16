@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import adminApi from '@/lib/adminApi';
-import { Search, RefreshCcw, Mail, MailOpen } from 'lucide-react';
+import { Search, RefreshCcw, Mail, MailOpen, Eye, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ContactMessage {
   id: string;
@@ -19,6 +20,7 @@ export default function ContactsPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
 
   const fetchMessages = async () => {
     setIsLoading(true);
@@ -43,13 +45,23 @@ export default function ContactsPage() {
       const { data } = await adminApi.patch(`/contacts/${id}/read`);
       if (data.success) {
         setMessages(messages.map(m => m.id === id ? { ...m, isRead: 'true' } : m));
+        if (selectedMessage?.id === id) {
+          setSelectedMessage({ ...selectedMessage, isRead: 'true' });
+        }
       }
     } catch (error) {
       alert('Status yeniləmə xətası');
     }
   };
 
-  const filteredMessages = messages.filter(m => 
+  const handleView = (message: ContactMessage) => {
+    setSelectedMessage(message);
+    if (message.isRead === 'false') {
+      handleMarkAsRead(message.id);
+    }
+  };
+
+  const filteredMessages = messages.filter(m =>
     m.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     m.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     m.subject.toLowerCase().includes(searchTerm.toLowerCase())
@@ -136,21 +148,30 @@ export default function ContactsPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      {message.isRead === 'false' ? (
+                      <div className="flex items-center justify-end gap-1">
                         <button
-                          onClick={() => handleMarkAsRead(message.id)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 text-xs font-medium rounded-lg transition-colors"
-                          title="Oxunmuş kimi qeyd et"
+                          onClick={() => handleView(message)}
+                          className="p-1.5 text-slate-400 hover:text-amber-500 hover:bg-slate-800 rounded-lg transition-colors"
+                          title="Mesaja bax"
                         >
-                          <MailOpen size={14} />
-                          Oxundu et
+                          <Eye size={18} />
                         </button>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-slate-500 text-xs">
-                          <Mail size={14} />
-                          Oxunub
-                        </span>
-                      )}
+                        {message.isRead === 'false' ? (
+                          <button
+                            onClick={() => handleMarkAsRead(message.id)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 text-xs font-medium rounded-lg transition-colors"
+                            title="Oxunmuş kimi qeyd et"
+                          >
+                            <MailOpen size={14} />
+                            Oxundu et
+                          </button>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-slate-500 text-xs">
+                            <Mail size={14} />
+                            Oxunub
+                          </span>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -159,6 +180,94 @@ export default function ContactsPage() {
           </table>
         </div>
       </div>
+
+      {/* Message Detail Modal */}
+      <AnimatePresence>
+        {selectedMessage && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setSelectedMessage(null)}
+            />
+            <motion.div
+              className="relative z-10 w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            >
+              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900/50">
+                <div>
+                  <h2 className="text-lg font-bold text-white">Mesaj Detalları</h2>
+                </div>
+                <button
+                  onClick={() => setSelectedMessage(null)}
+                  className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-6 custom-scrollbar space-y-5">
+                <div className="flex items-center justify-between">
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                    selectedMessage.isRead === 'true' ? 'bg-slate-800 text-slate-400' : 'bg-blue-500/10 text-blue-500'
+                  }`}>
+                    {selectedMessage.isRead === 'true' ? 'Oxunub' : 'Yeni'}
+                  </span>
+                  <span className="text-xs text-slate-500">
+                    {new Date(selectedMessage.createdAt).toLocaleString('az-AZ')}
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-slate-800/50 rounded-xl p-3">
+                      <p className="text-xs text-slate-500 mb-1">Ad</p>
+                      <p className="text-sm text-white font-medium">{selectedMessage.name}</p>
+                    </div>
+                    <div className="bg-slate-800/50 rounded-xl p-3">
+                      <p className="text-xs text-slate-500 mb-1">Email</p>
+                      <p className="text-sm text-white font-medium break-all">{selectedMessage.email}</p>
+                    </div>
+                  </div>
+
+                  {selectedMessage.phone && (
+                    <div className="bg-slate-800/50 rounded-xl p-3">
+                      <p className="text-xs text-slate-500 mb-1">Telefon</p>
+                      <p className="text-sm text-white font-medium">{selectedMessage.phone}</p>
+                    </div>
+                  )}
+
+                  <div className="bg-slate-800/50 rounded-xl p-3">
+                    <p className="text-xs text-slate-500 mb-1">Mövzu</p>
+                    <p className="text-sm text-white font-medium">{selectedMessage.subject}</p>
+                  </div>
+
+                  <div className="bg-slate-800/50 rounded-xl p-3">
+                    <p className="text-xs text-slate-500 mb-2">Mesaj</p>
+                    <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">{selectedMessage.message}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-800 bg-slate-900/50">
+                <button
+                  onClick={() => setSelectedMessage(null)}
+                  className="px-5 py-2.5 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-xl transition-colors"
+                >
+                  Bağla
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

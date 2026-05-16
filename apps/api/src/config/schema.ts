@@ -141,6 +141,18 @@ export const faqs = pgTable('faqs', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
+// ─── Team Members ─────────────────────────────────────────────────────────────
+export const teamMembers = pgTable('team_members', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  name: varchar('name', { length: 255 }).notNull(),
+  positionAz: varchar('position_az', { length: 255 }).notNull(),
+  positionEn: varchar('position_en', { length: 255 }).notNull(),
+  positionRu: varchar('position_ru', { length: 255 }).notNull(),
+  image: varchar('image', { length: 1000 }),
+  order: integer('order').default(0).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 // ─── Type Exports ─────────────────────────────────────────────────────────────
 export type Lead = typeof leads.$inferSelect;
 export type NewLead = typeof leads.$inferInsert;
@@ -160,3 +172,5 @@ export type Post = typeof posts.$inferSelect;
 export type NewPost = typeof posts.$inferInsert;
 export type FAQ = typeof faqs.$inferSelect;
 export type NewFAQ = typeof faqs.$inferInsert;
+export type TeamMember = typeof teamMembers.$inferSelect;
+export type NewTeamMember = typeof teamMembers.$inferInsert;
