@@ -2,11 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Save, Image as ImageIcon } from 'lucide-react';
+import { X, Save } from 'lucide-react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import adminApi from '@/lib/adminApi';
+import ImageUpload from './ImageUpload';
 
 const formSchema = z.object({
   titleAz: z.string().min(1, 'Azərbaycan dilində başlıq mütləqdir'),
@@ -261,17 +262,14 @@ export default function BlogModal({ isOpen, onClose, onSuccess, postToEdit }: Bl
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-300">Şəkil URL</label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
-                        <ImageIcon size={18} />
-                      </div>
-                      <input
-                        {...register('image')}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
-                        placeholder="https://..."
-                      />
-                    </div>
+                    <label className="text-sm font-medium text-slate-300">Şəkil</label>
+                    <Controller
+                      name="image"
+                      control={control}
+                      render={({ field }) => (
+                        <ImageUpload value={field.value || ''} onChange={field.onChange} />
+                      )}
+                    />
                   </div>
 
                   <div className="space-y-1">

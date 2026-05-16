@@ -5,19 +5,22 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter, usePathname, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Toaster } from 'react-hot-toast';
-import { 
-  LayoutDashboard, 
-  Users, 
-  FileText, 
-  Mail, 
+import {
+  LayoutDashboard,
+  Users,
+  FileText,
+  Mail,
   MessageSquare,
-  HelpCircle, 
+  HelpCircle,
   LogOut,
   ChevronRight,
   Home,
   BookOpen,
   UserCog,
-  Settings
+  Settings,
+  GraduationCap,
+  Tags,
+  UsersRound
 } from 'lucide-react';
 
 const menuItems = [
@@ -25,6 +28,9 @@ const menuItems = [
   { name: 'Müraciətlər', icon: Users, href: '/dashboard/leads' },
   { name: 'Mesajlar', icon: MessageSquare, href: '/dashboard/contacts' },
   { name: 'Kurslar', icon: BookOpen, href: '/dashboard/courses' },
+  { name: 'Müəllimlər', icon: GraduationCap, href: '/dashboard/teachers' },
+  { name: 'Kateqoriyalar', icon: Tags, href: '/dashboard/categories' },
+  { name: 'Komanda', icon: UsersRound, href: '/dashboard/team' },
   { name: 'Bloq', icon: FileText, href: '/dashboard/blog' },
   { name: 'Newsletter', icon: Mail, href: '/dashboard/newsletter' },
   { name: 'FAQ', icon: HelpCircle, href: '/dashboard/faq' },
