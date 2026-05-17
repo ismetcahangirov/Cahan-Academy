@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { Image as ImageIcon, Upload, Link2, X, Loader2 } from 'lucide-react';
 import adminApi from '@/lib/adminApi';
+import { getCloudinaryScript } from '@/lib/cloudinary';
 
 interface ImageUploadProps {
   value: string;
@@ -13,8 +14,7 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
   const [mode, setMode] = useState<'url' | 'upload'>('url');
   const [isUploading, setIsUploading] = useState(false);
   const [preview, setPreview] = useState<string>(value || '');
-  const fileRef = useRef<HTMLInputElement>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const widgetRef = useRef<ReturnType<typeof window.cloudinary.createUploadWidget> | null>(null);
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const url = e.target.value;
@@ -22,33 +22,69 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
     setPreview(url);
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setSelectedFile(file);
-    const localPreview = URL.createObjectURL(file);
-    setPreview(localPreview);
-  };
-
-  const handleUpload = async () => {
-    if (!selectedFile) return;
+  const handleCloudinaryUpload = async () => {
     setIsUploading(true);
     try {
-      const formData = new FormData();
-      formData.append('file', selectedFile);
-      const { data } = await adminApi.post('/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      if (data.success) {
-        const uploadedUrl = data.data.url;
-        onChange(uploadedUrl);
-        setPreview(uploadedUrl);
-        setSelectedFile(null);
+      await getCloudinaryScript();
+
+      if (widgetRef.current) {
+        widgetRef.current.destroy();
+        widgetRef.current = null;
       }
-    } catch (error) {
-      console.error('Upload failed:', error);
+
+      const widget = window.cloudinary.createUploadWidget(
+        {
+          cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'cahan-academy',
+          apiKey: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY || '',
+          uploadSignature: async (callback: (sig: string) => void, paramsToSign: Record<string, unknown>) => {
+            try {
+              const { data } = await adminApi.post('/upload/signature', paramsToSign);
+              if (data.success) {
+                callback(data.data.signature);
+              }
+            } catch {
+              // signature failed
+            }
+          },
+          folder: 'cahan-academy',
+          sources: ['local', 'url', 'camera'],
+          multiple: false,
+          maxFileSize: 10000000,
+          clientAllowedFormats: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'],
+          styles: {
+            palette: {
+              window: '#1E293B',
+              windowBorder: '#334155',
+              tabIcon: '#F59E0B',
+              menuIcons: '#94A3B8',
+              textDark: '#F8FAFC',
+              textLight: '#CBD5E1',
+              link: '#F59E0B',
+              action: '#F59E0B',
+              inProgress: '#F59E0B',
+              complete: '#10B981',
+              error: '#EF4444',
+              sourceBg: '#0F172A',
+            },
+          },
+        },
+        (error: unknown, result: { event: string; info?: { secure_url: string } }) => {
+          if (result.event === 'success' && result.info) {
+            const url = result.info.secure_url;
+            onChange(url);
+            setPreview(url);
+            setIsUploading(false);
+          }
+          if (error || result.event === 'abort') {
+            setIsUploading(false);
+          }
+        }
+      );
+
+      widget.open();
+      widgetRef.current = widget;
+    } catch {
       alert('Fayl yükləmək mümkün olmadı.');
-    } finally {
       setIsUploading(false);
     }
   };
@@ -56,14 +92,19 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
   const clearImage = () => {
     onChange('');
     setPreview('');
-    setSelectedFile(null);
-    if (fileRef.current) fileRef.current.value = '';
+    if (widgetRef.current) {
+      widgetRef.current.destroy();
+      widgetRef.current = null;
+    }
   };
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000';
-  const resolvedPreview = preview && (preview.startsWith('blob:') || preview.startsWith('http') || preview.startsWith('/'))
-    ? (preview.startsWith('/') ? apiBase + preview : preview)
-    : preview;
+  const apiBase = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api';
+  const resolvedPreview =
+    preview && (preview.startsWith('blob:') || preview.startsWith('http') || preview.startsWith('/'))
+      ? preview.startsWith('/')
+        ? apiBase + preview
+        : preview
+      : preview;
 
   return (
     <div className="space-y-3">
@@ -102,44 +143,23 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
           />
         </div>
       ) : (
-        <div className="space-y-3">
-          <div className="flex items-center gap-3">
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*"
-              onChange={handleFileSelect}
-              className="hidden"
-              id="file-input"
-            />
-            <label
-              htmlFor="file-input"
-              className="flex items-center gap-2 px-4 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl cursor-pointer text-sm font-medium transition-colors"
-            >
-              <Upload size={18} /> Fayl Seç
-            </label>
-            {selectedFile && (
-              <span className="text-sm text-slate-400 truncate max-w-[200px]">{selectedFile.name}</span>
+        <div>
+          <button
+            type="button"
+            onClick={handleCloudinaryUpload}
+            disabled={isUploading}
+            className="flex items-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-xl text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isUploading ? (
+              <>
+                <Loader2 size={16} className="animate-spin" /> Yüklənir...
+              </>
+            ) : (
+              <>
+                <Upload size={16} /> Şəkil Yüklə
+              </>
             )}
-          </div>
-          {selectedFile && (
-            <button
-              type="button"
-              onClick={handleUpload}
-              disabled={isUploading}
-              className="flex items-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-xl text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isUploading ? (
-                <>
-                  <Loader2 size={16} className="animate-spin" /> Yüklənir...
-                </>
-              ) : (
-                <>
-                  <Upload size={16} /> Yüklə
-                </>
-              )}
-            </button>
-          )}
+          </button>
         </div>
       )}
 

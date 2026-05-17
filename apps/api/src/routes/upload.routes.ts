@@ -2,7 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { uploadFile } from '../controllers/upload.controller.js';
+import { uploadFile, generateSignature } from '../controllers/upload.controller.js';
 import { authMiddleware } from '../middleware/auth.middleware.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     const allowed = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
     const ext = path.extname(file.originalname).toLowerCase();
@@ -36,5 +36,6 @@ const upload = multer({
 const router = Router();
 
 router.post('/', authMiddleware, upload.single('file'), uploadFile);
+router.post('/signature', authMiddleware, generateSignature);
 
 export default router;

@@ -17,6 +17,9 @@ build
 .env.test.local
 .env.production.local
 
+# MCP (contains tokens)
+.mcp.json
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
