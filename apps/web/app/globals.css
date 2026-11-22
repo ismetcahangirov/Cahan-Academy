@@ -110,6 +110,7 @@
   --tex-lace-edge: url("/ornaments/lace-edge.webp");
   --tex-lace-edge-v: url("/ornaments/lace-edge-v.webp");
   --tex-bookmark: url("/ornaments/bookmark-ribbon.webp");
+  --tex-edel-corner: url("/ornaments/edel-corner.webp");
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -231,6 +232,7 @@
   --tex-lace-edge: url("/ornaments/lace-edge-dark.webp");
   --tex-lace-edge-v: url("/ornaments/lace-edge-v-dark.webp");
   --tex-bookmark: url("/ornaments/bookmark-ribbon-dark.webp");
+  --tex-edel-corner: url("/ornaments/edel-corner-dark.webp");
 
   --background: var(--page);
   --foreground: var(--ink);

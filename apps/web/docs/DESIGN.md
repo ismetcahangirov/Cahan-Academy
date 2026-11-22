@@ -125,6 +125,7 @@ Import from `@/components/ornament` (all server-component friendly, decorative, 
 | `OrnamentDivider` | under every `ScriptTitle` (built in), between long-text sections, in modals/footers | stacked dividers |
 | `CornerFlourish` / `OrnateFrame` | featured panels, stat tiles, teacher portraits, CTA panel, timelines | every row of a dense list |
 | `LaceEdge` (CSS bg strip) / `LaceCorner` (lazy img) | section **edges and corners** only (hero, wine bands, footer, drawer) | behind text/data, inside tables |
+| `EdelweissCorner` (CSS bg `--tex-edel-corner`, dark variant swaps in) | the four corners of the admin login (same artwork + sizes as the dashboard's auth pages) | behind text/data, mixed with lace on one surface |
 | `WaveEdge` | where two bands meet; `fill` = colour of the neighbour (`var(--paper-base)`/`var(--page-base)`), `invert` at the top of a band | more than one wave per join |
 | `DrapedRibbon` | hero corner, closing CTA, celebratory spots — max one per view region | list pages |
 | `BookmarkRibbon` | the ONE featured card in a view (`<Card variant="featured">`, `CourseCard featured`) | several per grid |
