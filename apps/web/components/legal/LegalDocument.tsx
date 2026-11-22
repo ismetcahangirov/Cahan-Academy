@@ -41,7 +41,7 @@ const EMAIL_RX = /([\w.+-]+@[\w-]+(?:\.[\w-]+)+)/g;
 function withLinks(text: string): ReactNode {
   return text.split(EMAIL_RX).map((part, i) =>
     i % 2 === 1 ? (
-      <a key={i} href={`mailto:${part}`} className="link break-all">
+      <a key={i} href={`mailto:${part}`} className="link break-words">
         {part}
       </a>
     ) : (

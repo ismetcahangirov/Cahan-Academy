@@ -7,7 +7,7 @@ import { getBlogPost, getBlogPosts } from '@/lib/api';
 import { SITE_URL, absoluteUrl, cn } from '@/lib/utils';
 import BlogCard from '@/components/cards/BlogCard';
 import CoverImage, { isRealImage } from '@/components/cards/CoverImage';
-import { OrnamentDivider, OrnateFrame, ScriptTitle, WaveEdge, WaxSeal } from '@/components/ornament';
+import { OrnamentDivider, OrnateFrame, ScriptTitle, WaxSeal } from '@/components/ornament';
 import { Button, Reveal } from '@/components/ui';
 import JsonLd from '@/components/seo/JsonLd';
 import ShareButton from '@/components/blog/ShareButton';
@@ -52,7 +52,7 @@ export async function generateStaticParams() {
 /*
  * Article: breadcrumb → serif title (data, never script) with small-caps label and italic meta →
  * cover in an ornate frame → long-form body (prose-ornate + article.module.css) → share / back →
- * wax seal → related posts on a parchment band.
+ * wax seal → related posts.
  * A-23: getBlogPost returns null only on 404; any other failure throws to the error boundary, so an
  * API blip during ISR keeps the last good page instead of caching a 404.
  */
@@ -202,8 +202,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       </article>
 
       {related.length > 0 && (
-        <section aria-labelledby="related-title" className="cv-auto paper relative pb-28 pt-24">
-          <WaveEdge invert fill="var(--page-base)" className="absolute inset-x-0 -top-px" />
+        <section aria-labelledby="related-title" className="cv-auto relative pb-24 pt-6">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <ScriptTitle id="related-title" align="center" size="section" title={t('related_posts')} />
             <Reveal as="ul" stagger className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -214,7 +213,6 @@ export default async function BlogPostPage({ params }: PageProps) {
               ))}
             </Reveal>
           </div>
-          <WaveEdge fill="var(--page-base)" className="absolute inset-x-0 -bottom-px" />
         </section>
       )}
     </>
