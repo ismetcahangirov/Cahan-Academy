@@ -268,6 +268,8 @@ python scripts/font-coverage.py                                        # only if
 npm run lint && npm run test --workspace=@academy/api && npm run build --workspace=@academy/web   # from the root
 ```
 
+`screenshots.mjs` and `color-audit.mjs` force `.cv-auto` sections to render (otherwise off-screen
+`content-visibility: auto` sections would be blank in full-page captures); `perf-probe.mjs` measures the real page.
 On Git Bash prefix route arguments with `MSYS_NO_PATHCONV=1` (otherwise `/` becomes `C:/Program Files/Git`).
 `admin:` routes log in to the mock API first (any email/password). Two `next dev` servers must not share one
 `apps/web/.next` — run one per worktree. Also check interactive states the screenshots miss (drawer, language menu,
