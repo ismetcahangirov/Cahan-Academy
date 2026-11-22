@@ -32,7 +32,6 @@ export default function ThemedImg({
   const common = {
     width,
     height,
-    alt,
     decoding: 'async' as const,
     loading: priority ? ('eager' as const) : ('lazy' as const),
     draggable: false,
@@ -43,9 +42,10 @@ export default function ThemedImg({
       className={cn('pointer-events-none block select-none', className)}
       style={style}
     >
-      <img src={`/ornaments/${name}.webp`} {...common} className={cn('block h-auto w-full dark:hidden', imgClassName)} />
+      <img src={`/ornaments/${name}.webp`} alt={alt} {...common} className={cn('block h-auto w-full dark:hidden', imgClassName)} />
       <img
         src={`/ornaments/${name}-dark.webp`}
+        alt={alt}
         {...common}
         className={cn('hidden h-auto w-full dark:block', imgClassName)}
       />
