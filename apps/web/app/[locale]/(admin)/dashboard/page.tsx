@@ -122,7 +122,7 @@ export default function DashboardPage() {
 
           <div className="mt-6 grid gap-6 lg:grid-cols-3">
             <Card variant="ornate" className="p-5 sm:p-6 lg:col-span-2">
-              <CardHeader title={t('dashboard.chart_title')} subtitle={t('dashboard.chart_subtitle')} />
+              <CardHeader as="h2" title={t('dashboard.chart_title')} subtitle={t('dashboard.chart_subtitle')} />
               {loading && !stats ? (
                 <Skeleton className="mt-4 h-64 w-full" />
               ) : chart.length === 0 ? (
@@ -184,7 +184,7 @@ export default function DashboardPage() {
           </div>
 
           <Card className="mt-6 p-5 sm:p-6">
-            <CardHeader title={t('dashboard.totals_title')} subtitle={t('dashboard.totals_subtitle')} />
+            <CardHeader as="h2" title={t('dashboard.totals_title')} subtitle={t('dashboard.totals_subtitle')} />
             {loading && !stats ? (
               <Skeleton className="mt-4 h-48 w-full" />
             ) : (

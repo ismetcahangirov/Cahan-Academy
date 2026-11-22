@@ -349,7 +349,7 @@
     ]
   },
   {
-    "path": "admin:/dashboard/faq",
+    "path": "admin:/dashboard/categories",
     "name": "toast",
     "actions": [
       "click=main button:has(svg.lucide-trash2)",

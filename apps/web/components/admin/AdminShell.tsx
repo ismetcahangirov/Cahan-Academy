@@ -93,15 +93,17 @@ export default function AdminShell({ children }: { children: ReactNode }) {
       }
       if (e.key !== 'Tab') return;
       const items = Array.from(asideRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []).filter(
-        (el) => el.offsetParent !== null
+        (el) => el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden'
       );
       if (!items.length) return;
       const first = items[0];
       const last = items[items.length - 1];
-      if (e.shiftKey && document.activeElement === first) {
+      // wrap at both ends, and pull focus back in if it is anywhere outside the drawer
+      const idx = items.indexOf(document.activeElement as HTMLElement);
+      if (e.shiftKey && idx <= 0) {
         e.preventDefault();
         last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
+      } else if (!e.shiftKey && (idx === -1 || idx === items.length - 1)) {
         e.preventDefault();
         first.focus();
       }
