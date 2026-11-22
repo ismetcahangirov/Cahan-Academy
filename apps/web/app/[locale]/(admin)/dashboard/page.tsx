@@ -1,206 +1,208 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
+import { ArrowRight, BookOpen, FileText, Mail, MessageSquare, RefreshCcw, Users } from 'lucide-react';
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import adminApi from '@/lib/adminApi';
-import { 
-  Users, 
-  Mail, 
-  FileText, 
-  MessageSquare, 
-  TrendingUp,
-  ArrowUpRight,
-  ArrowDownRight
-} from 'lucide-react';
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
-  AreaChart,
-  Area
-} from 'recharts';
+import { useAuth } from '@/context/AuthContext';
+import { Link } from '@/i18n/routing';
+import { Button, Card, CardHeader, EmptyState, Skeleton } from '@/components/ui';
+import { OrnateFrame, ScriptTitle } from '@/components/ornament';
+import { StatCard } from '@/components/admin/AdminUI';
+import { apiMessage, fmtDate } from '@/components/admin/utils';
 
 interface Stats {
-  counts: {
-    leads: number;
-    subscribers: number;
-    posts: number;
-    messages: number;
-  };
+  counts: { leads: number; subscribers: number; posts: number; messages: number };
   chartData: { date: string; count: number }[];
 }
 
+/* recharts, recoloured to the palette: one wine series, hairline grid, palette tooltip (no default hues) */
+const AXIS = { fill: 'var(--ink-muted)', fontSize: 13, fontFamily: 'var(--font-serif)' } as const;
+const TOOLTIP = {
+  contentStyle: {
+    background: 'var(--surface)',
+    border: '1px solid var(--line-strong)',
+    borderRadius: 'var(--radius-md)',
+    boxShadow: 'var(--shadow-md)',
+    color: 'var(--ink)',
+    fontFamily: 'var(--font-serif)',
+  },
+  labelStyle: { color: 'var(--ink-muted)', fontWeight: 600 },
+  itemStyle: { color: 'var(--accent-text)', fontWeight: 600 },
+  cursor: { stroke: 'var(--line-strong)', fill: 'var(--accent-soft)' },
+} as const;
+
 export default function DashboardPage() {
+  const t = useTranslations('admin');
+  const locale = useLocale();
+  const { user } = useAuth();
   const [stats, setStats] = useState<Stats | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const { data } = await adminApi.get('/admin/stats');
+      if (data.success) setStats(data.data);
+      else setError(data.message || t('common.load_error'));
+    } catch (e) {
+      setError(apiMessage(e, t('common.load_error')));
+    } finally {
+      setLoading(false);
+    }
+  }, [t]);
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const { data } = await adminApi.get('/admin/stats');
-        if (data.success) {
-          setStats(data.data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch stats:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchStats();
-  }, []);
+    void load();
+  }, [load]);
 
-  if (isLoading) {
-    return (
-      <div className="animate-pulse space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className="h-32 bg-slate-900 rounded-xl border border-slate-800"></div>
-          ))}
-        </div>
-        <div className="h-80 bg-slate-900 rounded-xl border border-slate-800"></div>
-      </div>
-    );
-  }
-
-  const statCards = [
-    { 
-      label: 'Cəmi Müraciət', 
-      value: stats?.counts.leads || 0, 
-      icon: Users, 
-      color: 'text-amber-500', 
-      bg: 'bg-amber-500/10',
-      trend: '+12%',
-      isPositive: true
-    },
-    { 
-      label: 'Abunəçilər', 
-      value: stats?.counts.subscribers || 0, 
-      icon: Mail, 
-      color: 'text-blue-500', 
-      bg: 'bg-blue-500/10',
-      trend: '+5%',
-      isPositive: true
-    },
-    { 
-      label: 'Məqalələr', 
-      value: stats?.counts.posts || 0, 
-      icon: FileText, 
-      color: 'text-emerald-500', 
-      bg: 'bg-emerald-500/10',
-      trend: '0%',
-      isPositive: true
-    },
-    { 
-      label: 'Mesajlar', 
-      value: stats?.counts.messages || 0, 
-      icon: MessageSquare, 
-      color: 'text-purple-500', 
-      bg: 'bg-purple-500/10',
-      trend: '-2%',
-      isPositive: false
-    },
+  const counts = stats?.counts;
+  const cards = [
+    { key: 'leads', label: t('dashboard.stat_leads'), value: counts?.leads ?? 0, icon: Users },
+    { key: 'subscribers', label: t('dashboard.stat_subscribers'), value: counts?.subscribers ?? 0, icon: Mail },
+    { key: 'posts', label: t('dashboard.stat_posts'), value: counts?.posts ?? 0, icon: FileText },
+    { key: 'messages', label: t('dashboard.stat_messages'), value: counts?.messages ?? 0, icon: MessageSquare },
   ];
+  const bars = cards.map((c) => ({ name: c.label, value: c.value }));
+  const chart = (stats?.chartData ?? []).map((d) => ({ ...d, label: fmtDate(d.date, locale) }));
+  const shortDate = (v: string) => fmtDate(v, locale).replace(/\s?\d{4}.*$/, '');
+
+  const links = [
+    { href: '/dashboard/leads', label: t('nav.leads'), icon: Users },
+    { href: '/dashboard/contacts', label: t('nav.contacts'), icon: MessageSquare },
+    { href: '/dashboard/courses', label: t('nav.courses'), icon: BookOpen },
+    { href: '/dashboard/blog', label: t('nav.blog'), icon: FileText },
+  ] as const;
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-white">Xoş gəldiniz!</h1>
-        <p className="text-slate-400 text-sm">Cahan Academy platformasının ümumi vəziyyəti</p>
-      </div>
+    <div>
+      <ScriptTitle
+        className="mb-6"
+        title={t('dashboard.title')}
+        subtitle={user ? t('dashboard.greeting', { name: user.name }) : t('dashboard.subtitle')}
+        actions={
+          <Button variant="ghost" iconOnly icon={RefreshCcw} onClick={load} disabled={loading} aria-label={t('common.refresh')} title={t('common.refresh')} />
+        }
+      />
 
-      {/* Stat Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statCards.map((stat, i) => (
-          <div key={i} className="bg-slate-900 p-6 rounded-xl border border-slate-800 hover:border-slate-700 transition-colors group">
-            <div className="flex items-start justify-between">
-              <div className={`p-2 rounded-lg ${stat.bg} ${stat.color}`}>
-                <stat.icon size={24} />
-              </div>
-              <div className={`flex items-center gap-1 text-xs font-medium ${stat.isPositive ? 'text-emerald-500' : 'text-red-500'}`}>
-                {stat.trend}
-                {stat.isPositive ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-              </div>
-            </div>
-            <div className="mt-4">
-              <h3 className="text-slate-400 text-sm font-medium">{stat.label}</h3>
-              <p className="text-2xl font-bold text-white mt-1">{stat.value}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+      {error && !stats ? (
+        <Card className="p-2">
+          <EmptyState
+            sketch="inkwell"
+            title={t('common.load_error_title')}
+            description={error}
+            action={
+              <Button variant="outline" icon={RefreshCcw} onClick={load}>
+                {t('common.retry')}
+              </Button>
+            }
+          />
+        </Card>
+      ) : (
+        <>
+          <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label={t('dashboard.stats_label')}>
+            {loading && !stats
+              ? [0, 1, 2, 3].map((i) => (
+                  <li key={i}>
+                    <Card className="p-5" aria-hidden="true">
+                      <Skeleton className="h-3 w-24" />
+                      <Skeleton className="mt-4 h-9 w-16" />
+                    </Card>
+                  </li>
+                ))
+              : cards.map((c) => (
+                  <li key={c.key}>
+                    <StatCard label={c.label} value={c.value} icon={c.icon} />
+                  </li>
+                ))}
+          </ul>
 
-      {/* Chart Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-slate-900 p-6 rounded-xl border border-slate-800">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-white font-semibold flex items-center gap-2">
-              <TrendingUp size={18} className="text-amber-500" />
-              Müraciət Dinamikası (Son 7 gün)
-            </h3>
-          </div>
-          <div className="h-80 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={stats?.chartData || []}>
-                <defs>
-                  <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
-                <XAxis 
-                  dataKey="date" 
-                  stroke="#64748b" 
-                  fontSize={12} 
-                  tickLine={false} 
-                  axisLine={false}
-                  tickFormatter={(val) => new Date(val).toLocaleDateString('az-AZ', { day: 'numeric', month: 'short' })}
-                />
-                <YAxis 
-                  stroke="#64748b" 
-                  fontSize={12} 
-                  tickLine={false} 
-                  axisLine={false}
-                  allowDecimals={false}
-                />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '8px' }}
-                  itemStyle={{ color: '#f59e0b' }}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="count" 
-                  stroke="#f59e0b" 
-                  strokeWidth={3}
-                  fillOpacity={1} 
-                  fill="url(#colorCount)" 
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="bg-slate-900 p-6 rounded-xl border border-slate-800">
-          <h3 className="text-white font-semibold mb-4">Son Fəallıq</h3>
-          <div className="space-y-4">
-            {[1, 2, 3, 4].map(i => (
-              <div key={i} className="flex items-start gap-3 pb-4 border-b border-slate-800 last:border-0">
-                <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-amber-500 shrink-0">
-                  <ArrowUpRight size={16} />
+          <div className="mt-6 grid gap-6 lg:grid-cols-3">
+            <Card variant="ornate" className="p-5 sm:p-6 lg:col-span-2">
+              <CardHeader title={t('dashboard.chart_title')} subtitle={t('dashboard.chart_subtitle')} />
+              {loading && !stats ? (
+                <Skeleton className="mt-4 h-64 w-full" />
+              ) : chart.length === 0 ? (
+                <EmptyState compact sketch="lamp" title={t('dashboard.chart_empty')} />
+              ) : (
+                <div className="mt-4 h-64 w-full" role="img" aria-label={t('dashboard.chart_title')}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={chart} margin={{ top: 8, right: 12, bottom: 0, left: -18 }}>
+                      <CartesianGrid stroke="var(--line-hair)" vertical={false} />
+                      <XAxis dataKey="date" tick={AXIS} tickLine={false} axisLine={{ stroke: 'var(--line)' }} tickFormatter={shortDate} />
+                      <YAxis tick={AXIS} tickLine={false} axisLine={false} allowDecimals={false} />
+                      <Tooltip {...TOOLTIP} labelFormatter={(v) => fmtDate(String(v), locale)} formatter={(v) => [v, t('dashboard.series_leads')]} />
+                      <Area
+                        type="monotone"
+                        dataKey="count"
+                        stroke="var(--accent-text)"
+                        strokeWidth={2.5}
+                        fill="var(--accent-soft)"
+                        fillOpacity={1}
+                        dot={{ r: 3.5, stroke: 'var(--accent-text)', strokeWidth: 1.5, fill: 'var(--surface)' }}
+                        activeDot={{ r: 5, stroke: 'var(--accent-text)', strokeWidth: 2, fill: 'var(--accent-text)' }}
+                        isAnimationActive={false}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
                 </div>
-                <div>
-                  <p className="text-sm text-slate-200">Yeni müraciət daxil oldu</p>
-                  <p className="text-xs text-slate-500 mt-1">2 dəqiqə əvvəl</p>
-                </div>
-              </div>
-            ))}
+              )}
+              {chart.length > 0 && (
+                <table className="sr-only">
+                  <caption>{t('dashboard.chart_title')}</caption>
+                  <tbody>
+                    {chart.map((d) => (
+                      <tr key={d.date}>
+                        <th scope="row">{d.label}</th>
+                        <td>{d.count}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </Card>
+
+            <OrnateFrame paper corners="diagonal" className="p-5 sm:p-6">
+              <h2 className="sc text-[0.95rem] tracking-[0.14em] text-ink-muted">{t('dashboard.quick_title')}</h2>
+              <ul className="mt-3 divide-y divide-[var(--line-hair)]">
+                {links.map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href} className="menu-item group min-h-12 justify-between rounded-none px-1">
+                      <span className="flex items-center gap-3">
+                        <l.icon size={18} strokeWidth={1.6} aria-hidden="true" className="text-ornament" />
+                        {l.label}
+                      </span>
+                      <ArrowRight size={16} strokeWidth={1.6} aria-hidden="true" className="text-ink-subtle" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </OrnateFrame>
           </div>
-        </div>
-      </div>
+
+          <Card className="mt-6 p-5 sm:p-6">
+            <CardHeader title={t('dashboard.totals_title')} subtitle={t('dashboard.totals_subtitle')} />
+            {loading && !stats ? (
+              <Skeleton className="mt-4 h-48 w-full" />
+            ) : (
+              <div className="mt-4 h-52 w-full" role="img" aria-label={t('dashboard.totals_title')}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={bars} margin={{ top: 8, right: 12, bottom: 0, left: -18 }}>
+                    <CartesianGrid stroke="var(--line-hair)" vertical={false} />
+                    <XAxis dataKey="name" tick={AXIS} tickLine={false} axisLine={{ stroke: 'var(--line)' }} />
+                    <YAxis tick={AXIS} tickLine={false} axisLine={false} allowDecimals={false} />
+                    <Tooltip {...TOOLTIP} />
+                    <Bar dataKey="value" fill="var(--accent-text)" radius={[4, 4, 0, 0]} maxBarSize={56} isAnimationActive={false} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </Card>
+        </>
+      )}
     </div>
   );
 }
