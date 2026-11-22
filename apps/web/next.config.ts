@@ -24,6 +24,8 @@ const nextConfig: NextConfig = {
     // (`example.com` was removed: no stored record uses it — checked against the production API
     // on 2026-11-22 — and placeholder images must be replaced by local artwork anyway.)
     remotePatterns: [
+      // Local mock API images (scripts/mock-api.mjs) — only on a developer machine, never on Vercel.
+      ...(process.env.VERCEL ? [] : [{ protocol: 'http' as const, hostname: 'localhost' }]),
       { protocol: 'https', hostname: '**.cloudinary.com' },
       { protocol: 'https', hostname: '**.unsplash.com' },
     ],

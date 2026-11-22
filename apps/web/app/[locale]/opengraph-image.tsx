@@ -1,123 +1,21 @@
-import { ImageResponse } from 'next/og';
-import { SITE_URL } from '@/lib/utils';
-
-// Brand colours only (#5C000E, white, black and their mixes). The domain shown is the canonical one.
-const SITE_HOST = new URL(SITE_URL).host;
+import { OG_SIZE, ogCard } from '@/components/seo/ogCard';
 
 export const runtime = 'edge';
-
-export const alt = 'Cahan Academy - Professional Technology Education';
-export const size = {
-  width: 1200,
-  height: 630,
-};
-
+export const alt = 'Cahan Academy';
+export const size = OG_SIZE;
 export const contentType = 'image/png';
 
-export default async function Image({ params }: { params: { locale: string } }) {
-  const { locale } = params;
+// Inline copy (edge runtime, no message bundle): the same card as course / teacher / blog pages.
+const COPY: Record<string, { eyebrow: string; text: string }> = {
+  az: { eyebrow: 'Akademiya', text: 'Peşəkar texnologiya təhsili' },
+  en: { eyebrow: 'Academy', text: 'Professional tech education' },
+  ru: { eyebrow: 'Академия', text: 'Профессиональное ИТ-образование' },
+};
 
-  // Tərcümə mətnləri (Hardcoded here for performance in edge runtime)
-  const texts: any = {
-    az: { title: 'Cahan Academy', subtitle: 'Peşəkar Texnologiya Təhsili' },
-    en: { title: 'Cahan Academy', subtitle: 'Professional Tech Education' },
-    ru: { title: 'Cahan Academy', subtitle: 'Профессиональное ИТ-образование' },
-  };
+type Params = { locale: string };
 
-  const { title, subtitle } = texts[locale] || texts.az;
-
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          background: '#5C000E', // Bordo
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontFamily: 'sans-serif',
-          position: 'relative',
-          padding: '80px',
-        }}
-      >
-        {/* Dekorativ Qızılı Çərçivə */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '40px',
-            left: '40px',
-            right: '40px',
-            bottom: '40px',
-            border: '4px solid #EBE0E2', // Qızılı
-            borderRadius: '20px',
-            opacity: 0.5,
-          }}
-        />
-
-        {/* Logo Placeholder / İkon */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: '#EBE0E2',
-            color: '#5C000E',
-            width: '100px',
-            height: '100px',
-            borderRadius: '20px',
-            fontSize: '60px',
-            fontWeight: 'bold',
-            marginBottom: '40px',
-            boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
-          }}
-        >
-          C
-        </div>
-
-        <h1
-          style={{
-            fontSize: '80px',
-            fontWeight: 'bold',
-            color: '#FFFFFF',
-            margin: 0,
-            textAlign: 'center',
-          }}
-        >
-          {title}
-        </h1>
-        
-        <p
-          style={{
-            fontSize: '32px',
-            color: '#EBE0E2',
-            margin: '20px 0 0 0',
-            textAlign: 'center',
-            fontWeight: 'normal',
-          }}
-        >
-          {subtitle}
-        </p>
-
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '80px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            color: '#FFFFFF',
-            opacity: 0.8,
-            fontSize: '24px',
-          }}
-        >
-          <span>{SITE_HOST}</span>
-        </div>
-      </div>
-    ),
-    {
-      ...size,
-    }
-  );
+export default async function Image({ params }: { params: Params | Promise<Params> }) {
+  const { locale } = await params;
+  const c = COPY[locale] ?? COPY.az;
+  return ogCard({ eyebrow: c.eyebrow, title: 'Cahan Academy', text: c.text });
 }
