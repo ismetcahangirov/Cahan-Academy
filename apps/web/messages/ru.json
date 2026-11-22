@@ -102,7 +102,11 @@
     "about_description": "Подробная информация о Cahan Academy, нашей миссии и нашей команде.",
     "contact_title": "Контакты — Cahan Academy",
     "contact_description": "Есть вопросы? Свяжитесь с нами, наша команда ответит вам как можно скорее.",
-    "faq_title": "Частые вопросы — Cahan Academy"
+    "faq_title": "Частые вопросы — Cahan Academy",
+    "privacy_title": "Политика конфиденциальности — Cahan Academy",
+    "privacy_description": "Политика конфиденциальности Cahan Academy и информация о защите данных.",
+    "terms_title": "Условия использования — Cahan Academy",
+    "terms_description": "Условия и правила использования сайта Cahan Academy."
   },
   "courses": {
     "page_title": "Все Курсы",
