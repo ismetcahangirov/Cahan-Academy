@@ -22,10 +22,10 @@ export default function HeroSection() {
 
   return (
     <section aria-labelledby="hero-title" className="theme-wine hero-wine relative isolate overflow-hidden">
-      <LaceCorner corner="tl" priority className="absolute left-0 top-0 w-32 sm:w-48 lg:w-64" />
-      <LaceCorner corner="tr" priority className="absolute right-0 top-0 hidden w-48 sm:block lg:w-64" />
+      <LaceCorner corner="tl" priority onWine className="absolute left-0 top-0 w-32 sm:w-48 lg:w-64" />
+      <LaceCorner corner="tr" priority onWine className="absolute right-0 top-0 hidden w-48 sm:block lg:w-64" />
       <div className="pointer-events-none absolute -right-10 -top-6 w-56 sm:-right-6 sm:w-80 lg:right-4 lg:w-[26rem]">
-        <DrapedRibbon priority className="orn-sway w-full" />
+        <DrapedRibbon priority onWine className="orn-sway w-full" />
       </div>
       <SketchIllustration name="books" className="absolute bottom-24 left-[4%] hidden w-40 xl:block" />
       <SketchIllustration name="globe" className="absolute bottom-28 right-[5%] hidden w-32 xl:block" />
@@ -64,7 +64,7 @@ export default function HeroSection() {
         <LaceEdge direction="up" size={26} className="relative -mb-9 md:-mb-12" />
         <WaveEdge fill="var(--paper-base)" className="relative -mb-px" />
       </div>
-      <WaxSeal size={88} priority className="absolute bottom-1 left-1/2 z-[2] -translate-x-1/2 md:bottom-3" />
+      <WaxSeal size={88} priority onWine className="absolute bottom-1 left-1/2 z-[2] -translate-x-1/2 md:bottom-3" />
     </section>
   );
 }

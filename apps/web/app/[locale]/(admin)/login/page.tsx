@@ -67,7 +67,7 @@ export default function LoginPage() {
     <div className="grid min-h-screen bg-page lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
       {/* wine panel */}
       <section className="theme-wine hero-wine relative flex flex-col items-center justify-center overflow-hidden px-6 py-10 text-center lg:min-h-screen lg:py-16">
-        <LaceCorner corner="tl" className="absolute left-0 top-0 w-24 sm:w-32 lg:w-44" priority />
+        <LaceCorner corner="tl" className="absolute left-0 top-0 w-24 sm:w-32 lg:w-44" priority onWine />
         <LaceCorner corner="br" className="absolute bottom-0 right-0 hidden w-32 lg:block lg:w-44" />
         <DrapedRibbon className="orn-sway pointer-events-none absolute -right-10 -top-6 hidden w-56 lg:block xl:w-64" />
 

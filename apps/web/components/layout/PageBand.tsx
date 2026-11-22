@@ -57,8 +57,8 @@ export default async function PageBand({
   return (
     <div className={cn('relative', className)}>
       <section aria-labelledby={id} className="theme-wine hero-wine relative isolate overflow-hidden">
-        <LaceCorner corner="tl" priority className="absolute left-0 top-0 w-20 sm:w-36 lg:w-44" />
-        <LaceCorner corner="tr" priority className="absolute right-0 top-0 w-20 sm:w-36 lg:w-44" />
+        <LaceCorner corner="tl" priority onWine className="absolute left-0 top-0 w-20 sm:w-36 lg:w-44" />
+        <LaceCorner corner="tr" priority onWine className="absolute right-0 top-0 w-20 sm:w-36 lg:w-44" />
         <div
           className={cn(
             'relative mx-auto max-w-3xl px-4 pt-8 text-center sm:px-6 sm:pt-12 lg:px-8',

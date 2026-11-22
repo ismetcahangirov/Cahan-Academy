@@ -132,8 +132,8 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
       {/* ── Hero: wine band, framed cover with the bookmark ribbon ─────────────────────────────── */}
       <section className="theme-wine hero-wine relative isolate overflow-hidden">
-        <LaceCorner corner="tl" priority className="absolute left-0 top-0 w-20 sm:w-32 lg:w-44" />
-        <LaceCorner corner="tr" priority className="absolute right-0 top-0 hidden w-32 sm:block lg:w-44" />
+        <LaceCorner corner="tl" priority onWine className="absolute left-0 top-0 w-20 sm:w-32 lg:w-44" />
+        <LaceCorner corner="tr" priority onWine className="absolute right-0 top-0 hidden w-32 sm:block lg:w-44" />
 
         <div className="relative mx-auto max-w-7xl px-4 pb-24 pt-8 sm:px-6 sm:pb-28 sm:pt-10 lg:px-8">
           <Breadcrumbs

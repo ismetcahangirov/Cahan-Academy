@@ -7,6 +7,8 @@ import { cn } from '@/lib/utils';
  * Renders two <img> elements; the hidden one is `display:none`, and with loading="lazy" the browser
  * never downloads it. `dark:` also matches inside `.theme-wine` panels, so the on-dark art is used there.
  * Width/height are intrinsic pixel sizes (reserve the box, no CLS); size the element with classes.
+ * `onWine`: the art sits on a `.theme-wine` panel, where the dark variant always shows — render only that
+ * one. Matters for `priority` art: an eager `display:none` image is still downloaded (hero: −170 KB).
  */
 export default function ThemedImg({
   name,
@@ -15,6 +17,7 @@ export default function ThemedImg({
   className,
   imgClassName,
   priority = false,
+  onWine = false,
   alt = '',
   style,
 }: {
@@ -26,6 +29,8 @@ export default function ThemedImg({
   imgClassName?: string;
   /** above-the-fold art: eager load instead of lazy */
   priority?: boolean;
+  /** inside .theme-wine: only the dark variant exists there */
+  onWine?: boolean;
   alt?: string;
   style?: CSSProperties;
 }) {
@@ -42,12 +47,14 @@ export default function ThemedImg({
       className={cn('pointer-events-none block select-none', className)}
       style={style}
     >
-      <img src={`/ornaments/${name}.webp`} alt={alt} {...common} className={cn('block h-auto w-full dark:hidden', imgClassName)} />
+      {!onWine && (
+        <img src={`/ornaments/${name}.webp`} alt={alt} {...common} className={cn('block h-auto w-full dark:hidden', imgClassName)} />
+      )}
       <img
         src={`/ornaments/${name}-dark.webp`}
         alt={alt}
         {...common}
-        className={cn('hidden h-auto w-full dark:block', imgClassName)}
+        className={cn(onWine ? 'block h-auto w-full' : 'hidden h-auto w-full dark:block', imgClassName)}
       />
     </span>
   );

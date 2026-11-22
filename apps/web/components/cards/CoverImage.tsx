@@ -50,7 +50,7 @@ export default function CoverImage({
           />
         ) : (
           <div className="absolute inset-0 p-[12%]">
-            <SketchIllustration name={sketch} className="h-full w-full" imgClassName="!h-full object-contain" />
+            <SketchIllustration name={sketch} priority={priority} className="h-full w-full" imgClassName="!h-full object-contain" />
           </div>
         )}
       </div>

@@ -38,11 +38,14 @@ export function DrapedRibbon({
   className = 'w-64',
   flip = false,
   priority = false,
+  onWine = false,
   style,
 }: {
   className?: string;
   flip?: boolean;
   priority?: boolean;
+  /** on a .theme-wine panel: ship only the dark variant (see ThemedImg) */
+  onWine?: boolean;
   style?: CSSProperties;
 }) {
   return (
@@ -51,6 +54,7 @@ export function DrapedRibbon({
       width={720}
       height={486}
       priority={priority}
+      onWine={onWine}
       className={cn('aspect-[720/486]', className)}
       style={{ transform: flip ? 'scaleX(-1)' : undefined, ...style }}
     />
