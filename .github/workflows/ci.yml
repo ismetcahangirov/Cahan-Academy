@@ -42,6 +42,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Colour law (static, fails only for files not in apps/web/scripts/color-lint-pending.txt)
+        run: node apps/web/scripts/color-lint.mjs
+
       - name: Backend Tests
         run: npm run test --workspace=@academy/api
         env:
