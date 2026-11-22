@@ -1,130 +1,70 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { ArrowRight, ChevronDown } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import { ArrowRight, Play } from 'lucide-react';
-import Image from 'next/image';
+import { LaceCorner, LaceEdge } from '../ornament/Lace';
+import { DrapedRibbon } from '../ornament/Ribbons';
+import OrnamentDivider from '../ornament/OrnamentDivider';
+import SketchIllustration from '../ornament/SketchIllustration';
+import WaveEdge from '../ornament/WaveEdge';
+import WaxSeal from '../ornament/WaxSeal';
+import { EdelweissGlyph } from '../ornament/Edelweiss';
+import Button from '../ui/Button';
 
+/**
+ * Home hero — the full reference composition: deep wine band (same in both themes) with lace corners,
+ * a satin ribbon draped over the top-right corner, a centred script title, small-caps eyebrow, serif lead,
+ * two CTAs, engraved sketches at the sides (desktop), then lace + a wave into the parchment section with
+ * the wax seal pressed on the join. Server component; entrance = one-shot CSS (no JS, no blank state).
+ */
 export default function HeroSection() {
   const t = useTranslations('hero');
+  const th = useTranslations('home');
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-foreground via-foreground/95 to-primary/80" />
+    <section aria-labelledby="hero-title" className="theme-wine hero-wine relative isolate overflow-hidden">
+      <LaceCorner corner="tl" priority onWine className="absolute left-0 top-0 w-32 sm:w-48 lg:w-64" />
+      <LaceCorner corner="tr" priority onWine className="absolute right-0 top-0 hidden w-48 sm:block lg:w-64" />
+      <div className="pointer-events-none absolute -right-10 -top-6 w-56 sm:-right-6 sm:w-80 lg:right-4 lg:w-[26rem]">
+        <DrapedRibbon priority onWine className="orn-sway w-full" />
+      </div>
+      <SketchIllustration name="books" className="absolute bottom-24 left-[4%] hidden w-40 xl:block" />
+      <SketchIllustration name="globe" className="absolute bottom-28 right-[5%] hidden w-32 xl:block" />
 
-      {/* Decorative circles */}
-      <div className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full bg-primary/20 blur-3xl" />
-      <div className="absolute bottom-1/4 left-1/4 w-64 h-64 rounded-full bg-secondary/15 blur-3xl" />
-
-      {/* Grid pattern */}
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: 'linear-gradient(rgba(255,255,255,.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.3) 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
-        }}
-      />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
-        <div className="flex flex-col lg:flex-row items-center gap-16">
-          <div className="flex-1">
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-secondary/40 bg-secondary/10 text-secondary text-sm font-medium mb-8"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
-                {t('badge')}
-            </motion.div>
-
-            {/* Heading */}
-            <motion.h1
-              className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            >
-              {t('title').split(' ').slice(0, -1).join(' ')}{' '}
-              <span className="text-secondary">{t('title').split(' ').slice(-1)}</span>
-            </motion.h1>
-
-            {/* Subtitle */}
-            <motion.p
-              className="text-white/70 text-lg sm:text-xl leading-relaxed mb-10 max-w-2xl"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              {t('subtitle')}
-            </motion.p>
-
-            {/* CTAs */}
-            <motion.div
-              className="flex flex-col sm:flex-row gap-4"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <Link
-                href="/courses"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary text-white rounded-xl font-semibold text-base hover:bg-primary/90 active:scale-95 transition-all shadow-lg shadow-primary/30"
-              >
-                {t('cta_primary')}
-                <ArrowRight size={18} />
-              </Link>
-              <button className="inline-flex items-center justify-center gap-2.5 px-8 py-4 border border-white/20 text-white rounded-xl font-semibold text-base hover:bg-white/10 active:scale-95 transition-all">
-                <div className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center">
-                  <Play size={12} fill="white" />
-                </div>
-                  {t('view_video')}
-              </button>
-            </motion.div>
-          </div>
-
-          {/* Hero Image */}
-          <motion.div 
-            className="flex-1 relative hidden lg:block"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            <div className="relative w-full aspect-square">
-              {/* Decorative rings */}
-              <div className="absolute inset-0 rounded-full border border-white/10 animate-[spin_20s_linear_infinite]" />
-              <div className="absolute inset-8 rounded-full border border-secondary/20 animate-[spin_15s_linear_infinite_reverse]" />
-              
-              <div className="absolute inset-12 rounded-3xl overflow-hidden shadow-2xl shadow-black/50 rotate-3 group">
-                <Image 
-                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1200"
-                  alt={t('enroll')}
-                  fill
-                  priority
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-              </div>
-
-              {/* Floating cards */}
-              <div className="absolute top-0 right-0 bg-white/10 backdrop-blur-xl border border-white/20 p-4 rounded-2xl shadow-xl animate-bounce">
-                 <div className="flex items-center gap-3">
-                   <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-white font-bold">5K+</div>
-                   <div className="text-[10px] text-white/80 font-medium">{t('graduates')}</div>
-                 </div>
-              </div>
-            </div>
-          </motion.div>
+      <div className="relative mx-auto flex min-h-[min(46rem,calc(100svh-var(--header-h)))] max-w-4xl flex-col items-center justify-center px-5 pb-36 pt-28 text-center sm:px-8 sm:pt-32">
+        <p className="sc orn-rise flex items-center gap-2 text-[0.82rem] text-ink-muted sm:text-[0.9rem]">
+          <EdelweissGlyph className="hidden h-3.5 w-3.5 text-ornament sm:block" />
+          {t('badge')}
+          <EdelweissGlyph className="hidden h-3.5 w-3.5 text-ornament sm:block" />
+        </p>
+        <h1 id="hero-title" className="script-title orn-rise mt-5 text-[3.3rem] leading-[1.04] sm:text-[4.6rem] lg:text-[5.6rem]">
+          {t('title')}
+        </h1>
+        <OrnamentDivider className="mt-5" />
+        <p className="orn-rise mt-6 max-w-2xl text-[1.15rem] leading-relaxed text-ink-muted sm:text-[1.25rem]">
+          {t('subtitle')}
+        </p>
+        <div className="orn-rise mt-9 flex w-full flex-col items-stretch justify-center gap-3 sm:w-auto sm:flex-row sm:items-center">
+          <Button as={Link} href="/courses" size="lg" iconAfter={ArrowRight}>
+            {t('cta_primary')}
+          </Button>
+          <Button as={Link} href="/contact" variant="outline" size="lg">
+            {t('cta_secondary')}
+          </Button>
         </div>
+        <a
+          href="#academy"
+          className="sc mt-12 hidden flex-col items-center gap-1 text-[0.78rem] text-ink-muted transition-colors hover:text-ink sm:flex"
+        >
+          {th('hero_scroll')}
+          <ChevronDown size={18} strokeWidth={1.4} aria-hidden="true" />
+        </a>
       </div>
 
-      {/* Bottom wave */}
-      <div className="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0 80L1440 80L1440 40C1080 80 720 0 360 40L0 0L0 80Z" fill="var(--background)" />
-        </svg>
+      <div className="pointer-events-none absolute inset-x-0 bottom-0">
+        <LaceEdge direction="up" size={26} className="relative -mb-9 md:-mb-12" />
+        <WaveEdge fill="var(--paper-base)" className="relative -mb-px" />
       </div>
+      <WaxSeal size={88} priority onWine className="absolute bottom-1 left-1/2 z-[2] -translate-x-1/2 md:bottom-3" />
     </section>
   );
 }

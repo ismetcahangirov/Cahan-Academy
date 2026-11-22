@@ -7,8 +7,14 @@ dotenv.config();
 const sql = neon(process.env.DATABASE_URL!);
 
 async function seedAdmin() {
-  const email    = process.env.ADMIN_EMAIL    ?? 'admin@cahanacademy.az';
-  const password = process.env.ADMIN_PASSWORD ?? 'CahanAdmin2026!';
+  const email    = process.env.ADMIN_EMAIL;
+  const password = process.env.ADMIN_PASSWORD;
+
+  // No default password any more (it was committed to the repo) and the password is never printed.
+  if (!email || !password || password.length < 12) {
+    console.error('ADMIN_EMAIL və ADMIN_PASSWORD (ən azı 12 simvol) mühit dəyişənləri tələb olunur.');
+    process.exit(1);
+  }
 
   const passwordHash = await bcrypt.hash(password, 12);
 
@@ -19,8 +25,6 @@ async function seedAdmin() {
   `;
 
   console.log(`✅ Admin yaradıldı: ${email}`);
-  console.log(`🔑 Şifrə: ${password}`);
-  console.log('⚠️  Şifrəni mühit dəyişənindən oxuyun. Default şifrəni dəyişin!');
   process.exit(0);
 }
 

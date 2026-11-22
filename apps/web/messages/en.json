@@ -13,10 +13,7 @@
     "subtitle": "Advance your career to the next level with professional instructors, practical lessons, and certified programs.",
     "cta_primary": "View Courses",
     "cta_secondary": "Apply Now",
-    "badge": "No. 1 Professional Academy in Azerbaijan",
-    "view_video": "Watch Video",
-    "graduates": "Graduates",
-    "enroll": "Enroll Now"
+    "badge": "No. 1 Professional Academy in Azerbaijan"
   },
   "stats": {
     "students": "Students",
@@ -33,7 +30,31 @@
     "message": "Message",
     "send": "Send",
     "success": "Your request has been received. We will contact you shortly.",
-    "error": "An error occurred. Please try again."
+    "error": "An error occurred. Please try again.",
+    "eyebrow": "Write to us",
+    "lead": "Have a question? Get in touch and our team will reply as soon as possible.",
+    "form_title": "Send a message",
+    "form_hint": "All fields are required.",
+    "info_title": "Find us",
+    "info_lead": "Call, write, or visit the academy.",
+    "address_label": "Address",
+    "address_value": "12 Nizami St., Baku",
+    "map_link": "Open in maps",
+    "hours_label": "Opening hours",
+    "hours_week": "Monday – Saturday: 09:00 – 18:00",
+    "hours_sunday": "Sunday: closed",
+    "ph_name": "e.g. Ali Aliyev",
+    "ph_email": "name@mail.com",
+    "ph_subject": "What is it about?",
+    "ph_message": "Write your message here…",
+    "err_name": "Name must be at least 2 characters",
+    "err_email": "Enter a valid email address",
+    "err_subject": "Subject must be at least 3 characters",
+    "err_message": "Message must be at least 10 characters",
+    "err_too_long": "The text is too long",
+    "success_title": "Thank you",
+    "send_another": "Send another message",
+    "error_title": "The message was not sent"
   },
   "enroll": {
     "title": "Enroll in a Course",
@@ -43,20 +64,39 @@
     "course": "Select a course",
     "submit": "Apply",
     "success": "Your registration has been received. We will contact you soon.",
-    "error": "An error occurred. Please try again."
+    "error": "An error occurred. Please try again.",
+    "err_name": "Your name must be at least 2 characters",
+    "err_email": "Enter a valid email address",
+    "err_phone": "Enter a valid phone number",
+    "name_placeholder": "Your full name",
+    "email_placeholder": "name@mail.com",
+    "phone_placeholder": "+994 50 000 00 00",
+    "phone_hint": "We will contact you on this number",
+    "errors_summary": "Some fields need your attention.",
+    "error_rate": "Too many requests. Please try again in a few minutes.",
+    "success_title": "Thank you",
+    "success_again": "Send another request"
   },
   "newsletter": {
     "title": "Stay Up to Date",
     "placeholder": "Your email address",
-    "subscribe": "Subscribe",
     "button": "Subscribe",
     "success": "Your subscription has been confirmed!",
-    "error": "An error occurred."
+    "error": "An error occurred.",
+    "invalid_email": "Enter a valid email address"
   },
   "footer": {
     "rights": "All rights reserved.",
     "privacy": "Privacy Policy",
-    "terms": "Terms of Use"
+    "terms": "Terms of Use",
+    "tagline": "Move your career forward with professional teachers, practical lessons and certified programmes.",
+    "links_title": "Links",
+    "legal_title": "Legal",
+    "contact_title": "Contact",
+    "newsletter_text": "Be the first to hear about education news and discounts.",
+    "address": "Baku, Azerbaijan",
+    "social_label": "Social media",
+    "made_in": "Made in Azerbaijan"
   },
   "meta": {
     "home_title": "Cahan Academy — Professional Education Center",
@@ -70,7 +110,6 @@
     "about_description": "Detailed information about Cahan Academy, our mission and our team.",
     "contact_title": "Contact — Cahan Academy",
     "contact_description": "Have questions? Contact us, our team will respond to you as soon as possible.",
-    "faq_title": "FAQ — Cahan Academy",
     "privacy_title": "Privacy Policy — Cahan Academy",
     "privacy_description": "Information about Cahan Academy privacy policy and data protection.",
     "terms_title": "Terms of Use — Cahan Academy",
@@ -90,20 +129,18 @@
     "level_advanced": "Advanced",
     "level_all": "All Levels",
     "students": "students",
-    "duration": "duration",
-    "loading": "Loading..."
+    "duration": "duration"
   },
   "teachers": {
     "badge": "Our Team",
     "page_title": "Our Teachers",
     "page_description": "Meet our team of professional and experienced experts. Each teacher has years of experience in their field.",
     "search_placeholder": "Search teachers...",
-    "stat_teachers": "Teachers",
-    "stat_experts": "Highly qualified experts",
     "no_results_title": "No teachers found",
     "no_results_desc": "There are no teachers matching your search criteria.",
     "clear_search": "Clear search",
-    "back_to_list": "Back to all teachers"
+    "back_to_list": "Back to all teachers",
+    "view_profile": "View profile"
   },
   "blog": {
     "hero_badge": "News",
@@ -116,7 +153,21 @@
     "author_label": "Author",
     "share": "Share",
     "related_posts": "Related posts",
-    "back_to_blog": "Back to all articles"
+    "back_to_blog": "Back to all articles",
+    "search_label": "Search articles",
+    "clear_search": "Clear search",
+    "results_count": "{count, plural, one {# article} other {# articles}}",
+    "no_results_desc": "Try another word or clear the search.",
+    "empty_title": "Nothing here yet",
+    "empty_desc": "The first articles will appear here soon.",
+    "error_title": "A little later",
+    "error_desc": "The articles could not be loaded right now. Please try again in a moment.",
+    "latest_label": "Latest article",
+    "article_label": "Blog article",
+    "breadcrumb_label": "Breadcrumb",
+    "link_copied": "Link copied",
+    "reading_time": "Reading time",
+    "published_on": "Published"
   },
   "about": {
     "badge": "About Us",
@@ -139,27 +190,224 @@
     "value_student_desc": "Our graduates finding jobs and growing is our top priority.",
     "team_title": "Our Professional Team",
     "team_subtitle": "Field experts working to provide you with the best education.",
-    "all_teachers": "All teachers"
+    "all_teachers": "All teachers",
+    "history_eyebrow": "Our story",
+    "history_step1": "The beginning",
+    "history_step2": "Today",
+    "history_step3": "Tomorrow",
+    "mission_eyebrow": "Why we exist",
+    "values_eyebrow": "What unites us",
+    "team_eyebrow": "The people of the academy",
+    "team_empty_title": "Coming soon",
+    "team_empty_desc": "Our team will be introduced here soon. Meanwhile, meet our teachers.",
+    "team_error_title": "A little later",
+    "team_error_desc": "The team list could not be loaded right now. Please check back shortly, or meet our teachers."
   },
   "faq": {
     "badge": "Have Questions?",
     "title": "Frequently Asked Questions",
     "description": "Find answers to the most common questions about our academy, courses, and registration process.",
     "meta_title": "Frequently Asked Questions | Cahan Academy",
-    "meta_description": "Frequently asked questions and answers about Cahan Academy."
+    "meta_description": "Frequently asked questions and answers about Cahan Academy.",
+    "still_title": "Still wondering?",
+    "still_desc": "If your answer is not here, write to us and our team will reply.",
+    "still_cta": "Write to us",
+    "fallback": [
+      {
+        "q": "How do I enrol in a course?",
+        "a": "Press “Enroll Now” on the course page and fill in the form. Our team will get in touch with you."
+      },
+      {
+        "q": "Where can I find a course’s price and duration?",
+        "a": "Each course page shows its price, duration and level. For anything else, write to us through the contact form."
+      },
+      {
+        "q": "Where can I learn about the teachers?",
+        "a": "The “Teachers” section has a profile for every teacher, with their field and the courses they teach."
+      },
+      {
+        "q": "How can I contact you?",
+        "a": "Fill in the form on the “Contact” page, or use the phone number and e-mail address listed there."
+      }
+    ]
   },
   "legal": {
     "privacy_policy_title": "Privacy Policy",
     "terms_of_use_title": "Terms of Use",
     "last_updated": "Last updated",
-    "privacy_content": "At Cahan Academy, your privacy is important to us. This document explains how your data is collected and protected...",
-    "terms_content": "By using this website, you agree to the following terms and conditions..."
+    "eyebrow": "Legal information",
+    "toc": "Contents",
+    "see_also": "See also",
+    "privacy_lead": "At Cahan Academy, your privacy matters to us. This document explains how your data is collected and protected.",
+    "terms_lead": "By using this website, you accept the terms below.",
+    "privacy_sections": [
+      {
+        "title": "Data we collect",
+        "body": "We collect the information you provide (name, email, phone) when you register on our website, enrol in a course or fill in the contact form."
+      },
+      {
+        "title": "Why we use it",
+        "body": "The collected information is used to provide educational services, to contact you and to improve the quality of our service."
+      },
+      {
+        "title": "Security",
+        "body": "To keep your data safe we use modern encryption technologies and server security protocols."
+      },
+      {
+        "title": "Contact",
+        "body": "If you have any questions about this privacy policy, you can contact us at: info@cahanacademy.az"
+      }
+    ],
+    "terms_sections": [
+      {
+        "title": "General terms",
+        "body": "By using the Cahan Academy website you confirm that you agree to all of these terms. If you do not agree with them, please stop using the service."
+      },
+      {
+        "title": "Copyright",
+        "body": "All materials on the website (texts, videos, logos) belong to Cahan Academy and may not be copied without permission."
+      },
+      {
+        "title": "Acceptable use",
+        "body": "Users may use the services only for lawful purposes and must not do anything that interferes with the operation of the site."
+      },
+      {
+        "title": "Changes",
+        "body": "We reserve the right to change these terms at any time. Changes take effect from the moment they are published on the site."
+      }
+    ]
   },
   "cookie": {
-    "title": "Cookie Notice",
-    "description": "We use cookies to provide you with a better service. By continuing to use our site, you accept this.",
+    "title": "Cookies",
+    "description": "We use cookies so the site works properly and to improve our service. By continuing to use the site, you agree to this.",
     "accept": "Accept",
     "decline": "Decline",
-    "learn_more": "Learn more"
+    "close": "Close notice"
+  },
+  "common": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "menu_open": "Open menu",
+    "menu_close": "Close menu",
+    "skip_to_content": "Skip to main content",
+    "language": "Language",
+    "main_nav": "Main navigation",
+    "home": "Home",
+    "breadcrumb_label": "Breadcrumb",
+    "pagination_label": "Pages",
+    "prev": "Previous",
+    "next": "Next",
+    "page": "Page {page}",
+    "page_status": "Page {page} of {total}",
+    "error": "Something went wrong. Please try again."
+  },
+  "theme": {
+    "toggle": "Switch between light and dark theme",
+    "dark": "Dark theme"
+  },
+  "home": {
+    "hero_scroll": "Scroll down",
+    "stats_title": "The academy in numbers",
+    "features_eyebrow": "Why us?",
+    "features_title": "Our strengths",
+    "features_lead": "Not just a course — an experience that changes careers.",
+    "f1_title": "Certified programmes",
+    "f1_desc": "Strengthen your career with certificates that follow international standards.",
+    "f2_title": "Practical approach",
+    "f2_desc": "Learn through real projects and hands-on tasks, not theory alone.",
+    "f3_title": "Personal mentoring",
+    "f3_desc": "One-to-one mentoring sessions and ongoing support from professional teachers.",
+    "f4_title": "Strong community",
+    "f4_desc": "Connect with 1200+ students, exchange ideas and grow together.",
+    "f5_title": "Flexible schedule",
+    "f5_desc": "Weekday evenings or weekends — learn when it suits you.",
+    "f6_title": "8 years of experience",
+    "f6_desc": "More than 8 years of professional education and certification in Azerbaijan.",
+    "path_eyebrow": "How to start",
+    "path_title": "Learning path",
+    "path_lead": "Four simple steps from application to your first lesson.",
+    "step1_title": "Choose a course",
+    "step1_desc": "Find the direction and level that fit you on the courses page.",
+    "step2_title": "Send an application",
+    "step2_desc": "Fill in the short form: your name, contact details and the course you chose.",
+    "step3_title": "We get in touch",
+    "step3_desc": "Our team reviews your application and agrees the details with you.",
+    "step4_title": "Start your lessons",
+    "step4_desc": "Join practical lessons with your teacher and apply what you learn in projects.",
+    "courses_eyebrow": "Our programmes",
+    "courses_title": "Popular courses",
+    "courses_all": "View all courses",
+    "courses_empty_title": "Courses coming soon",
+    "courses_empty_desc": "The course list could not be loaded right now. Open the courses page or check back a little later.",
+    "teachers_eyebrow": "Our team",
+    "teachers_title": "Our teachers",
+    "teachers_all": "All teachers",
+    "testimonials_eyebrow": "Student reviews",
+    "testimonials_title": "In their words",
+    "testimonials_prev": "Previous review",
+    "testimonials_next": "Next review",
+    "testimonials_goto": "Review {n}",
+    "testimonials_rating": "Rated {n} out of 5",
+    "cta_eyebrow": "It is never too late",
+    "cta_title": "Start today",
+    "cta_text": "Write to us for a free consultation, and we will find the course that suits you together.",
+    "cta_call": "Call us"
+  },
+  "coursesPage": {
+    "eyebrow": "Course catalogue",
+    "breadcrumb_label": "Breadcrumb",
+    "search_label": "Search courses",
+    "search_clear": "Clear search",
+    "filter_category": "Category",
+    "filter_level": "Level",
+    "show_all_categories": "All categories ({count})",
+    "show_fewer_categories": "Show fewer",
+    "reset": "Reset filters",
+    "results": "{count, plural, one {# course} other {# courses}}",
+    "list_label": "Course list",
+    "empty_title": "Nothing found",
+    "empty_desc": "Try another search or reset the filters.",
+    "unavailable_title": "Courses coming soon",
+    "unavailable_desc": "We cannot show the course list right now. Please check back soon or get in touch with us.",
+    "back": "All courses",
+    "detail_script": "A course for you",
+    "meta_price": "Price",
+    "meta_duration": "Duration",
+    "meta_level": "Level",
+    "meta_students": "Students",
+    "meta_rating": "Rating",
+    "meta_category": "Category",
+    "price_on_request": "Price on request",
+    "facts_title": "Course details",
+    "about_title": "About the course",
+    "syllabus_title": "Curriculum",
+    "syllabus_count": "{count, plural, one {# module} other {# modules}}",
+    "highlights_title": "What is included",
+    "highlight_1": "Professional certificate",
+    "highlight_2": "Hands-on projects",
+    "highlight_3": "One-to-one teacher support",
+    "highlight_4": "Lifetime access",
+    "highlight_5": "Help with the job search",
+    "highlight_6": "Online and offline options",
+    "teacher_title": "Your teacher",
+    "enroll_title": "Join the course",
+    "enroll_lead": "Fill in the form and our team will contact you to explain the next steps.",
+    "related_title": "Related courses"
+  },
+  "teachersPage": {
+    "eyebrow": "Our faculty",
+    "search_label": "Search teachers",
+    "results": "{count, plural, one {# teacher} other {# teachers}}",
+    "list_label": "Teacher list",
+    "empty_title": "No one found",
+    "unavailable_title": "Faculty coming soon",
+    "unavailable_desc": "We cannot show the teacher list right now. Please check back soon.",
+    "detail_script": "Your teacher",
+    "about_title": "About",
+    "courses_title": "Courses taught",
+    "courses_count": "{count, plural, one {# course} other {# courses}}",
+    "no_courses_title": "Courses coming soon",
+    "no_courses_desc": "This teacher's courses have not been added yet. You can browse all courses.",
+    "all_courses": "All courses"
   }
 }

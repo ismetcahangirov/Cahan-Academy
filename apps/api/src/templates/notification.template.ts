@@ -1,4 +1,7 @@
-export const adminNotificationTemplate = (type: 'lead' | 'contact' | 'newsletter', data: any) => `
+import { escapeHtml } from '../utils/sanitize.js';
+
+// Every interpolated visitor value is HTML-escaped: these mails render as HTML in the admin inbox.
+export const adminNotificationTemplate = (type: 'lead' | 'contact' | 'newsletter', data: Record<string, unknown>) => `
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,12 +22,12 @@ export const adminNotificationTemplate = (type: 'lead' | 'contact' | 'newsletter
     </div>
     <div class="content">
       <p>Vebsaytdan yeni bir müraciət daxil oldu:</p>
-      <div class="field"><span class="label">Ad:</span> ${data.name || 'N/A'}</div>
-      <div class="field"><span class="label">Email:</span> ${data.email}</div>
-      ${data.phone ? `<div class="field"><span class="label">Telefon:</span> ${data.phone}</div>` : ''}
-      ${data.course ? `<div class="field"><span class="label">Kurs:</span> ${data.course}</div>` : ''}
-      ${data.subject ? `<div class="field"><span class="label">Mövzu:</span> ${data.subject}</div>` : ''}
-      ${data.message ? `<div class="field"><span class="label">Mesaj:</span><br/>${data.message}</div>` : ''}
+      <div class="field"><span class="label">Ad:</span> ${escapeHtml(data.name || 'N/A')}</div>
+      <div class="field"><span class="label">Email:</span> ${escapeHtml(data.email)}</div>
+      ${data.phone ? `<div class="field"><span class="label">Telefon:</span> ${escapeHtml(data.phone)}</div>` : ''}
+      ${data.course ? `<div class="field"><span class="label">Kurs:</span> ${escapeHtml(data.course)}</div>` : ''}
+      ${data.subject ? `<div class="field"><span class="label">Mövzu:</span> ${escapeHtml(data.subject)}</div>` : ''}
+      ${data.message ? `<div class="field"><span class="label">Mesaj:</span><br/>${escapeHtml(data.message).replace(/\r?\n/g, '<br/>')}</div>` : ''}
     </div>
     <div class="footer">
       Bu email Cahan Academy sistemi tərəfindən avtomatik göndərilib.
@@ -52,12 +55,12 @@ export const userThankYouTemplate = (name: string) => `
       <h2>Təşəkkür edirik!</h2>
     </div>
     <div class="content">
-      <p>Salam ${name},</p>
+      <p>Salam ${escapeHtml(String(name).slice(0, 60))},</p>
       <p>Müraciətiniz uğurla qeydə alındı. Tezliklə sizinlə əlaqə saxlayacağıq.</p>
       <p>Hörmətlə,<br/>Cahan Academy Komandası</p>
     </div>
     <div class="footer">
-      © 2026 Cahan Academy. Bütün hüquqlar qorunur.
+      © ${new Date().getFullYear()} Cahan Academy. Bütün hüquqlar qorunur.
     </div>
   </div>
 </body>

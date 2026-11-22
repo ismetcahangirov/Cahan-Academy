@@ -1,9 +1,15 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { Pencil, Plus, Tags, Trash2 } from 'lucide-react';
 import adminApi from '@/lib/adminApi';
-import { Plus, Edit, Trash2, RefreshCcw, Tags } from 'lucide-react';
+import { Button } from '@/components/ui';
 import CategoryModal from '@/components/admin/CategoryModal';
+import { DataView, PageHead, RowAction, Thumb } from '@/components/admin/AdminUI';
+import { useFeedback } from '@/components/ui/Feedback';
+import { useAdminList } from '@/components/admin/useAdminList';
+import { assertOk } from '@/components/admin/utils';
 
 interface Category {
   id: string;
@@ -14,118 +20,77 @@ interface Category {
 }
 
 export default function CategoriesAdminPage() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const t = useTranslations('admin');
+  const { confirm, ok } = useFeedback();
+  const { items, setItems, loading, error, reload } = useAdminList<Category>('/categories');
   const [modalOpen, setModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Category | null>(null);
 
-  const fetchCategories = async () => {
-    setIsLoading(true);
-    try {
-      const { data } = await adminApi.get('/categories');
-      if (data.success) setCategories(data.data);
-    } catch (error) {
-      console.error('Failed to fetch categories:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => { fetchCategories(); }, []);
-
-  const handleEdit = (category: Category) => {
-    setEditTarget(category);
+  const openModal = (c: Category | null) => {
+    setEditTarget(c);
     setModalOpen(true);
   };
 
-  const handleCreate = () => {
-    setEditTarget(null);
-    setModalOpen(true);
-  };
+  const askDelete = (c: Category) =>
+    confirm({
+      title: t('confirm.delete_title'),
+      entity: c.nameAz,
+      message: t('confirm.delete_body'),
+      confirmLabel: t('confirm.delete_action'),
+      onConfirm: async () => {
+        const { data } = await adminApi.delete(`/categories/admin/${c.id}`);
+        assertOk(data);
+        setItems((prev) => prev.filter((x) => x.id !== c.id));
+        ok(t('common.deleted'));
+      },
+    });
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Bu kateqoriyanı silmək istədiyinizə əminsiniz?')) return;
-    try {
-      const { data } = await adminApi.delete(`/categories/admin/${id}`);
-      if (data.success) setCategories(categories.filter(c => c.id !== id));
-    } catch (error) {
-      alert('Silmə xətası');
-    }
-  };
-
-  const handleSuccess = () => {
-    setModalOpen(false);
-    setEditTarget(null);
-    fetchCategories();
-  };
+  const newBtn = (
+    <Button icon={Plus} onClick={() => openModal(null)}>
+      {t('categories.new')}
+    </Button>
+  );
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Kateqoriyalar</h1>
-          <p className="text-slate-400 text-sm">Kurs kateqoriyalarının idarə edilməsi</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button onClick={fetchCategories} className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors" title="Yenilə">
-            <RefreshCcw size={18} />
-          </button>
-          <button onClick={handleCreate} className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-lg font-medium transition-colors">
-            <Plus size={18} /> Yeni Kateqoriya
-          </button>
-        </div>
-      </div>
-
-      <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-800/50 text-slate-400 text-xs uppercase tracking-wider">
-                <th className="px-6 py-3 font-medium">Kateqoriya</th>
-                <th className="px-6 py-3 font-medium">Slug</th>
-                <th className="px-6 py-3 font-medium">Ad (EN)</th>
-                <th className="px-6 py-3 font-medium">Ad (RU)</th>
-                <th className="px-6 py-3 font-medium text-right">Əməliyyat</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800">
-              {isLoading ? (
-                <tr><td colSpan={5} className="px-6 py-8 text-center text-slate-500">Yüklənir...</td></tr>
-              ) : categories.length === 0 ? (
-                <tr><td colSpan={5} className="px-6 py-8 text-center text-slate-500">Heç bir kateqoriya tapılmadı.</td></tr>
-              ) : (
-                categories.map((category) => (
-                  <tr key={category.id} className="hover:bg-slate-800/30 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
-                          <Tags size={16} className="text-amber-500" />
-                        </div>
-                        <span className="text-white font-medium text-sm">{category.nameAz}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-slate-400 font-mono">{category.slug}</td>
-                    <td className="px-6 py-4 text-sm text-slate-300">{category.nameEn}</td>
-                    <td className="px-6 py-4 text-sm text-slate-300">{category.nameRu}</td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <button onClick={() => handleEdit(category)} className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors" title="Redaktə et">
-                          <Edit size={18} />
-                        </button>
-                        <button onClick={() => handleDelete(category.id)} className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors" title="Sil">
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <CategoryModal isOpen={modalOpen} onClose={() => { setModalOpen(false); setEditTarget(null); }} onSuccess={handleSuccess} categoryToEdit={editTarget} />
+    <div>
+      <PageHead
+        title={t('categories.title')}
+        subtitle={t('categories.subtitle', { count: items.length })}
+        onRefresh={reload}
+        loading={loading}
+        actions={newBtn}
+      />
+      <DataView
+        caption={t('categories.title')}
+        items={items}
+        rowKey={(c) => c.id}
+        loading={loading}
+        error={error}
+        onRetry={reload}
+        empty={{ sketch: 'notebook', title: t('categories.empty_title'), description: t('categories.empty_desc'), action: newBtn }}
+        columns={[
+          {
+            key: 'name',
+            header: t('categories.col_name'),
+            cell: (c) => (
+              <span className="flex items-center gap-3">
+                <Thumb alt="" icon={Tags} />
+                <span className="font-semibold">{c.nameAz}</span>
+              </span>
+            ),
+          },
+          { key: 'slug', header: t('common.slug'), cell: (c) => <span className="text-ink-muted">{c.slug}</span> },
+          { key: 'en', header: t('categories.col_en'), cell: (c) => c.nameEn },
+          { key: 'ru', header: t('categories.col_ru'), cell: (c) => c.nameRu },
+        ]}
+        actions={(c) => (
+          <>
+            <RowAction icon={Pencil} label={`${t('common.edit')}: ${c.nameAz}`} onClick={() => openModal(c)} />
+            <RowAction icon={Trash2} label={`${t('common.delete')}: ${c.nameAz}`} onClick={() => askDelete(c)} />
+          </>
+        )}
+      />
+      <CategoryModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSuccess={reload} categoryToEdit={editTarget} />
     </div>
   );
 }

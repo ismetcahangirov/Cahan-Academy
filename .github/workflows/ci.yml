@@ -4,36 +4,38 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, 'redesign/**' ]
+
+# CI only builds and tests. It never touches production: no production secrets are exposed to
+# these steps and database migrations are NOT run here (see docs/DEPLOYMENT.md, "Migrations").
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
-      SMTP_USER: ${{ secrets.SMTP_USER }}
-      SMTP_PASS: ${{ secrets.SMTP_PASS }}
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Setup Node.js 20
-        uses: actions/setup-node@v4
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
 
       - name: Cache Turbo
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: .turbo
-          key: turbo-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          key: turbo-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
           restore-keys: |
+            turbo-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
             turbo-${{ runner.os }}-
 
       - name: Install dependencies
@@ -41,6 +43,12 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Colour law (static, fails only for files not in apps/web/scripts/color-lint-pending.txt)
+        run: node apps/web/scripts/color-lint.mjs
+
+      - name: API Typecheck
+        run: npm run typecheck --workspace=@academy/api
 
       - name: Backend Tests
         run: npm run test --workspace=@academy/api
@@ -57,7 +65,3 @@ jobs:
 
       - name: Frontend Build
         run: npm run build --workspace=@academy/web
-
-      - name: Run Migrations (Production)
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: npm run db:migrate --workspace=@academy/api

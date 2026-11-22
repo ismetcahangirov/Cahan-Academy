@@ -1,9 +1,15 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { BookOpen, Pencil, Plus, Trash2 } from 'lucide-react';
 import adminApi from '@/lib/adminApi';
-import { BookOpen, Plus, Edit, Trash2, ExternalLink, RefreshCcw } from 'lucide-react';
+import { Badge, Button } from '@/components/ui';
 import CourseModal from '@/components/admin/CourseModal';
+import { DataView, PageHead, RowAction, Thumb } from '@/components/admin/AdminUI';
+import { useFeedback } from '@/components/ui/Feedback';
+import { useAdminList } from '@/components/admin/useAdminList';
+import { asBool, assertOk } from '@/components/admin/utils';
 
 interface Course {
   id: string;
@@ -12,182 +18,104 @@ interface Course {
   category_az: string;
   teacher_name: string;
   price: string;
-  created_at: string;
-  is_popular: string;
+  image?: string | null;
+  is_popular: string | boolean;
 }
 
 export default function CoursesAdminPage() {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [courseToEdit, setCourseToEdit] = useState<any | null>(null);
+  const t = useTranslations('admin');
+  const { confirm, ok } = useFeedback();
+  const { items, setItems, loading, error, reload } = useAdminList<Course>('/courses/admin/list');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<Course | null>(null);
 
-  const fetchCourses = async () => {
-    setIsLoading(true);
-    try {
-      const { data } = await adminApi.get('/courses/admin/list');
-      if (data.success) {
-        setCourses(data.data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch courses:', error);
-    } finally {
-      setIsLoading(false);
-    }
+  const openModal = (c: Course | null) => {
+    setEditTarget(c);
+    setModalOpen(true);
   };
 
-  useEffect(() => {
-    fetchCourses();
-  }, []);
+  const askDelete = (c: Course) =>
+    confirm({
+      title: t('confirm.delete_title'),
+      entity: c.title_az,
+      message: t('confirm.delete_body'),
+      confirmLabel: t('confirm.delete_action'),
+      onConfirm: async () => {
+        const { data } = await adminApi.delete(`/courses/admin/${c.id}`);
+        assertOk(data);
+        setItems((prev) => prev.filter((x) => x.id !== c.id));
+        ok(t('common.deleted'));
+      },
+    });
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Bu kursu silmək istədiyinizə əminsiniz?')) return;
-    
-    try {
-      const { data } = await adminApi.delete(`/courses/admin/${id}`);
-      if (data.success) {
-        setCourses(prev => prev.filter(c => c.id !== id));
-      } else {
-        alert(data.message || 'Kursu silmək mümkün olmadı');
-      }
-    } catch (error: any) {
-      console.error('Delete error:', error);
-      const msg = error.response?.data?.message || 'Silmə xətası';
-      alert(msg);
-    }
-  };
-
-  const handleEdit = async (slug: string) => {
-    // Find the course from our list since it already contains all necessary fields
-    const rawCourse = courses.find(c => c.slug === slug);
-    if (rawCourse) {
-      setCourseToEdit(rawCourse);
-      setIsModalOpen(true);
-    } else {
-      alert('Kurs tapılmadı');
-    }
-  };
-
-  const handleModalSuccess = () => {
-    fetchCourses();
-  };
+  const newBtn = (
+    <Button icon={Plus} onClick={() => openModal(null)}>
+      {t('courses.new')}
+    </Button>
+  );
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Kurs İdarəetməsi</h1>
-          <p className="text-slate-400 text-sm">Kursların yaradılması və redaktəsi</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={fetchCourses}
-            className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors"
-          >
-            <RefreshCcw size={18} />
-          </button>
-          <button
-            onClick={() => {
-              setCourseToEdit(null);
-              setIsModalOpen(true);
-            }}
-            className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-lg font-medium transition-colors"
-          >
-            <Plus size={18} />
-            Yeni Kurs
-          </button>
-        </div>
-      </div>
+    <div>
+      <PageHead
+        title={t('courses.title')}
+        subtitle={t('courses.subtitle', { count: items.length })}
+        onRefresh={reload}
+        loading={loading}
+        actions={newBtn}
+      />
 
-      <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-800/50 text-slate-400 text-xs uppercase tracking-wider">
-                <th className="px-6 py-3 font-medium">Kurs</th>
-                <th className="px-6 py-3 font-medium">Kateqoriya / Müəllim</th>
-                <th className="px-6 py-3 font-medium">Qiymət</th>
-                <th className="px-6 py-3 font-medium">Status</th>
-                <th className="px-6 py-3 font-medium text-right">Əməliyyatlar</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800">
-              {isLoading ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-slate-500">Yüklənir...</td>
-                </tr>
-              ) : courses.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-slate-500">Kurs tapılmadı.</td>
-                </tr>
-              ) : (
-                courses.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-800/30 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-amber-500">
-                          <BookOpen size={20} />
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-white font-medium text-sm">{item.title_az}</span>
-                          <span className="text-slate-500 text-xs flex items-center gap-1">
-                            /{item.slug}
-                            <ExternalLink size={10} />
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-col">
-                        <span className="text-sm text-slate-300">{item.category_az || 'Təyin edilməyib'}</span>
-                        <span className="text-xs text-slate-500">{item.teacher_name || 'Təyin edilməyib'}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-slate-400">
-                      {item.price || 'Ödənişsiz'}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          item.is_popular === 'true' || (item.is_popular as unknown as boolean) === true
-                            ? 'bg-amber-500/10 text-amber-500' 
-                            : 'bg-slate-500/10 text-slate-500'
-                        }`}
-                      >
-                        {item.is_popular === 'true' || (item.is_popular as unknown as boolean) === true ? 'Populyar' : 'Normal'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => handleEdit(item.slug)}
-                          className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
-                          title="Redaktə et"
-                        >
-                          <Edit size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(item.id)}
-                          className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
-                          title="Sil"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <DataView
+        caption={t('courses.title')}
+        items={items}
+        rowKey={(c) => c.id}
+        loading={loading}
+        error={error}
+        onRetry={reload}
+        empty={{ sketch: 'books', title: t('courses.empty_title'), description: t('courses.empty_desc'), action: newBtn }}
+        columns={[
+          {
+            key: 'title',
+            header: t('courses.col_course'),
+            cell: (c) => (
+              <span className="flex items-center gap-3">
+                <Thumb src={c.image} alt="" icon={BookOpen} />
+                <span className="min-w-0">
+                  <span className="block font-semibold">{c.title_az}</span>
+                  <span className="block text-[0.92rem] font-normal text-ink-muted">/{c.slug}</span>
+                </span>
+              </span>
+            ),
+          },
+          {
+            key: 'meta',
+            header: t('courses.col_meta'),
+            cell: (c) => (
+              <span className="block">
+                <span className="block">{c.category_az || t('common.not_set')}</span>
+                <span className="block text-[0.92rem] text-ink-muted">{c.teacher_name || t('common.not_set')}</span>
+              </span>
+            ),
+          },
+          { key: 'price', header: t('courses.col_price'), cell: (c) => <span className="num">{c.price || t('courses.free')}</span> },
+          {
+            key: 'status',
+            header: t('common.status'),
+            cell: (c) => (asBool(c.is_popular) ? <Badge tone="solid">{t('courses.popular')}</Badge> : <Badge>{t('courses.normal')}</Badge>),
+          },
+        ]}
+        actions={(c) => (
+          <>
+            <RowAction icon={Pencil} label={`${t('common.edit')}: ${c.title_az}`} onClick={() => openModal(c)} />
+            <RowAction icon={Trash2} label={`${t('common.delete')}: ${c.title_az}`} onClick={() => askDelete(c)} />
+          </>
+        )}
+      />
 
       <CourseModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSuccess={handleModalSuccess}
-        courseToEdit={courseToEdit}
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSuccess={reload}
+        courseToEdit={editTarget}
       />
     </div>
   );

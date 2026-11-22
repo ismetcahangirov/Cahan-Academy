@@ -1,9 +1,15 @@
 'use client';
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import { useId, useState } from 'react';
+import { Plus } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { EdelweissGlyph } from '../ornament/Edelweiss';
 
+/**
+ * FAQAccordion — framed question rows; the open answer fades in (opacity only, no height animation).
+ * Real buttons with aria-expanded / aria-controls; first item open by default.
+ * Props unchanged: items [{ id, question: {az,en,ru}, answer: {az,en,ru} }], locale.
+ */
 interface FAQItem {
   id: string;
   question: Record<string, string>;
@@ -13,61 +19,55 @@ interface FAQItem {
 interface FAQAccordionProps {
   items: FAQItem[];
   locale: string;
+  /** level of the question headings: 'h2' right under the page h1 (FAQ page), 'h3' inside a titled section */
+  headingLevel?: 'h2' | 'h3';
 }
 
-export default function FAQAccordion({ items, locale }: FAQAccordionProps) {
+export default function FAQAccordion({ items, locale, headingLevel = 'h3' }: FAQAccordionProps) {
+  const H = headingLevel;
   const [openId, setOpenId] = useState<string | null>(items[0]?.id || null);
+  const base = useId();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {items.map((item) => {
         const isOpen = openId === item.id;
         const question = item.question[locale] || item.question['az'];
         const answer = item.answer[locale] || item.answer['az'];
+        const btnId = `${base}-q-${item.id}`;
+        const panelId = `${base}-a-${item.id}`;
 
         return (
           <div
             key={item.id}
-            className={`group rounded-2xl border transition-all duration-300 ${
-              isOpen 
-                ? 'bg-card border-primary/20 shadow-lg shadow-primary/5' 
-                : 'bg-background border-border hover:border-primary/30'
-            }`}
+            className={cn('card transition-[border-color] duration-200', isOpen ? 'border-line-strong' : 'hover:border-line-strong')}
           >
-            <button
-              onClick={() => setOpenId(isOpen ? null : item.id)}
-              className="flex w-full items-center justify-between p-5 text-left transition-colors"
-            >
-              <span className={`font-heading text-lg font-bold transition-colors ${
-                isOpen ? 'text-primary' : 'text-foreground group-hover:text-primary/80'
-              }`}>
-                {question}
-              </span>
-              <motion.div
-                animate={{ rotate: isOpen ? 180 : 0 }}
-                transition={{ duration: 0.3, ease: 'easeInOut' }}
-                className={`p-1.5 rounded-full transition-colors ${
-                  isOpen ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
-                }`}
+            <H>
+              <button
+                id={btnId}
+                type="button"
+                onClick={() => setOpenId(isOpen ? null : item.id)}
+                aria-expanded={isOpen}
+                aria-controls={panelId}
+                className="flex w-full items-center gap-3 rounded-[var(--radius-lg)] px-5 py-4 text-left"
               >
-                <ChevronDown size={20} />
-              </motion.div>
-            </button>
-
-            <AnimatePresence initial={false}>
-              {isOpen && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: 'easeInOut' }}
-                >
-                  <div className="px-5 pb-5 pt-1 text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                    {answer}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                <EdelweissGlyph className={cn('h-4 w-4 shrink-0', isOpen ? 'text-accent-text' : 'text-ornament-soft')} />
+                <span className={cn('flex-1 text-[1.15rem] font-semibold leading-snug', isOpen ? 'text-accent-text' : 'text-ink')}>
+                  {question}
+                </span>
+                <Plus
+                  size={18}
+                  strokeWidth={1.6}
+                  aria-hidden="true"
+                  className={cn('shrink-0 text-accent-text transition-transform duration-300', isOpen && 'rotate-45')}
+                />
+              </button>
+            </H>
+            <div id={panelId} role="region" aria-labelledby={btnId} hidden={!isOpen}>
+              <div className="orn-reveal whitespace-pre-wrap px-5 pb-5 pl-12 text-[1.05rem] leading-relaxed text-ink-muted">
+                {answer}
+              </div>
+            </div>
           </div>
         );
       })}

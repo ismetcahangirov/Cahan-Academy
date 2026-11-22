@@ -1,78 +1,59 @@
-'use client';
-
-import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
+import { ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import { ChevronRight, Github, Linkedin, Twitter } from 'lucide-react';
-import { Teacher } from '@/types/teacher';
+import { cn } from '@/lib/utils';
+import { sketchFor } from '@/lib/media';
+import CornerFlourish from '../ornament/CornerFlourish';
+import { EdelweissGlyph } from '../ornament/Edelweiss';
+import CoverImage from './CoverImage';
 
-interface TeacherCardProps {
-  teacher: Teacher;
-  locale: string;
-}
+/**
+ * TeacherCard — portrait in an arched, hairline-matted frame with corner flourishes (a missing /
+ * placeholder / mock portrait becomes a sketch chosen from the teacher's subject), name in serif
+ * (data never goes into the script font), position in small caps, profile cue. Whole card = one link.
+ * Shared: home preview, teacher directory. Server or client trees.
+ */
+export default function TeacherCard({
+  teacher,
+  className,
+}: {
+  teacher: { name: string; slug: string; image?: string | null; position?: string | null };
+  /** @deprecated kept for older callers; the locale comes from the provider. */
+  locale?: string;
+  className?: string;
+}) {
+  const t = useTranslations('teachers');
 
-export default function TeacherCard({ teacher, locale }: TeacherCardProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="group relative bg-card border border-border rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500"
+    <article
+      className={cn('card-ornate card-hover group relative flex h-full flex-col items-center p-3 pb-5 text-center sm:p-5 sm:pb-6', className)}
     >
-      <div className="relative aspect-[4/5] overflow-hidden">
-        <Image
-          src={teacher.image || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400'}
-          alt={teacher.name}
-          fill
-          className="object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-1"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
-        
-        {/* Social Icons Overlay */}
-        <div className="absolute bottom-4 left-4 right-4 flex justify-center gap-3 translate-y-12 group-hover:translate-y-0 transition-transform duration-500 delay-100 z-10">
-          <a 
-            href="#" 
-            aria-label={`${teacher.name} LinkedIn`}
-            className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-primary hover:border-primary transition-all"
-          >
-            <Linkedin size={14} />
-          </a>
-          <a 
-            href="#" 
-            aria-label={`${teacher.name} Twitter`}
-            className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-primary hover:border-primary transition-all"
-          >
-            <Twitter size={14} />
-          </a>
-          <a 
-            href="#" 
-            aria-label={`${teacher.name} Github`}
-            className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-primary hover:border-primary transition-all"
-          >
-            <Github size={14} />
-          </a>
-        </div>
+      <CornerFlourish corner="bl" className="absolute bottom-2.5 left-2.5 hidden h-6 w-6 sm:block" />
+      <CornerFlourish corner="br" className="absolute bottom-2.5 right-2.5 hidden h-6 w-6 sm:block" />
 
-        <Link 
-          href={`/teachers/${teacher.slug}`} 
-          className="absolute inset-0 z-0"
-          aria-label={teacher.name}
-        />
-      </div>
+      <CoverImage
+        src={teacher.image}
+        alt=""
+        sketch={sketchFor(teacher.position, teacher.slug)}
+        rounded="arch"
+        sizes="(min-width: 1024px) 22vw, (min-width: 640px) 40vw, 45vw"
+        className="aspect-[4/5] w-full max-w-[15rem]"
+      />
 
-      <Link href={`/teachers/${teacher.slug}`} className="block p-6 text-center">
-        <h3 className="font-heading text-xl font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
+      <EdelweissGlyph className="mt-4 h-4 w-4" />
+      <h3 className="mt-2 text-[1.1rem] font-semibold leading-snug text-ink sm:text-[1.3rem]">
+        <Link
+          href={`/teachers/${teacher.slug}`}
+          className="outline-none after:absolute after:inset-0 after:rounded-[var(--radius-lg)] after:content-[''] focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-[var(--focus)]"
+        >
           {teacher.name}
-        </h3>
-        <p className="text-sm text-muted-foreground font-medium mb-4">
-          {teacher.position}
-        </p>
-        
-        <div className="pt-4 border-t border-border flex items-center justify-center gap-2 text-primary text-sm font-bold group-hover:gap-4 transition-all">
-          <span>Profilə bax</span>
-          <ChevronRight size={16} />
-        </div>
-      </Link>
-    </motion.div>
+        </Link>
+      </h3>
+      {teacher.position && <p className="sc mt-1 text-[0.78rem] text-ink-muted sm:text-[0.82rem]">{teacher.position}</p>}
+      <span className="sc mt-auto inline-flex items-center gap-1.5 pt-4 text-[0.85rem] text-accent-text" aria-hidden="true">
+        {t('view_profile')}
+        <ArrowRight size={15} strokeWidth={1.6} className="transition-transform group-hover:translate-x-0.5" />
+      </span>
+    </article>
   );
 }

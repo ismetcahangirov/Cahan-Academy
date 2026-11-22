@@ -1,84 +1,101 @@
-import { getTranslations } from 'next-intl/server';
-import { getFaqs } from '@/lib/api';
+import type { Metadata } from 'next';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { ArrowRight } from 'lucide-react';
+import { Link } from '@/i18n/routing';
+import { getFaqs, type Faq } from '@/lib/api';
 import FAQAccordion from '@/components/ui/FAQAccordion';
-import { Metadata } from 'next';
+import { Button } from '@/components/ui';
+import PageBand from '@/components/layout/PageBand';
+import { alternatesFor, ogImages } from '@/lib/seo';
+import { OrnateFrame, ScriptTitle, SketchIllustration } from '@/components/ornament';
 import JsonLd from '@/components/seo/JsonLd';
 
-export const revalidate = 3600; // ISR - Every 1 hour
+export const revalidate = 3600; // ISR - every hour
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'faq' });
 
   return {
     title: t('meta_title'),
     description: t('meta_description'),
-    openGraph: {
-      title: t('meta_title'),
-      description: t('meta_description'),
-    }
+    alternates: alternatesFor(locale, '/faq'),
+    openGraph: { title: t('meta_title'), description: t('meta_description'), type: 'website', locale, images: ogImages(locale) },
   };
 }
 
-export default async function FAQPage({ params }: { params: Promise<{ locale: string }> }) {
+type FaqItem = Pick<Faq, 'id' | 'question' | 'answer'>;
+
+/*
+ * Questions come from GET /api/faqs (managed in the CMS). `getFaqs` returns [] when the API fails (it
+ * 500s in production at times) — then a short built-in list answers how the site itself works (enrol,
+ * prices, teachers, contact), so the page is never empty and nothing about the academy is invented.
+ */
+export default async function FAQPage({ params }: Props) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'faq' });
 
-  let faqs: any[] = [];
-  try {
-    const data = await getFaqs();
-    faqs = data || [];
-  } catch (error) {
-    console.error('Error fetching FAQs:', error);
-  }
+  const fromApi = (await getFaqs()).filter((f) => f?.question && f?.answer);
+  const items: FaqItem[] = fromApi.length
+    ? fromApi
+    : (t.raw('fallback') as { q: string; a: string }[]).map((f, i) => ({
+        id: `fallback-${i + 1}`,
+        question: { [locale]: f.q },
+        answer: { [locale]: f.a },
+      }));
 
-  // Schema.org FAQPage
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": faqs.map((f: any) => ({
-      "@type": "Question",
-      "name": f.question[locale] || f.question['az'],
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": f.answer[locale] || f.answer['az']
-      }
-    }))
-  };
+  const pick = (rec: Record<string, string>) => rec[locale] || rec.az || Object.values(rec)[0] || '';
 
   return (
-    <main className="min-h-screen pt-32 pb-20">
-      {/* Schema.org */}
-      <JsonLd data={faqSchema} />
+    <>
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          inLanguage: locale,
+          mainEntity: items.map((f) => ({
+            '@type': 'Question',
+            name: pick(f.question),
+            acceptedAnswer: { '@type': 'Answer', text: pick(f.answer) },
+          })),
+        }}
+      />
 
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <MotionDiv 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-bold tracking-wider uppercase mb-4"
-          >
-            {t('badge')}
-          </MotionDiv>
-          <h1 className="font-heading text-4xl md:text-5xl font-black mb-6 leading-tight">
-            {t('title')}
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            {t('description')}
-          </p>
+      <PageBand id="faq-title" trail={{ locale, items: [{ path: '/faq' }] }} eyebrow={t('badge')} title={t('title')} lead={t('description')} />
+
+      <div className="mx-auto grid max-w-6xl items-start gap-10 px-4 pb-24 pt-12 sm:px-6 sm:pt-16 lg:grid-cols-[minmax(0,1fr)_19rem] lg:gap-12 lg:px-8">
+        <div className="min-w-0">
+          <FAQAccordion items={items} locale={locale} headingLevel="h2" />
         </div>
 
-        {/* Content */}
-        <div className="max-w-4xl mx-auto">
-          <FAQAccordion items={faqs} locale={locale} />
-        </div>
+        <OrnateFrame
+          as="aside"
+          paper
+          corners="diagonal"
+          cornerSize="h-6 w-6"
+          aria-labelledby="faq-still-title"
+          className="px-6 pb-8 pt-8 text-center lg:sticky lg:top-24"
+        >
+          <SketchIllustration name="lamp" className="mx-auto w-24" />
+          <ScriptTitle
+            id="faq-still-title"
+            align="center"
+            size="card"
+            as="h2"
+            title={t('still_title')}
+            lead={t('still_desc')}
+            className="mt-3"
+          />
+          <Button as={Link} href="/contact" iconAfter={ArrowRight} className="mt-6" block>
+            {t('still_cta')}
+          </Button>
+        </OrnateFrame>
       </div>
-    </main>
+    </>
   );
-}
-
-// Simple wrapper for motion div since it's a server component
-function MotionDiv({ children, initial, animate, className }: any) {
-  return <div className={className}>{children}</div>;
 }

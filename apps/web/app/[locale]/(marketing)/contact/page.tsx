@@ -1,12 +1,24 @@
-import { setRequestLocale } from 'next-intl/server';
-import { getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { Clock, ExternalLink, Mail, MapPin, Phone, type LucideIcon } from 'lucide-react';
 import ContactForm from '@/components/forms/ContactForm';
-import { Mail, Phone, MapPin, MessageSquare } from 'lucide-react';
+import PageBand from '@/components/layout/PageBand';
+import { alternatesFor, ogImages } from '@/lib/seo';
+import { OrnateFrame, ScriptTitle, SketchIllustration } from '@/components/ornament';
+import JsonLd from '@/components/seo/JsonLd';
+import { absoluteUrl } from '@/lib/utils';
 
 interface Props {
   params: Promise<{ locale: string }>;
 }
+
+/*
+ * Contact details are the existing site copy. The phone, the e-mail (its domain does not resolve), the
+ * street address and the opening hours look like placeholders → listed under "Owner must confirm" (A-26).
+ */
+const PHONE = { display: '+994 50 123 45 67', href: 'tel:+994501234567' };
+const EMAIL = 'info@cahanacademy.az';
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
@@ -15,91 +27,93 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: t('contact_title'),
     description: t('contact_description'),
+    alternates: alternatesFor(locale, '/contact'),
+    openGraph: { title: t('contact_title'), description: t('contact_description'), type: 'website', locale, images: ogImages(locale) },
   };
+}
+
+function Fact({ icon: Icon, label, children }: { icon: LucideIcon; label: string; children: ReactNode }) {
+  return (
+    <li className="flex gap-4">
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line-strong bg-surface">
+        <Icon size={19} strokeWidth={1.6} className="text-ornament" aria-hidden="true" />
+      </span>
+      <div className="min-w-0 pt-0.5">
+        <p className="sc text-[0.8rem] text-ink-muted">{label}</p>
+        <div className="mt-0.5 text-[1.1rem] leading-snug text-ink">{children}</div>
+      </div>
+    </li>
+  );
 }
 
 export default async function ContactPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'contact' });
-
-  const contactInfo = [
-    {
-      icon: <Phone className="w-6 h-6 text-secondary" />,
-      title: 'Telefon',
-      value: '+994 50 123 45 67',
-      href: 'tel:+994501234567',
-    },
-    {
-      icon: <Mail className="w-6 h-6 text-secondary" />,
-      title: 'Email',
-      value: 'info@cahanacademy.az',
-      href: 'mailto:info@cahanacademy.az',
-    },
-    {
-      icon: <MapPin className="w-6 h-6 text-secondary" />,
-      title: 'Ünvan',
-      value: 'Bakı şəhəri, Nizami küç. 12',
-      href: 'https://maps.google.com',
-    },
-  ];
+  const address = t('address_value');
+  const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 
   return (
-    <main className="min-h-screen pt-32 pb-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
-          {/* Info Side */}
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-xs font-bold uppercase tracking-widest mb-6">
-              <MessageSquare size={14} />
-              Bizə Yazın
-            </div>
-            <h1 className="font-heading text-4xl sm:text-5xl font-bold text-foreground mb-6 leading-tight">
-              {t('title')}
-            </h1>
-            <p className="text-muted-foreground text-lg mb-12 max-w-lg">
-              Suallarınız var? Bizimlə əlaqə saxlayın, komandamız sizə ən qısa zamanda cavab verəcəkdir.
-            </p>
+    <>
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'ContactPage',
+          name: t('title'),
+          url: absoluteUrl(locale, '/contact'),
+          inLanguage: locale,
+        }}
+      />
 
-            <div className="space-y-8">
-              {contactInfo.map((info, idx) => (
-                <a
-                  key={idx}
-                  href={info.href}
-                  className="flex items-center gap-5 group"
-                >
-                  <div className="w-14 h-14 rounded-2xl bg-card border border-border flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all shadow-sm">
-                    {info.icon}
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">
-                      {info.title}
-                    </div>
-                    <div className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-                      {info.value}
-                    </div>
-                  </div>
-                </a>
-              ))}
-            </div>
+      <PageBand id="contact-title" trail={{ locale, items: [{ path: '/contact' }] }} eyebrow={t('eyebrow')} title={t('title')} lead={t('lead')} />
 
-            {/* Map Placeholder or Socials */}
-            <div className="mt-16 p-8 rounded-3xl bg-primary/5 border border-primary/10 relative overflow-hidden">
-               <div className="relative z-10">
-                 <h3 className="text-xl font-bold mb-2">İş Saatlarımız</h3>
-                 <p className="text-muted-foreground">Bazar ertəsi - Şənbə: 09:00 - 18:00</p>
-                 <p className="text-muted-foreground">Bazar: İstirahət günü</p>
-               </div>
-               <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl" />
-            </div>
-          </div>
-
-          {/* Form Side */}
-          <div className="bg-card border border-border p-8 sm:p-10 rounded-[2.5rem] shadow-2xl shadow-primary/5 relative">
+      <div className="mx-auto grid max-w-6xl items-start gap-6 px-4 pb-24 pt-12 sm:px-6 sm:pt-16 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-10 lg:px-8">
+        <OrnateFrame as="section" aria-labelledby="contact-form-title" className="px-5 pb-8 pt-9 sm:px-10 sm:pb-10 sm:pt-11">
+          <ScriptTitle id="contact-form-title" size="card" as="h2" title={t('form_title')} subtitle={t('form_hint')} />
+          <div className="mt-7">
             <ContactForm />
           </div>
-        </div>
+        </OrnateFrame>
+
+        <OrnateFrame
+          as="aside"
+          paper
+          corners="diagonal"
+          aria-labelledby="contact-info-title"
+          className="relative overflow-hidden px-6 pb-8 pt-9 sm:px-9"
+        >
+          <ScriptTitle id="contact-info-title" size="card" as="h2" title={t('info_title')} lead={t('info_lead')} />
+          <ul className="mt-7 space-y-6">
+            <Fact icon={Phone} label={t('phone')}>
+              <a href={PHONE.href} className="num link">
+                {PHONE.display}
+              </a>
+            </Fact>
+            <Fact icon={Mail} label={t('email')}>
+              <a href={`mailto:${EMAIL}`} className="link break-words">
+                {EMAIL}
+              </a>
+            </Fact>
+            <Fact icon={MapPin} label={t('address_label')}>
+              <p>{address}</p>
+              <a
+                href={mapHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="sc mt-1.5 inline-flex items-center gap-1.5 text-[0.82rem] text-accent-text hover:underline"
+              >
+                {t('map_link')}
+                <ExternalLink size={13} strokeWidth={1.8} aria-hidden="true" />
+              </a>
+            </Fact>
+            <Fact icon={Clock} label={t('hours_label')}>
+              <p className="time-italic">{t('hours_week')}</p>
+              <p className="time-italic text-ink-muted">{t('hours_sunday')}</p>
+            </Fact>
+          </ul>
+          <SketchIllustration name="inkwell" className="mx-auto mt-9 w-28 sm:w-32" />
+        </OrnateFrame>
       </div>
-    </main>
+    </>
   );
 }

@@ -1,0 +1,2 @@
+# Files still to be migrated to the ornate colour law (scripts/color-lint.mjs skips failing on them).
+# When you migrate a file, DELETE its line here in the same PR. Paths are relative to apps/web.

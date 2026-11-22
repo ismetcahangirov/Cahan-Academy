@@ -10,12 +10,18 @@ out
 dist
 build
 
-# Environment variables
+# Environment variables (apps/api/.env.test is a committed fixture with dummy values only)
 .env
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*.local
+.env.production
+.env.development
+
+# Vercel CLI link / pulled env
+.vercel
+
+# TypeScript incremental build info
+*.tsbuildinfo
 
 # MCP (contains tokens)
 .mcp.json
@@ -39,6 +45,8 @@ Thumbs.db
 /apps/web/blob-report/
 /apps/web/playwright/.cache/
 /apps/api/coverage/
-*.png
-*.jpg
-*.jpeg
+# QA screenshots (the old global *.png / *.jpg ignore silently dropped real assets such as
+# favicons, icon-*.png and OG images, so only screenshot folders are ignored now)
+/shots/
+/apps/web/shots/
+/apps/web/screenshots/

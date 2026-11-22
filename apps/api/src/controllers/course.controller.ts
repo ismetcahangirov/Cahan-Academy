@@ -6,12 +6,23 @@ import {
   getCourseBySlug,
   getCoursesByCategory,
   getAllCategories,
+  createCourse,
+  updateCourse,
+  deleteCourse,
 } from '../repositories/course.repository.js';
+import { CourseSchema } from '../schemas/form.schema.js';
+import { param } from '../utils/sanitize.js';
+
+/** Only az/en/ru map to columns; anything else falls back to az. */
+const pickLocale = (value: unknown) => {
+  const l = String(value ?? 'az').toLowerCase();
+  return l === 'en' || l === 'ru' ? l : 'az';
+};
 
 // GET /api/courses?locale=az&category=web-development
 export const listCourses = asyncHandler(async (req: Request, res: Response) => {
-  const locale   = (req.query.locale   as string) ?? 'az';
-  const category = (req.query.category as string) ?? '';
+  const locale   = pickLocale(req.query.locale);
+  const category = typeof req.query.category === 'string' ? req.query.category : '';
 
   const courses = category
     ? await getCoursesByCategory(category)
@@ -40,6 +51,8 @@ export const listCourses = asyncHandler(async (req: Request, res: Response) => {
     },
     teacher: {
       name:     c.teacher_name,
+      // lets the web link the teacher profile without matching names
+      slug:     c.teacher_slug ?? null,
       image:    c.teacher_image,
       position: c[positionKey] ?? c.teacher_position_az,
     },
@@ -55,8 +68,8 @@ export const listCategories = asyncHandler(async (_req: Request, res: Response) 
 });
 
 export const getCourse = asyncHandler(async (req: Request, res: Response) => {
-  const slug   = req.params.slug as string;
-  const locale = (req.query.locale as string) ?? 'az';
+  const slug   = param(req, 'slug');
+  const locale = pickLocale(req.query.locale);
 
   const course = await getCourseBySlug(slug);
   if (!course) {
@@ -90,6 +103,8 @@ export const getCourse = asyncHandler(async (req: Request, res: Response) => {
       },
       teacher: {
         name:     c.teacher_name,
+        // lets the web link the teacher profile without matching names
+        slug:     c.teacher_slug ?? null,
         image:    c.teacher_image,
         bio:      c[bioKey] ?? c.teacher_bio_az,
         position: c[positionKey] ?? c.teacher_position_az,
@@ -99,24 +114,22 @@ export const getCourse = asyncHandler(async (req: Request, res: Response) => {
 });
 
 // Admin methods
-export const listCoursesAdmin = asyncHandler(async (req: Request, res: Response) => {
+export const listCoursesAdmin = asyncHandler(async (_req: Request, res: Response) => {
   // Returns raw unshaped data for admin form
-  const courses = await getAllCourses('az'); // We just get all
+  const courses = await getAllCourses('az');
   return apiResponse.success(res, { data: courses });
 });
 
-import { createCourse, updateCourse, deleteCourse } from '../repositories/course.repository.js';
-
 export const createCourseAdmin = asyncHandler(async (req: Request, res: Response) => {
-  const data = req.body;
+  // Whitelisted fields only: id/createdAt/updatedAt can no longer be injected via the body.
+  const data = CourseSchema.parse(req.body);
   const newCourse = await createCourse(data);
-  return apiResponse.success(res, { data: newCourse, message: 'Kurs uğurla yaradıldı' }, 201);
+  return apiResponse.success(res, { data: newCourse, message: 'Kurs uğurla yaradıldı', status: 201 });
 });
 
 export const updateCourseAdmin = asyncHandler(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const data = req.body;
-  const updated = await updateCourse(id, data);
+  const data = CourseSchema.parse(req.body);
+  const updated = await updateCourse(param(req, 'id'), data);
   if (!updated) {
     return apiResponse.error(res, { message: 'Kurs tapılmadı', status: 404 });
   }
@@ -124,8 +137,7 @@ export const updateCourseAdmin = asyncHandler(async (req: Request, res: Response
 });
 
 export const deleteCourseAdmin = asyncHandler(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const deleted = await deleteCourse(id);
+  const deleted = await deleteCourse(param(req, 'id'));
   if (!deleted) {
     return apiResponse.error(res, { message: 'Kurs tapılmadı', status: 404 });
   }

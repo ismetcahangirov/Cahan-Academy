@@ -1,47 +1,31 @@
-'use client';
-
-import { useState } from 'react';
+import { setRequestLocale } from 'next-intl/server';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
-export default function MarketingLayout({
+/**
+ * Marketing shell: sticky header, <main id="main"> (skip-link target), wine footer.
+ * Server component — the header/drawer are the only client islands of the shell.
+ * setRequestLocale here too: Next can render a layout before (or without) its page, and the server
+ * Footer reads translations — without the locale it would fall back to headers() and make every
+ * marketing page dynamic (`Cache-Control: private, no-store`).
+ */
+export default async function MarketingLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }) {
-  const [enrollOpen, setEnrollOpen] = useState(false);
+  const { locale } = await params;
+  setRequestLocale(locale);
 
   return (
-    <>
-      <Header onEnroll={() => setEnrollOpen(true)} />
-      <main className="min-h-screen pt-16 lg:pt-20">
+    <div className="flex min-h-dvh flex-col">
+      <Header />
+      <main id="main" tabIndex={-1} className="flex-1 outline-none">
         {children}
       </main>
       <Footer />
-
-      {/* Enroll Modal placeholder — will be built in Phase 5 */}
-      {enrollOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-          onClick={() => setEnrollOpen(false)}
-        >
-          <div
-            className="bg-card rounded-2xl p-8 shadow-2xl max-w-md w-full mx-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className="font-heading text-2xl font-bold mb-2">Kursa Yazıl</h2>
-            <p className="text-muted-foreground text-sm mb-6">
-              Bu funksiya tezliklə əlavə ediləcək.
-            </p>
-            <button
-              onClick={() => setEnrollOpen(false)}
-              className="w-full py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-colors"
-            >
-              Bağla
-            </button>
-          </div>
-        </div>
-      )}
-    </>
+    </div>
   );
 }

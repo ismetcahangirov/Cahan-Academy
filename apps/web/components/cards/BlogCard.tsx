@@ -1,85 +1,75 @@
-'use client';
-
-import { motion } from 'framer-motion';
+import { useLocale, useTranslations } from 'next-intl';
+import { ArrowRight, Calendar, Clock } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import { Calendar, Clock, ArrowRight, User } from 'lucide-react';
-import Image from 'next/image';
-import { BlogPost } from '@/types/blog';
-import { useTranslations } from 'next-intl';
+import type { BlogPost } from '@/types/blog';
+import { cn } from '@/lib/utils';
+import { sketchFor } from '@/lib/media';
+import Card from '../ui/Card';
+import CoverImage from './CoverImage';
 
+/**
+ * BlogCard — framed cover (photo, or a sketch chosen from the post's subject), date · reading time in italic, serif title,
+ * excerpt, author in small caps, "read more". Whole card = one link (stretched).
+ * Shared component (server or client). `index` kept for compatibility.
+ */
 interface BlogCardProps {
   post: BlogPost;
   index?: number;
+  className?: string;
 }
 
-export default function BlogCard({ post, index = 0 }: BlogCardProps) {
+export default function BlogCard({ post, className }: BlogCardProps) {
   const t = useTranslations('blog');
+  const locale = useLocale();
 
-  const formattedDate = new Date(post.createdAt).toLocaleDateString('az-AZ', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  });
+  const date = new Date(post.createdAt);
+  const formattedDate = Number.isNaN(date.getTime())
+    ? ''
+    : new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
 
   return (
-    <motion.div
-      className="group bg-card rounded-2xl overflow-hidden border border-border hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500"
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.1, duration: 0.5 }}
-    >
-      {/* Image */}
-      <div className="relative h-64 w-full overflow-hidden">
-        <Image
-          src={post.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=800'}
-          alt={post.title}
-          fill
-          className="object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      </div>
-
-      {/* Content */}
-      <div className="p-6">
-        <div className="flex items-center gap-4 text-[13px] text-muted-foreground mb-4">
-          <div className="flex items-center gap-1.5">
-            <Calendar size={15} className="text-primary" />
-            <span suppressHydrationWarning>{formattedDate}</span>
-          </div>
-          {post.readingTime && (
-            <div className="flex items-center gap-1.5">
-              <Clock size={15} className="text-primary" />
-              <span>{post.readingTime}</span>
-            </div>
+    <Card as="article" hover className={cn('group flex h-full flex-col p-3', className)}>
+      <CoverImage
+        src={post.image}
+        alt=""
+        sketch={sketchFor(post.slug, post.title)}
+        className="aspect-[16/10]"
+        imgClassName="transition-transform duration-500 group-hover:scale-[1.03]"
+      />
+      <div className="flex flex-1 flex-col px-3 pb-3 pt-4">
+        <p className="time-italic flex flex-wrap items-center gap-x-4 gap-y-1 text-[0.98rem] text-ink-muted">
+          {formattedDate && (
+            <span className="inline-flex items-center gap-1.5">
+              <Calendar size={14} strokeWidth={1.6} className="text-ornament" aria-hidden="true" />
+              <time dateTime={post.createdAt} suppressHydrationWarning>
+                {formattedDate}
+              </time>
+            </span>
           )}
-        </div>
-
-        <h3 className="font-heading text-xl font-bold mb-3 group-hover:text-primary transition-colors line-clamp-2 min-h-[3.5rem]">
-          {post.title}
-        </h3>
-
-        <p className="text-muted-foreground text-sm line-clamp-3 mb-6 h-15">
-          {post.excerpt}
+          {post.readingTime && (
+            <span className="inline-flex items-center gap-1.5">
+              <Clock size={14} strokeWidth={1.6} className="text-ornament" aria-hidden="true" />
+              {post.readingTime}
+            </span>
+          )}
         </p>
-
-        <div className="flex items-center justify-between pt-5 border-t border-border/60">
-          <div className="flex items-center gap-2">
-             <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-primary">
-                <User size={16} />
-             </div>
-             <span className="text-sm font-medium">{post.author?.name || 'Cahan Academy'}</span>
-          </div>
-          <Link 
+        <h3 className="mt-2 line-clamp-2 text-[1.3rem] font-semibold leading-snug text-ink">
+          <Link
             href={`/blog/${post.slug}`}
-            aria-label={`${post.title} — ${t('read_more')}`}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accent hover:bg-primary hover:text-white transition-all duration-300 font-semibold text-sm group/btn"
+            className="outline-none after:absolute after:inset-0 after:rounded-[var(--radius-lg)] after:content-[''] focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-[var(--focus)]"
           >
-            {t('read_more')}
-            <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+            {post.title}
           </Link>
+        </h3>
+        {post.excerpt && <p className="mt-2 line-clamp-3 text-[1rem] leading-relaxed text-ink-muted">{post.excerpt}</p>}
+        <div className="mt-auto flex items-center justify-between gap-3 border-t border-line-hair pt-4">
+          <span className="sc truncate text-[0.82rem] text-ink-muted">{post.author?.name || 'Cahan Academy'}</span>
+          <span className="sc inline-flex shrink-0 items-center gap-1.5 text-[0.85rem] text-accent-text" aria-hidden="true">
+            {t('read_more')}
+            <ArrowRight size={15} strokeWidth={1.6} className="transition-transform group-hover:translate-x-0.5" />
+          </span>
         </div>
       </div>
-    </motion.div>
+    </Card>
   );
 }

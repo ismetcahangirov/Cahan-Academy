@@ -1034,7 +1034,7 @@ jobs:
 
     env:
       DATABASE_URL:        postgresql://testuser:testpass@localhost:5432/academy_test
-      JWT_ACCESS_SECRET:   test_access_secret_64_chars_minimum_length_required
+      JWT_SECRET:   test_access_secret_64_chars_minimum_length_required
       JWT_REFRESH_SECRET:  test_refresh_secret_64_chars_minimum_length_required
       NODE_ENV:            test
       SMTP_HOST:           localhost
@@ -1076,7 +1076,7 @@ jobs:
       NEXT_PUBLIC_API_URL:    http://localhost:5000/api
       NEXT_PUBLIC_SITE_URL:   http://localhost:3000
       DATABASE_URL:           ${{ secrets.DATABASE_URL_TEST }}
-      JWT_ACCESS_SECRET:      ${{ secrets.JWT_ACCESS_SECRET_TEST }}
+      JWT_SECRET:      ${{ secrets.JWT_SECRET_TEST }}
       JWT_REFRESH_SECRET:     ${{ secrets.JWT_REFRESH_SECRET_TEST }}
       TEST_ADMIN_EMAIL:       admin@test.az
       TEST_ADMIN_PASSWORD:    TestPass123!

@@ -1,0 +1,175 @@
+/*
+ * Long-form article body (blog posts). Sits on top of `prose prose-ornate` (typography plugin re-toned in
+ * globals.css) and finishes what the plugin leaves generic: serif headings with rhythm, a wine drop cap,
+ * framed quotes, code on a parchment tone, readable tables that scroll on phones, framed images.
+ * Colours are tokens only (both themes); the palette for the plugin's variables comes from `.prose-ornate`
+ * (globals.css). The plugin's rules are :where() (0 specificity), these win.
+ */
+.body {
+  color: var(--ink);
+  font-size: 1.125rem;
+  line-height: 1.75;
+  overflow-wrap: break-word;
+}
+
+.body > :first-child {
+  margin-top: 0;
+}
+
+/* drop cap on the first paragraph (serif, not script: the text is data) */
+.body > p:first-child::first-letter {
+  float: left;
+  margin: 0.06em 0.12em 0 0;
+  font-size: 3.4em;
+  font-weight: 600;
+  line-height: 0.82;
+  color: var(--accent-text);
+}
+
+.body :global(h2),
+.body :global(h3),
+.body :global(h4) {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0;
+  scroll-margin-top: 6rem;
+}
+.body :global(h2) {
+  font-size: 1.6em;
+  line-height: 1.2;
+  margin-top: 2.2em;
+  margin-bottom: 0.7em;
+  padding-bottom: 0.35em;
+  border-bottom: 1px solid var(--line);
+}
+.body :global(h3) {
+  font-size: 1.3em;
+  margin-top: 1.8em;
+}
+
+.body :global(a) {
+  color: var(--accent-text);
+  text-decoration-line: underline;
+  text-decoration-color: var(--line-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.body :global(a:hover) {
+  text-decoration-color: currentColor;
+}
+
+.body :global(ul > li)::marker {
+  color: var(--ornament-soft);
+}
+.body :global(ol > li)::marker {
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+/* quotes: framed by a wine rule and a hairline panel, italic, no plugin quote marks */
+.body :global(blockquote) {
+  position: relative;
+  margin: 2em 0;
+  padding: 1.1em 1.4em 1.1em 1.6em;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent-text);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  background-color: var(--paper);
+  font-size: 1.12em;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ink);
+  quotes: none;
+}
+.body :global(blockquote p)::before,
+.body :global(blockquote p)::after {
+  content: none;
+}
+.body :global(blockquote p) {
+  margin: 0;
+}
+
+/* code */
+.body :global(:not(pre) > code) {
+  padding: 0.12em 0.38em;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background-color: var(--accent-soft);
+  color: var(--accent-text);
+  font-size: 0.86em;
+  font-weight: 500;
+}
+.body :global(:not(pre) > code)::before,
+.body :global(:not(pre) > code)::after {
+  content: none;
+}
+.body :global(pre) {
+  margin: 1.8em 0;
+  padding: 1em 1.2em;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-2);
+  color: var(--ink);
+  font-size: 0.88em;
+  line-height: 1.65;
+  overflow-x: auto;
+  white-space: pre;
+}
+.body :global(pre code) {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-size: inherit;
+}
+
+/* tables: small-caps header, hairline rows, horizontal scroll inside the column on phones */
+.body :global(table) {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 1.8em 0;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+.body :global(thead th) {
+  padding: 0.6em 0.9em;
+  border-bottom: 1.5px solid var(--line-strong);
+  font-family: var(--font-sc);
+  font-weight: 600;
+  font-size: 0.85em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--ink-muted);
+}
+.body :global(tbody td) {
+  padding: 0.6em 0.9em;
+  border-bottom: 1px solid var(--line-hair);
+  vertical-align: top;
+}
+.body :global(tbody tr:nth-child(even)) {
+  background-color: var(--surface-2);
+}
+
+/* images and figures (user content, exempt from the palette) in a hairline mat */
+.body :global(img) {
+  margin: 1.8em auto;
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background-color: var(--surface);
+}
+.body :global(figcaption) {
+  font-style: italic;
+  text-align: center;
+  color: var(--ink-muted);
+}
+
+.body :global(hr) {
+  margin: 2.6em auto;
+  width: 40%;
+  border-color: var(--line-strong);
+}

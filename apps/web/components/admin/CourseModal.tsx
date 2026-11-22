@@ -1,374 +1,231 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Save } from 'lucide-react';
-import { useForm, Controller } from 'react-hook-form';
+import { useEffect, useMemo, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { useTranslations } from 'next-intl';
+import { AlertCircle, Save } from 'lucide-react';
 import adminApi from '@/lib/adminApi';
+import { Button, FormField, Input, Modal, Select, Textarea } from '@/components/ui';
 import ImageUpload from './ImageUpload';
+import { LangTabs, type Lang } from './AdminUI';
+import { useFeedback } from '@/components/ui/Feedback';
+import { apiMessage, asBool, slugify } from './utils';
 
-const formSchema = z.object({
-  titleAz: z.string().min(1, 'Azərbaycan dilində başlıq mütləqdir'),
-  titleEn: z.string().min(1, 'İngilis dilində başlıq mütləqdir'),
-  titleRu: z.string().min(1, 'Rus dilində başlıq mütləqdir'),
-  slug: z.string().min(1, 'Slug mütləqdir'),
-  descriptionAz: z.string().min(1, 'Azərbaycan dilində təsvir mütləqdir'),
-  descriptionEn: z.string().min(1, 'İngilis dilində təsvir mütləqdir'),
-  descriptionRu: z.string().min(1, 'Rus dilində təsvir mütləqdir'),
-  categoryId: z.string().min(1, 'Kateqoriya seçimi mütləqdir'),
-  teacherId: z.string().min(1, 'Müəllim seçimi mütləqdir'),
-  price: z.string().optional(),
-  duration: z.string().optional(),
-  level: z.enum(['beginner', 'intermediate', 'advanced', 'all']),
-  image: z.string().optional(),
-  isPopular: z.enum(['true', 'false']),
-  rating: z.string().optional(),
-  studentsCount: z.string().optional(),
-  syllabusAz: z.string().optional(),
-  syllabusEn: z.string().optional(),
-  syllabusRu: z.string().optional(),
-});
-
-type FormData = z.infer<typeof formSchema>;
-
-interface CourseModalProps {
+interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  courseToEdit?: any | null;
+  courseToEdit?: Record<string, any> | null; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
-export default function CourseModal({ isOpen, onClose, onSuccess, courseToEdit }: CourseModalProps) {
-  const [activeTab, setActiveTab] = useState<'az' | 'en' | 'ru'>('az');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [categories, setCategories] = useState<any[]>([]);
-  const [teachers, setTeachers] = useState<any[]>([]);
+const TITLE = { az: 'titleAz', en: 'titleEn', ru: 'titleRu' } as const;
+const DESC = { az: 'descriptionAz', en: 'descriptionEn', ru: 'descriptionRu' } as const;
+const SYL = { az: 'syllabusAz', en: 'syllabusEn', ru: 'syllabusRu' } as const;
 
+/** Course create / edit: title, description, syllabus in az / en / ru + slug, category, teacher, price, level… */
+export default function CourseModal({ isOpen, onClose, onSuccess, courseToEdit }: Props) {
+  const t = useTranslations('admin');
+  const { ok } = useFeedback();
+  const [tab, setTab] = useState<Lang>('az');
+  const [serverError, setServerError] = useState('');
+  const [categories, setCategories] = useState<{ id: string; nameAz: string }[]>([]);
+  const [teachers, setTeachers] = useState<{ id: string; name: string }[]>([]);
+  const [optionsError, setOptionsError] = useState('');
+
+  const schema = useMemo(
+    () =>
+      z.object({
+        titleAz: z.string().trim().min(1, t('courses.err_title_az')),
+        titleEn: z.string().trim().min(1, t('courses.err_title_en')),
+        titleRu: z.string().trim().min(1, t('courses.err_title_ru')),
+        slug: z.string().trim().min(1, t('common.err_slug')),
+        descriptionAz: z.string().trim().min(1, t('courses.err_desc_az')),
+        descriptionEn: z.string().trim().min(1, t('courses.err_desc_en')),
+        descriptionRu: z.string().trim().min(1, t('courses.err_desc_ru')),
+        categoryId: z.string().min(1, t('courses.err_category')),
+        teacherId: z.string().min(1, t('courses.err_teacher')),
+        price: z.string().optional(),
+        duration: z.string().optional(),
+        level: z.enum(['beginner', 'intermediate', 'advanced', 'all']),
+        image: z.string().optional(),
+        isPopular: z.enum(['true', 'false']),
+        rating: z.string().optional(),
+        studentsCount: z.string().optional(),
+        syllabusAz: z.string().optional(),
+        syllabusEn: z.string().optional(),
+        syllabusRu: z.string().optional(),
+      }),
+    [t]
+  );
+  type Values = z.infer<typeof schema>;
   const {
     register,
     handleSubmit,
+    reset,
     setValue,
     watch,
-    reset,
     control,
-    formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      isPopular: 'false',
-      level: 'beginner',
-      rating: '5.0',
-      studentsCount: '0'
-    },
-  });
-
-  const titleAzWatcher = watch('titleAz');
+    formState: { errors, isSubmitting },
+  } = useForm<Values>({ resolver: zodResolver(schema) });
 
   useEffect(() => {
-    if (isOpen) {
-      // Fetch categories and teachers for dropdowns
-      adminApi.get('/courses/categories').then(res => setCategories(res.data.data || []));
-      adminApi.get('/teachers').then(res => setTeachers(res.data.data || []));
+    if (!isOpen) return;
+    setServerError('');
+    setOptionsError('');
+    setTab('az');
+    Promise.all([adminApi.get('/courses/categories'), adminApi.get('/teachers')])
+      .then(([c, tr]) => {
+        setCategories(c.data.data || []);
+        setTeachers(tr.data.data || []);
+      })
+      .catch((e) => setOptionsError(apiMessage(e, t('courses.options_error'))));
+    const c = courseToEdit;
+    reset({
+      titleAz: c?.title_az ?? '',
+      titleEn: c?.title_en ?? '',
+      titleRu: c?.title_ru ?? '',
+      slug: c?.slug ?? '',
+      descriptionAz: c?.description_az ?? '',
+      descriptionEn: c?.description_en ?? '',
+      descriptionRu: c?.description_ru ?? '',
+      categoryId: c?.category_id ?? '',
+      teacherId: c?.teacher_id ?? '',
+      price: c?.price ?? '',
+      duration: c?.duration ?? '',
+      level: c?.level ?? 'beginner',
+      image: c?.image ?? '',
+      isPopular: asBool(c?.is_popular) ? 'true' : 'false',
+      rating: c?.rating ?? '',
+      studentsCount: c?.students_count ?? '',
+      syllabusAz: c?.syllabus_az ?? '',
+      syllabusEn: c?.syllabus_en ?? '',
+      syllabusRu: c?.syllabus_ru ?? '',
+    });
+  }, [isOpen, courseToEdit, reset, t]);
 
-      if (courseToEdit) {
-        reset({
-          titleAz: courseToEdit.title_az || '',
-          titleEn: courseToEdit.title_en || '',
-          titleRu: courseToEdit.title_ru || '',
-          slug: courseToEdit.slug || '',
-          descriptionAz: courseToEdit.description_az || '',
-          descriptionEn: courseToEdit.description_en || '',
-          descriptionRu: courseToEdit.description_ru || '',
-          categoryId: courseToEdit.category_id || '',
-          teacherId: courseToEdit.teacher_id || '',
-          price: courseToEdit.price || '',
-          duration: courseToEdit.duration || '',
-          level: courseToEdit.level || 'beginner',
-          image: courseToEdit.image || '',
-          isPopular: courseToEdit.is_popular === 'true' || courseToEdit.is_popular === true ? 'true' : 'false',
-          rating: courseToEdit.rating || '5.0',
-          studentsCount: courseToEdit.students_count || '0',
-          syllabusAz: courseToEdit.syllabus_az || '',
-          syllabusEn: courseToEdit.syllabus_en || '',
-          syllabusRu: courseToEdit.syllabus_ru || '',
-        });
-      } else {
-        reset({
-          titleAz: '', titleEn: '', titleRu: '', slug: '',
-          descriptionAz: '', descriptionEn: '', descriptionRu: '',
-          categoryId: '', teacherId: '', price: '', duration: '',
-          level: 'beginner', image: '', isPopular: 'false', rating: '5.0', studentsCount: '0',
-          syllabusAz: '', syllabusEn: '', syllabusRu: '',
-        });
-      }
-      setActiveTab('az');
-    }
-  }, [isOpen, courseToEdit, reset]);
-
-  // Auto-generate slug from AZ title if it's a new course
+  const titleAz = watch('titleAz');
   useEffect(() => {
-    if (!courseToEdit && titleAzWatcher) {
-      const slugify = (text: string) => {
-        return text
-          .toString()
-          .toLowerCase()
-          .trim()
-          .replace(/ə/g, 'e').replace(/ö/g, 'o').replace(/ğ/g, 'g').replace(/ı/g, 'i')
-          .replace(/ş/g, 's').replace(/ç/g, 'c').replace(/ü/g, 'u')
-          .replace(/[\s\W-]+/g, '-').replace(/-+$/, '');
-      };
-      setValue('slug', slugify(titleAzWatcher), { shouldValidate: true });
-    }
-  }, [titleAzWatcher, courseToEdit, setValue]);
+    if (!courseToEdit && titleAz) setValue('slug', slugify(titleAz), { shouldValidate: true });
+  }, [titleAz, courseToEdit, setValue]);
 
-  const onSubmit = async (data: FormData) => {
-    setIsSubmitting(true);
+  const hasErr = (l: Lang) => !!(errors[TITLE[l]] || errors[DESC[l]]);
+  const errorLangs = (['az', 'en', 'ru'] as Lang[]).filter(hasErr);
+
+  const onSubmit = async (v: Values) => {
+    setServerError('');
     try {
-      if (courseToEdit) {
-        const res = await adminApi.put(`/courses/admin/${courseToEdit.id}`, data);
-        if (res.data.success) {
-          onSuccess();
-          onClose();
-        }
-      } else {
-        const res = await adminApi.post('/courses/admin', data);
-        if (res.data.success) {
-          onSuccess();
-          onClose();
-        }
-      }
-    } catch (error) {
-      console.error('Error saving course:', error);
-      alert('Kursu yadda saxlamaq mümkün olmadı.');
-    } finally {
-      setIsSubmitting(false);
+      const res = courseToEdit ? await adminApi.put(`/courses/admin/${courseToEdit.id}`, v) : await adminApi.post('/courses/admin', v);
+      if (!res.data.success) throw { response: { data: res.data } };
+      ok(t('common.saved'));
+      onSuccess();
+      onClose();
+    } catch (e) {
+      setServerError(apiMessage(e, t('common.save_error')));
     }
-  };
-
-  const onError = (errs: any) => {
-    // Switch to the first tab that has an error
-    for (const tab of tabs) {
-      if (tab.fields.some(field => errs[field])) {
-        setActiveTab(tab.id as any);
-        break;
-      }
-    }
-  };
-
-  const tabs = [
-    { id: 'az', label: 'Azərbaycanca', fields: ['titleAz', 'descriptionAz'] },
-    { id: 'en', label: 'İngiliscə', fields: ['titleEn', 'descriptionEn'] },
-    { id: 'ru', label: 'Rusca', fields: ['titleRu', 'descriptionRu'] },
-  ];
-
-  const hasErrorInTab = (tabFields: string[]) => {
-    return tabFields.some(field => errors[field as keyof FormData]);
   };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          {/* Backdrop */}
-          <motion.div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      size="xl"
+      title={courseToEdit ? t('courses.modal_edit') : t('courses.modal_new')}
+      entity={courseToEdit?.title_az}
+      footer={
+        <>
+          {errorLangs.length > 0 && <p className="field-error mr-auto mt-0">{t('common.required_langs')}</p>}
+          <Button variant="ghost" onClick={onClose} disabled={isSubmitting}>
+            {t('common.cancel')}
+          </Button>
+          <Button type="submit" form="course-form" icon={Save} loading={isSubmitting}>
+            {isSubmitting ? t('common.saving') : t('common.save')}
+          </Button>
+        </>
+      }
+    >
+      <form
+        id="course-form"
+        noValidate
+        onSubmit={handleSubmit(onSubmit, (errs) => {
+          const first = (['az', 'en', 'ru'] as Lang[]).find((l) => errs[TITLE[l]] || errs[DESC[l]]);
+          if (first) setTab(first);
+        })}
+        className="space-y-5"
+      >
+        <LangTabs value={tab} onChange={setTab} errorLangs={errorLangs} />
+        <FormField label={t('courses.field_title')} error={errors[TITLE[tab]]?.message} required>
+          <Input key={`t${tab}`} {...register(TITLE[tab])} />
+        </FormField>
+        <FormField label={t('courses.field_description')} error={errors[DESC[tab]]?.message} required>
+          <Textarea key={`d${tab}`} rows={3} {...register(DESC[tab])} />
+        </FormField>
+        <FormField label={t('courses.field_syllabus')} hint={t('common.html_hint')}>
+          <Textarea key={`s${tab}`} rows={4} {...register(SYL[tab])} />
+        </FormField>
 
-          {/* Modal Content */}
-          <motion.div
-            className="relative z-10 w-full max-w-5xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900/50">
-              <div>
-                <h2 className="text-xl font-bold text-white">
-                  {courseToEdit ? 'Kursu Redaktə Et' : 'Yeni Kurs'}
-                </h2>
-                <p className="text-slate-400 text-sm mt-1">Məlumatları daxil edin</p>
-              </div>
-              <button onClick={onClose} className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-colors">
-                <X size={20} />
-              </button>
-            </div>
-
-            {/* Scrollable Body */}
-            <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
-              <form id="course-form" onSubmit={handleSubmit(onSubmit, onError)} className="space-y-8">
-                
-                {/* Language Tabs */}
-                <div className="flex p-1 bg-slate-800 rounded-xl w-fit relative">
-                  {tabs.map((tab) => (
-                    <button
-                      key={tab.id} type="button"
-                      onClick={() => setActiveTab(tab.id as any)}
-                      className={`relative px-6 py-2 rounded-lg text-sm font-medium transition-all ${
-                        activeTab === tab.id ? 'bg-amber-500 text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-200'
-                      }`}
-                    >
-                      {tab.label}
-                      {hasErrorInTab(tab.fields) && (
-                        <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-slate-800" />
-                      )}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Tab Content */}
-                <div className="space-y-5 bg-slate-800/20 p-5 rounded-2xl border border-slate-800/50">
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-300">Kursun Adı</label>
-                    <input
-                      {...register(activeTab === 'az' ? 'titleAz' : activeTab === 'en' ? 'titleEn' : 'titleRu')}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-colors"
-                      placeholder="Ad..."
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-300">Təsvir (Description)</label>
-                    <textarea
-                      {...register(activeTab === 'az' ? 'descriptionAz' : activeTab === 'en' ? 'descriptionEn' : 'descriptionRu')}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-colors h-32"
-                      placeholder="Kurs haqqında məlumat..."
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-300">Proqram (Syllabus - HTML dəstəklənir)</label>
-                    <textarea
-                      {...register(activeTab === 'az' ? 'syllabusAz' : activeTab === 'en' ? 'syllabusEn' : 'syllabusRu')}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white font-mono placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-colors h-32"
-                      placeholder="<ul><li>Mövzu 1</li>...</ul>"
-                    />
-                  </div>
-
-                  {/* Show validation errors for the current tab fields */}
-                  {activeTab === 'az' && (
-                    <>
-                      {errors.titleAz && <p className="text-red-500 text-xs">{errors.titleAz.message}</p>}
-                      {errors.descriptionAz && <p className="text-red-500 text-xs">{errors.descriptionAz.message}</p>}
-                    </>
-                  )}
-                  {activeTab === 'en' && (
-                    <>
-                      {errors.titleEn && <p className="text-red-500 text-xs">{errors.titleEn.message}</p>}
-                      {errors.descriptionEn && <p className="text-red-500 text-xs">{errors.descriptionEn.message}</p>}
-                    </>
-                  )}
-                  {activeTab === 'ru' && (
-                    <>
-                      {errors.titleRu && <p className="text-red-500 text-xs">{errors.titleRu.message}</p>}
-                      {errors.descriptionRu && <p className="text-red-500 text-xs">{errors.descriptionRu.message}</p>}
-                    </>
-                  )}
-                </div>
-
-                {/* Common Settings */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-slate-800">
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-300">URL Slug</label>
-                    <input {...register('slug')} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white transition-colors" />
-                    {errors.slug && <p className="text-red-500 text-xs mt-1">{errors.slug.message}</p>}
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-300">Kateqoriya</label>
-                    <select {...register('categoryId')} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white transition-colors">
-                      <option value="">Seçin...</option>
-                      {categories.map(c => <option key={c.id} value={c.id}>{c.nameAz}</option>)}
-                    </select>
-                    {errors.categoryId && <p className="text-red-500 text-xs mt-1">{errors.categoryId.message}</p>}
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-300">Müəllim</label>
-                    <select {...register('teacherId')} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white transition-colors">
-                      <option value="">Seçin...</option>
-                      {teachers.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
-                    </select>
-                    {errors.teacherId && <p className="text-red-500 text-xs mt-1">{errors.teacherId.message}</p>}
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-300">Qiymət</label>
-                    <input {...register('price')} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white transition-colors" placeholder="Məs: 299 ₼" />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-300">Müddət</label>
-                    <input {...register('duration')} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white transition-colors" placeholder="Məs: 3 ay" />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-300">Çətinlik (Level)</label>
-                    <select {...register('level')} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white transition-colors">
-                      <option value="beginner">Başlanğıc</option>
-                      <option value="intermediate">Orta</option>
-                      <option value="advanced">İrəli</option>
-                      <option value="all">Hamı üçün</option>
-                    </select>
-                  </div>
-
-                  <div className="space-y-1 md:col-span-2">
-                    <label className="text-sm font-medium text-slate-300">Şəkil</label>
-                    <Controller
-                      name="image"
-                      control={control}
-                      render={({ field }) => (
-                        <ImageUpload value={field.value || ''} onChange={field.onChange} />
-                      )}
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-300">Populyar</label>
-                    <select {...register('isPopular')} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white transition-colors">
-                      <option value="false">Xeyr</option>
-                      <option value="true">Bəli</option>
-                    </select>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-300">Reytinq (Məs: 4.9)</label>
-                    <input {...register('rating')} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white transition-colors" />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-300">Tələbə Sayı (Məs: 324)</label>
-                    <input {...register('studentsCount')} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white transition-colors" />
-                  </div>
-
-                </div>
-              </form>
-            </div>
-
-            {/* Footer */}
-            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-800 bg-slate-900/50">
-              <div className="flex flex-col items-end gap-2">
-                {Object.keys(errors).length > 0 && (
-                  <p className="text-red-500 text-xs font-medium">Bütün mütləq sahələri (AZ, EN, RU) doldurun</p>
-                )}
-                <div className="flex gap-3">
-                  <button type="button" onClick={onClose} className="px-5 py-2.5 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-xl transition-colors" disabled={isSubmitting}>Ləğv et</button>
-                  <button type="submit" form="course-form" disabled={isSubmitting} className="flex items-center gap-2 px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-900 text-sm font-bold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                    <Save size={18} />
-                    {isSubmitting ? 'Saxlanılır...' : 'Yadda Saxla'}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        <div className="grid gap-4 border-t border-line-hair pt-5 sm:grid-cols-2">
+          <FormField label={t('common.slug')} error={errors.slug?.message} required>
+            <Input {...register('slug')} />
+          </FormField>
+          <FormField label={t('courses.field_category')} error={errors.categoryId?.message} required>
+            <Select {...register('categoryId')}>
+              <option value="">{t('common.select')}</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.nameAz}
+                </option>
+              ))}
+            </Select>
+          </FormField>
+          <FormField label={t('courses.field_teacher')} error={errors.teacherId?.message} required>
+            <Select {...register('teacherId')}>
+              <option value="">{t('common.select')}</option>
+              {teachers.map((x) => (
+                <option key={x.id} value={x.id}>
+                  {x.name}
+                </option>
+              ))}
+            </Select>
+          </FormField>
+          <FormField label={t('courses.field_level')}>
+            <Select {...register('level')}>
+              <option value="beginner">{t('courses.level_beginner')}</option>
+              <option value="intermediate">{t('courses.level_intermediate')}</option>
+              <option value="advanced">{t('courses.level_advanced')}</option>
+              <option value="all">{t('courses.level_all')}</option>
+            </Select>
+          </FormField>
+          <FormField label={t('courses.col_price')} hint={t('courses.price_hint')}>
+            <Input {...register('price')} />
+          </FormField>
+          <FormField label={t('courses.field_duration')} hint={t('courses.duration_hint')}>
+            <Input {...register('duration')} />
+          </FormField>
+          <FormField label={t('courses.field_popular')}>
+            <Select {...register('isPopular')}>
+              <option value="false">{t('common.no')}</option>
+              <option value="true">{t('common.yes')}</option>
+            </Select>
+          </FormField>
+          <FormField label={t('courses.field_rating')} hint={t('courses.rating_hint')}>
+            <Input inputMode="decimal" {...register('rating')} />
+          </FormField>
+          <FormField label={t('courses.field_students')} hint={t('courses.students_hint')}>
+            <Input inputMode="numeric" {...register('studentsCount')} />
+          </FormField>
+          <FormField label={t('common.image')} className="sm:col-span-2">
+            {(id) => <Controller name="image" control={control} render={({ field }) => <ImageUpload id={id} value={field.value || ''} onChange={field.onChange} />} />}
+          </FormField>
+        </div>
+        {(serverError || optionsError) && (
+          <p role="alert" className="field-error">
+            <AlertCircle aria-hidden="true" strokeWidth={2} />
+            {serverError || optionsError}
+          </p>
+        )}
+      </form>
+    </Modal>
   );
 }

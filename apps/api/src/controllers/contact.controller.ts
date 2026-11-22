@@ -1,10 +1,9 @@
 import { Request, Response } from 'express';
 import * as ContactRepository from '../repositories/contact.repository.js';
 import { ContactSchema } from '../schemas/form.schema.js';
-import { sendMail } from '../services/email.service.js';
-import { adminNotificationTemplate, userThankYouTemplate } from '../templates/notification.template.js';
-import { env } from '../config/env.js';
+import { notify } from '../services/notify.js';
 import { apiResponse } from '../utils/apiResponse.js';
+import { param } from '../utils/sanitize.js';
 
 export const createContactMessage = async (req: Request, res: Response) => {
   try {
@@ -12,20 +11,13 @@ export const createContactMessage = async (req: Request, res: Response) => {
 
     const message = await ContactRepository.createContactMessage(validatedData);
 
-    // Send emails
-    await sendMail(
-      env.NOTIFICATION_EMAIL,
-      `Yeni Əlaqə Mesajı: ${validatedData.subject}`,
-      adminNotificationTemplate('contact', validatedData)
-    );
+    await notify('contact', `Yeni Əlaqə Mesajı: ${validatedData.subject}`, validatedData, {
+      to: validatedData.email,
+      subject: 'Mesajınız qeydə alındı',
+      name: validatedData.name,
+    });
 
-    await sendMail(
-      validatedData.email,
-      'Mesajınız qeydə alındı',
-      userThankYouTemplate(validatedData.name)
-    );
-
-    res.status(201).json(apiResponse(true, 'Mesajınız uğurla göndərildi', message));
+    res.status(201).json(apiResponse(true, 'Mesajınız uğurla göndərildi', { id: message?.id }));
   } catch (error: any) {
     if (error.name === 'ZodError') {
       return res.status(400).json(apiResponse(false, error.errors[0].message));
@@ -46,8 +38,7 @@ export const getMessages = async (req: Request, res: Response) => {
 
 export const markAsRead = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const message = await ContactRepository.markAsRead(id);
+    const message = await ContactRepository.markAsRead(param(req, 'id'));
     if (!message) {
       return res.status(404).json(apiResponse(false, 'Mesaj tapılmadı'));
     }

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { apiResponse } from '../utils/apiResponse.js';
+import { param } from '../utils/sanitize.js';
 import {
   getAllCategories,
   getCategoryById,
@@ -25,7 +26,7 @@ export const createCategoryAdmin = asyncHandler(async (req: Request, res: Respon
 
 // PUT /api/categories/admin/:id
 export const updateCategoryAdmin = asyncHandler(async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const id = param(req, 'id');
   const validated = CategorySchema.parse(req.body);
   const existing = await getCategoryById(id);
   if (!existing) {
@@ -37,7 +38,7 @@ export const updateCategoryAdmin = asyncHandler(async (req: Request, res: Respon
 
 // DELETE /api/categories/admin/:id
 export const deleteCategoryAdmin = asyncHandler(async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const id = param(req, 'id');
   const existing = await getCategoryById(id);
   if (!existing) {
     return apiResponse.error(res, { message: 'Kateqoriya tapılmadı', status: 404 });

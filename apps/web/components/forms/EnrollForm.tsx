@@ -1,23 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { motion, AnimatePresence } from 'framer-motion';
-import { User, Mail, Phone, BookOpen, CheckCircle2, AlertCircle } from 'lucide-react';
+import { AlertCircle, Mail, Phone, Send, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { submitEnrollForm } from '@/lib/api';
+import { ApiError, submitEnrollForm } from '@/lib/api';
+import { Button, FormField, Input } from '@/components/ui';
+import OrnamentDivider from '@/components/ornament/OrnamentDivider';
+import WaxSeal from '@/components/ornament/WaxSeal';
 
-const enrollSchema = z.object({
-  name: z.string().min(2, 'Ad ən azı 2 simvol olmalıdır'),
-  email: z.string().email('Düzgün email daxil edin'),
-  phone: z.string().min(7, 'Düzgün telefon nömrəsi daxil edin'),
-  course: z.string().min(1, 'Kurs seçin'),
-});
-
-type EnrollFormValues = z.infer<typeof enrollSchema>;
-
+/**
+ * EnrollForm — course enrolment request (POST /api/leads). Used inline on the course page and inside
+ * <EnrollButton>'s modal.
+ * - `noValidate` + zod messages from `messages/*.json` (enroll.err_*), shown inline under each field
+ *   (FormField: border + icon + bold text, no red); focus goes to the first invalid field.
+ * - API errors are shown as an icon + sentence: the API's own message for validation (400), a
+ *   localized rate-limit sentence (429), otherwise a generic localized error.
+ * - Success = wax seal + short script line + sentence; "send another" resets the form.
+ * The course is not an editable field: the title shown above the form is what is sent.
+ * Props (unchanged): courseTitle, courseId, onSuccess (called right after a successful submit).
+ */
 interface EnrollFormProps {
   courseTitle: string;
   courseId: string;
@@ -26,148 +30,122 @@ interface EnrollFormProps {
 
 export default function EnrollForm({ courseTitle, courseId, onSuccess }: EnrollFormProps) {
   const t = useTranslations('enroll');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [apiMessage, setApiMessage] = useState('');
+  const successRef = useRef<HTMLDivElement>(null);
+
+  const schema = useMemo(
+    () =>
+      z.object({
+        name: z.string().trim().min(2, t('err_name')).max(255, t('err_name')),
+        email: z.string().trim().email(t('err_email')).max(255, t('err_email')),
+        phone: z
+          .string()
+          .trim()
+          .min(7, t('err_phone'))
+          .max(50, t('err_phone'))
+          .regex(/^[+()\d\s-]+$/, t('err_phone')),
+      }),
+    [t]
+  );
+  type Values = z.infer<typeof schema>;
 
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
-  } = useForm<EnrollFormValues>({
-    resolver: zodResolver(enrollSchema),
-    defaultValues: {
-      course: courseTitle,
-    },
-  });
+    formState: { errors, isSubmitting, isSubmitted },
+  } = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { name: '', email: '', phone: '' } });
 
-  const onSubmit = async (data: EnrollFormValues) => {
-    setStatus('loading');
-    setErrorMessage('');
+  const onSubmit = async (data: Values) => {
+    setStatus('idle');
+    setApiMessage('');
     try {
-      await submitEnrollForm(data);
+      await submitEnrollForm({ ...data, course: courseTitle });
       setStatus('success');
       reset();
-      if (onSuccess) {
-        setTimeout(onSuccess, 3000);
-      }
-    } catch (error: any) {
+      onSuccess?.();
+      requestAnimationFrame(() => successRef.current?.focus());
+    } catch (error: unknown) {
       setStatus('error');
-      setErrorMessage(error.message || t('error'));
+      if (error instanceof ApiError && error.status === 429) setApiMessage(t('error_rate'));
+      else if (error instanceof ApiError && error.status === 400 && error.message) setApiMessage(error.message);
+      else setApiMessage(t('error'));
     }
   };
 
   if (status === 'success') {
     return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="flex flex-col items-center justify-center py-8 text-center"
+      <div
+        ref={successRef}
+        tabIndex={-1}
+        role="status"
+        className="orn-pop flex flex-col items-center px-2 py-6 text-center outline-none"
+        data-course-id={courseId}
       >
-        <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mb-4">
-          <CheckCircle2 size={32} className="text-green-500" />
-        </div>
-        <h3 className="text-xl font-bold mb-2">{t('success')}</h3>
-        <p className="text-muted-foreground text-sm">
-          Qeydiyyatınız uğurla tamamlandı. Menecerlərimiz tezliklə sizinlə əlaqə saxlayacaq.
-        </p>
-      </motion.div>
+        <WaxSeal size={92} />
+        <p className="font-script mt-4 text-[2.4rem] leading-none text-accent-text dark:text-ink">{t('success_title')}</p>
+        <OrnamentDivider className="mt-3" />
+        <p className="mt-4 max-w-sm text-[1.08rem] leading-relaxed text-ink">{t('success')}</p>
+        <Button variant="outline" size="sm" className="mt-6" onClick={() => setStatus('idle')}>
+          {t('success_again')}
+        </Button>
+      </div>
     );
   }
 
+  const invalidCount = Object.keys(errors).length;
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-      {/* Name */}
-      <div className="space-y-1.5">
-        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-          <User size={12} />
-          {t('name')}
-        </label>
-        <input
-          {...register('name')}
-          className={`w-full px-4 py-3 rounded-xl bg-background border ${
-            errors.name ? 'border-red-500/50' : 'border-border'
-          } focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm`}
-          placeholder="Əli Əliyev"
-        />
-        {errors.name && (
-          <p className="text-red-500 text-[10px]">{errors.name.message}</p>
-        )}
+    <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-5" aria-describedby={status === 'error' ? 'enroll-api-error' : undefined}>
+      <FormField label={t('name')} error={errors.name?.message} required>
+        <Input icon={User} autoComplete="name" placeholder={t('name_placeholder')} {...register('name')} />
+      </FormField>
+
+      <div className="grid gap-5 sm:grid-cols-2">
+        <FormField label={t('email')} error={errors.email?.message} required>
+          <Input
+            icon={Mail}
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            placeholder={t('email_placeholder')}
+            {...register('email')}
+          />
+        </FormField>
+        <FormField label={t('phone')} error={errors.phone?.message} hint={t('phone_hint')} required>
+          <Input
+            icon={Phone}
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            placeholder={t('phone_placeholder')}
+            {...register('phone')}
+          />
+        </FormField>
       </div>
 
-      {/* Email */}
-      <div className="space-y-1.5">
-        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-          <Mail size={12} />
-          {t('email')}
-        </label>
-        <input
-          {...register('email')}
-          className={`w-full px-4 py-3 rounded-xl bg-background border ${
-            errors.email ? 'border-red-500/50' : 'border-border'
-          } focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm`}
-          placeholder="ali@example.com"
-        />
-        {errors.email && (
-          <p className="text-red-500 text-[10px]">{errors.email.message}</p>
-        )}
-      </div>
+      {status === 'error' && apiMessage && (
+        <div
+          id="enroll-api-error"
+          role="alert"
+          className="orn-rise flex items-start gap-2.5 rounded-[var(--radius-md)] border-[1.5px] border-accent-text bg-accent-soft px-4 py-3 text-[1rem] font-semibold leading-snug text-ink"
+        >
+          <AlertCircle aria-hidden="true" size={18} strokeWidth={2} className="mt-0.5 shrink-0 text-accent-text" />
+          <span>{apiMessage}</span>
+        </div>
+      )}
 
-      {/* Phone */}
-      <div className="space-y-1.5">
-        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-          <Phone size={12} />
-          {t('phone')}
-        </label>
-        <input
-          {...register('phone')}
-          className={`w-full px-4 py-3 rounded-xl bg-background border ${
-            errors.phone ? 'border-red-500/50' : 'border-border'
-          } focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm`}
-          placeholder="+994 -- --- -- --"
-        />
-        {errors.phone && (
-          <p className="text-red-500 text-[10px]">{errors.phone.message}</p>
-        )}
-      </div>
+      {isSubmitted && invalidCount > 0 && (
+        <p className="flex items-center gap-2 text-[0.95rem] text-ink-muted">
+          <AlertCircle aria-hidden="true" size={16} strokeWidth={1.8} className="shrink-0 text-accent-text" />
+          {t('errors_summary')}
+        </p>
+      )}
 
-      {/* Course (Hidden or Read-only) */}
-      <div className="space-y-1.5">
-        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-          <BookOpen size={12} />
-          {t('course')}
-        </label>
-        <input
-          {...register('course')}
-          readOnly
-          className="w-full px-4 py-3 rounded-xl bg-muted border border-border text-muted-foreground text-sm"
-        />
-      </div>
-
-      <AnimatePresence>
-        {status === 'error' && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center gap-2 text-red-500 text-xs"
-          >
-            <AlertCircle size={14} />
-            {errorMessage}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <button
-        type="submit"
-        disabled={status === 'loading'}
-        className="w-full py-4 rounded-xl bg-primary text-white font-bold text-sm hover:bg-primary/90 active:scale-[0.98] transition-all disabled:opacity-70 flex items-center justify-center gap-2 shadow-lg shadow-primary/20 mt-2"
-      >
-        {status === 'loading' ? (
-          <span className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-        ) : null}
+      <Button type="submit" size="lg" block loading={isSubmitting} iconAfter={Send}>
         {t('submit')}
-      </button>
+      </Button>
     </form>
   );
 }

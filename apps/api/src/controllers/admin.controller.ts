@@ -5,6 +5,10 @@ import { apiResponse } from '../utils/apiResponse.js';
 import { count, sql } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import { adminRepository } from '../repositories/admin.repository.js';
+import type { AuthRequest } from '../middleware/auth.middleware.js';
+import { AdminCreateSchema, ProfileUpdateSchema, PasswordChangeSchema } from '../schemas/form.schema.js';
+import { param } from '../utils/sanitize.js';
+import { REFRESH_COOKIE, refreshCookieOptions } from './auth.controller.js';
 
 export const getStats = async (req: Request, res: Response) => {
   try {
@@ -52,12 +56,16 @@ export const getAllAdmins = async (req: Request, res: Response) => {
 export const createAdmin = async (req: Request, res: Response) => {
   try {
     // Only Super Admin can create other admins
-    if (!(req as any).user?.isSuperAdmin) {
+    if (!(req as AuthRequest).user?.isSuperAdmin) {
       return res.status(403).json(apiResponse(false, 'Yalnız Super Admin yeni istifadəçi yarada bilər'));
     }
 
-    const { name, email, password, isSuperAdmin } = req.body;
-    
+    const parsed = AdminCreateSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json(apiResponse(false, parsed.error.errors[0].message));
+    }
+    const { name, email, password, isSuperAdmin } = parsed.data;
+
     // Check if email exists
     const existingAdmin = await adminRepository.findByEmail(email);
     if (existingAdmin) {
@@ -70,7 +78,7 @@ export const createAdmin = async (req: Request, res: Response) => {
       name,
       email,
       passwordHash,
-      isSuperAdmin: isSuperAdmin || false
+      isSuperAdmin,
     });
 
     res.status(201).json(apiResponse(true, 'Admin uğurla yaradıldı', newAdmin));
@@ -85,10 +93,10 @@ export const createAdmin = async (req: Request, res: Response) => {
 
 export const deleteAdmin = async (req: Request, res: Response) => {
   try {
-    const currentUserId = (req as any).user?.id;
-    const targetId = req.params.id;
+    const currentUserId = (req as AuthRequest).user?.id;
+    const targetId = param(req, 'id');
 
-    if (!(req as any).user?.isSuperAdmin) {
+    if (!(req as AuthRequest).user?.isSuperAdmin) {
       return res.status(403).json(apiResponse(false, 'Yalnız Super Admin istifadəçi silə bilər'));
     }
 
@@ -101,7 +109,7 @@ export const deleteAdmin = async (req: Request, res: Response) => {
       return res.status(404).json(apiResponse(false, 'Admin tapılmadı'));
     }
 
-    const totalAdmins = await adminRepository.count();
+    const totalAdmins = Number(await adminRepository.count());
     if (totalAdmins <= 1) {
       return res.status(400).json(apiResponse(false, 'Sistemdəki son admin silinə bilməz'));
     }
@@ -116,10 +124,14 @@ export const deleteAdmin = async (req: Request, res: Response) => {
 
 export const updateProfile = async (req: Request, res: Response) => {
   try {
-    const currentUserId = (req as any).user?.id;
-    const { name, email } = req.body;
-
+    const currentUserId = (req as AuthRequest).user?.id;
     if (!currentUserId) return res.status(401).json(apiResponse(false, 'İcazə yoxdur'));
+
+    const parsed = ProfileUpdateSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json(apiResponse(false, parsed.error.errors[0].message));
+    }
+    const { name, email } = parsed.data;
 
     const existingAdmin = await adminRepository.findByEmail(email);
     if (existingAdmin && existingAdmin.id !== currentUserId) {
@@ -139,10 +151,14 @@ export const updateProfile = async (req: Request, res: Response) => {
 
 export const changePassword = async (req: Request, res: Response) => {
   try {
-    const currentUserId = (req as any).user?.id;
-    const { oldPassword, newPassword } = req.body;
-
+    const currentUserId = (req as AuthRequest).user?.id;
     if (!currentUserId) return res.status(401).json(apiResponse(false, 'İcazə yoxdur'));
+
+    const parsed = PasswordChangeSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json(apiResponse(false, parsed.error.errors[0].message));
+    }
+    const { oldPassword, newPassword } = parsed.data;
 
     const admin = await adminRepository.findById(currentUserId);
     if (!admin) return res.status(404).json(apiResponse(false, 'İstifadəçi tapılmadı'));
@@ -155,13 +171,9 @@ export const changePassword = async (req: Request, res: Response) => {
     const passwordHash = await bcrypt.hash(newPassword, 12);
     await adminRepository.update(currentUserId, { passwordHash });
 
-    // Clear refresh token cookie on successful password change
-    res.clearCookie('refresh_token', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/'
-    });
+    // The new hash changes the refresh-token fingerprint, so every existing session (all devices)
+    // is revoked on its next refresh. Also drop this browser's cookie right away.
+    res.clearCookie(REFRESH_COOKIE, refreshCookieOptions);
 
     res.status(200).json(apiResponse(true, 'Şifrə uğurla dəyişdirildi. Zəhmət olmasa yenidən daxil olun.'));
   } catch (error) {
