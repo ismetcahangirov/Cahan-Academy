@@ -1,159 +1,139 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Save } from 'lucide-react';
-import { useForm, Controller } from 'react-hook-form';
+import { useEffect, useMemo, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { useTranslations } from 'next-intl';
+import { AlertCircle, Save } from 'lucide-react';
 import adminApi from '@/lib/adminApi';
+import { Button, FormField, Input, Modal } from '@/components/ui';
 import ImageUpload from './ImageUpload';
+import { LangTabs, type Lang } from './AdminUI';
+import { useAdminFeedback } from './feedback';
+import { apiMessage } from './utils';
 
-const formSchema = z.object({
-  name: z.string().min(2, 'Ad mütləqdir'),
-  positionAz: z.string().min(1, 'Azərbaycan dilində vəzifə mütləqdir'),
-  positionEn: z.string().min(1, 'İngilis dilində vəzifə mütləqdir'),
-  positionRu: z.string().min(1, 'Rus dilində vəzifə mütləqdir'),
-  image: z.string().optional().default(''),
-  order: z.number().int().default(0),
-});
-
-type FormData = z.infer<typeof formSchema>;
-
-interface TeamMemberModalProps {
+interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  memberToEdit?: any | null;
+  memberToEdit?: {
+    id: string;
+    name: string;
+    positionAz: string;
+    positionEn: string;
+    positionRu: string;
+    image: string | null;
+    order: number;
+  } | null;
 }
 
-export default function TeamMemberModal({ isOpen, onClose, onSuccess, memberToEdit }: TeamMemberModalProps) {
-  const [activeTab, setActiveTab] = useState<'az' | 'en' | 'ru'>('az');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+const POS = { az: 'positionAz', en: 'positionEn', ru: 'positionRu' } as const;
 
+/** Team member create / edit. */
+export default function TeamMemberModal({ isOpen, onClose, onSuccess, memberToEdit }: Props) {
+  const t = useTranslations('admin');
+  const { ok } = useAdminFeedback();
+  const [tab, setTab] = useState<Lang>('az');
+  const [serverError, setServerError] = useState('');
+
+  const schema = useMemo(
+    () =>
+      z.object({
+        name: z.string().trim().min(2, t('common.err_name')),
+        positionAz: z.string().trim().min(1, t('team.err_position_az')),
+        positionEn: z.string().trim().min(1, t('team.err_position_en')),
+        positionRu: z.string().trim().min(1, t('team.err_position_ru')),
+        image: z.string().optional(),
+        order: z.number({ invalid_type_error: t('common.err_number') }).int(t('common.err_number')),
+      }),
+    [t]
+  );
+  type Values = z.infer<typeof schema>;
   const {
     register,
     handleSubmit,
     reset,
     control,
-    formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { image: '', order: 0 },
-  });
+    formState: { errors, isSubmitting },
+  } = useForm<Values>({ resolver: zodResolver(schema) });
 
   useEffect(() => {
-    if (isOpen) {
-      if (memberToEdit) {
-        reset({
-          name: memberToEdit.name || '',
-          positionAz: memberToEdit.positionAz || '',
-          positionEn: memberToEdit.positionEn || '',
-          positionRu: memberToEdit.positionRu || '',
-          image: memberToEdit.image || '',
-          order: memberToEdit.order ?? 0,
-        });
-      } else {
-        reset({ name: '', positionAz: '', positionEn: '', positionRu: '', image: '', order: 0 });
-      }
-      setActiveTab('az');
-    }
+    if (!isOpen) return;
+    setServerError('');
+    setTab('az');
+    reset({
+      name: memberToEdit?.name ?? '',
+      positionAz: memberToEdit?.positionAz ?? '',
+      positionEn: memberToEdit?.positionEn ?? '',
+      positionRu: memberToEdit?.positionRu ?? '',
+      image: memberToEdit?.image ?? '',
+      order: memberToEdit?.order ?? 0,
+    });
   }, [isOpen, memberToEdit, reset]);
 
-  const onSubmit = async (data: FormData) => {
-    setIsSubmitting(true);
+  const errorLangs = (['az', 'en', 'ru'] as Lang[]).filter((l) => errors[POS[l]]);
+
+  const onSubmit = async (v: Values) => {
+    setServerError('');
     try {
-      if (memberToEdit) {
-        const res = await adminApi.put(`/team/admin/${memberToEdit.id}`, data);
-        if (res.data.success) { onSuccess(); onClose(); }
-      } else {
-        const res = await adminApi.post('/team/admin', data);
-        if (res.data.success) { onSuccess(); onClose(); }
-      }
-    } catch (error) {
-      console.error('Error saving team member:', error);
-      alert('Komanda üzvünü yadda saxlamaq mümkün olmadı.');
-    } finally {
-      setIsSubmitting(false);
+      const res = memberToEdit ? await adminApi.put(`/team/admin/${memberToEdit.id}`, v) : await adminApi.post('/team/admin', v);
+      if (!res.data.success) throw { response: { data: res.data } };
+      ok(t('common.saved'));
+      onSuccess();
+      onClose();
+    } catch (e) {
+      setServerError(apiMessage(e, t('common.save_error')));
     }
   };
 
-  const tabs = [
-    { id: 'az', label: 'Azərbaycanca' },
-    { id: 'en', label: 'İngiliscə' },
-    { id: 'ru', label: 'Rusca' },
-  ];
-
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-          <motion.div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-          <motion.div className="relative z-10 w-full max-w-xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col" initial={{ scale: 0.95, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 20 }} transition={{ type: 'spring', stiffness: 300, damping: 25 }}>
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900/50">
-              <div>
-                <h2 className="text-xl font-bold text-white">{memberToEdit ? 'Komanda Üzvünü Redaktə Et' : 'Yeni Komanda Üzvü'}</h2>
-                <p className="text-slate-400 text-sm mt-1">Məlumatları 3 dildə daxil edin</p>
-              </div>
-              <button onClick={onClose} className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-colors"><X size={20} /></button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
-              <form id="team-form" onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-                <div className="flex p-1 bg-slate-800 rounded-xl w-fit">
-                  {tabs.map((tab) => (
-                    <button key={tab.id} type="button" onClick={() => setActiveTab(tab.id as any)} className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === tab.id ? 'bg-amber-500 text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}>{tab.label}</button>
-                  ))}
-                </div>
-
-                <div className="space-y-5 bg-slate-800/20 p-5 rounded-2xl border border-slate-800/50">
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-300">Vəzifə</label>
-                    <input
-                      {...register(activeTab === 'az' ? 'positionAz' : activeTab === 'en' ? 'positionEn' : 'positionRu')}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-colors"
-                      placeholder="Vəzifə..."
-                    />
-                    {errors[activeTab === 'az' ? 'positionAz' : activeTab === 'en' ? 'positionEn' : 'positionRu'] && (
-                      <p className="text-red-500 text-xs mt-1">{errors[activeTab === 'az' ? 'positionAz' : activeTab === 'en' ? 'positionEn' : 'positionRu']?.message}</p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-800">
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-300">Ad</label>
-                    <input {...register('name')} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-colors" placeholder="Ad..." />
-                    {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-300">Sıra (Kiçik rəqəm öndə görünər)</label>
-                    <input {...register('order', { valueAsNumber: true })} type="number" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-colors" />
-                  </div>
-                  <div className="space-y-1 md:col-span-2">
-                    <label className="text-sm font-medium text-slate-300">Şəkil</label>
-                    <Controller
-                      name="image"
-                      control={control}
-                      render={({ field }) => (
-                        <ImageUpload value={field.value || ''} onChange={field.onChange} />
-                      )}
-                    />
-                  </div>
-                </div>
-              </form>
-            </div>
-
-            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-800 bg-slate-900/50">
-              <button type="button" onClick={onClose} className="px-5 py-2.5 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-xl transition-colors" disabled={isSubmitting}>Ləğv et</button>
-              <button type="submit" form="team-form" disabled={isSubmitting} className="flex items-center gap-2 px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-900 text-sm font-bold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                <Save size={18} />
-                {isSubmitting ? 'Saxlanılır...' : 'Yadda Saxla'}
-              </button>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      size="md"
+      title={memberToEdit ? t('team.modal_edit') : t('team.modal_new')}
+      entity={memberToEdit?.name}
+      footer={
+        <>
+          <Button variant="ghost" onClick={onClose} disabled={isSubmitting}>
+            {t('common.cancel')}
+          </Button>
+          <Button type="submit" form="team-form" icon={Save} loading={isSubmitting}>
+            {isSubmitting ? t('common.saving') : t('common.save')}
+          </Button>
+        </>
+      }
+    >
+      <form
+        id="team-form"
+        noValidate
+        onSubmit={handleSubmit(onSubmit, (errs) => {
+          const first = (['az', 'en', 'ru'] as Lang[]).find((l) => errs[POS[l]]);
+          if (first) setTab(first);
+        })}
+        className="space-y-5"
+      >
+        <FormField label={t('common.name')} error={errors.name?.message} required>
+          <Input {...register('name')} />
+        </FormField>
+        <LangTabs value={tab} onChange={setTab} errorLangs={errorLangs} />
+        <FormField label={t('team.position')} error={errors[POS[tab]]?.message} required>
+          <Input key={tab} {...register(POS[tab])} />
+        </FormField>
+        <FormField label={t('team.order')} hint={t('team.order_hint')} error={errors.order?.message}>
+          <Input type="number" {...register('order', { valueAsNumber: true })} />
+        </FormField>
+        <FormField label={t('common.image')}>
+          {(id) => <Controller name="image" control={control} render={({ field }) => <ImageUpload id={id} value={field.value || ''} onChange={field.onChange} />} />}
+        </FormField>
+        {serverError && (
+          <p role="alert" className="field-error">
+            <AlertCircle aria-hidden="true" strokeWidth={2} />
+            {serverError}
+          </p>
+        )}
+      </form>
+    </Modal>
   );
 }
