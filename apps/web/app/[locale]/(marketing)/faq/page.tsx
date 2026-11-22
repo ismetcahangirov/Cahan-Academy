@@ -70,7 +70,7 @@ export default async function FAQPage({ params }: Props) {
 
       <div className="mx-auto grid max-w-6xl items-start gap-10 px-4 pb-24 pt-12 sm:px-6 sm:pt-16 lg:grid-cols-[minmax(0,1fr)_19rem] lg:gap-12 lg:px-8">
         <div className="min-w-0">
-          <FAQAccordion items={items} locale={locale} />
+          <FAQAccordion items={items} locale={locale} headingLevel="h2" />
         </div>
 
         <OrnateFrame

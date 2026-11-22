@@ -65,8 +65,8 @@ export default function LoginPage() {
 
   return (
     <div className="grid min-h-screen bg-page lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
-      {/* wine panel */}
-      <section className="theme-wine hero-wine relative flex flex-col items-center justify-center overflow-hidden px-6 py-10 text-center lg:min-h-screen lg:py-16">
+      {/* wine panel = banner landmark; the form side is <main> (axe landmark-one-main / region) */}
+      <header className="theme-wine hero-wine relative flex flex-col items-center justify-center overflow-hidden px-6 py-10 text-center lg:min-h-screen lg:py-16">
         <LaceCorner corner="tl" className="absolute left-0 top-0 w-24 sm:w-32 lg:w-44" priority onWine />
         <LaceCorner corner="br" className="absolute bottom-0 right-0 hidden w-32 lg:block lg:w-44" />
         <DrapedRibbon className="orn-sway pointer-events-none absolute -right-10 -top-6 hidden w-56 lg:block xl:w-64" />
@@ -79,10 +79,10 @@ export default function LoginPage() {
           <OrnamentDivider draw={false} className="mt-1" />
           <p className="mt-2 hidden max-w-xs text-[1.05rem] text-ink-muted lg:block">{t('login.panel_text')}</p>
         </div>
-      </section>
+      </header>
 
       {/* parchment form */}
-      <section className="paper relative flex flex-col px-4 py-8 sm:px-8">
+      <main id="main" className="paper relative flex flex-col px-4 py-8 sm:px-8">
         <div className="flex items-center justify-between gap-2">
           <Link href="/" className="btn btn-ghost btn-sm gap-1.5 text-accent-text">
             <ArrowLeft size={16} strokeWidth={1.6} aria-hidden="true" />
@@ -148,7 +148,7 @@ export default function LoginPage() {
             </Button>
           </form>
         </div>
-      </section>
+      </main>
     </div>
   );
 }
