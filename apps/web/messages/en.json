@@ -13,10 +13,7 @@
     "subtitle": "Advance your career to the next level with professional instructors, practical lessons, and certified programs.",
     "cta_primary": "View Courses",
     "cta_secondary": "Apply Now",
-    "badge": "No. 1 Professional Academy in Azerbaijan",
-    "view_video": "Watch Video",
-    "graduates": "Graduates",
-    "enroll": "Enroll Now"
+    "badge": "No. 1 Professional Academy in Azerbaijan"
   },
   "stats": {
     "students": "Students",
@@ -68,7 +65,6 @@
     "submit": "Apply",
     "success": "Your registration has been received. We will contact you soon.",
     "error": "An error occurred. Please try again.",
-    "course_label": "Selected course",
     "err_name": "Your name must be at least 2 characters",
     "err_email": "Enter a valid email address",
     "err_phone": "Enter a valid phone number",
@@ -84,7 +80,6 @@
   "newsletter": {
     "title": "Stay Up to Date",
     "placeholder": "Your email address",
-    "subscribe": "Subscribe",
     "button": "Subscribe",
     "success": "Your subscription has been confirmed!",
     "error": "An error occurred.",
@@ -98,7 +93,6 @@
     "links_title": "Links",
     "legal_title": "Legal",
     "contact_title": "Contact",
-    "newsletter_title": "Stay up to date",
     "newsletter_text": "Be the first to hear about education news and discounts.",
     "address": "Baku, Azerbaijan",
     "social_label": "Social media",
@@ -116,7 +110,6 @@
     "about_description": "Detailed information about Cahan Academy, our mission and our team.",
     "contact_title": "Contact — Cahan Academy",
     "contact_description": "Have questions? Contact us, our team will respond to you as soon as possible.",
-    "faq_title": "FAQ — Cahan Academy",
     "privacy_title": "Privacy Policy — Cahan Academy",
     "privacy_description": "Information about Cahan Academy privacy policy and data protection.",
     "terms_title": "Terms of Use — Cahan Academy",
@@ -144,8 +137,6 @@
     "page_title": "Our Teachers",
     "page_description": "Meet our team of professional and experienced experts. Each teacher has years of experience in their field.",
     "search_placeholder": "Search teachers...",
-    "stat_teachers": "Teachers",
-    "stat_experts": "Highly qualified experts",
     "no_results_title": "No teachers found",
     "no_results_desc": "There are no teachers matching your search criteria.",
     "clear_search": "Clear search",
@@ -245,8 +236,6 @@
     "privacy_policy_title": "Privacy Policy",
     "terms_of_use_title": "Terms of Use",
     "last_updated": "Last updated",
-    "privacy_content": "At Cahan Academy, your privacy is important to us. This document explains how your data is collected and protected...",
-    "terms_content": "By using this website, you agree to the following terms and conditions...",
     "eyebrow": "Legal information",
     "toc": "Contents",
     "see_also": "See also",
@@ -294,7 +283,6 @@
     "description": "We use cookies so the site works properly and to improve our service. By continuing to use the site, you agree to this.",
     "accept": "Accept",
     "decline": "Decline",
-    "learn_more": "Learn more",
     "close": "Close notice"
   },
   "common": {
@@ -306,7 +294,6 @@
     "language": "Language",
     "main_nav": "Main navigation",
     "home": "Home",
-    "view_all": "View all",
     "breadcrumb_label": "Breadcrumb",
     "pagination_label": "Pages",
     "prev": "Previous",

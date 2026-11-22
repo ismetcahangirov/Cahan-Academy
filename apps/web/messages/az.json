@@ -13,10 +13,7 @@
     "subtitle": "Peşəkar müəllimlər, praktiki dərslər və sertifikatlaşdırılmış proqramlarla karyeranızı növbəti səviyyəyə aparın.",
     "cta_primary": "Kurslara Bax",
     "cta_secondary": "Müraciət Et",
-    "badge": "Azərbaycanda №1 Peşəkar Akademiya",
-    "view_video": "Video Bax",
-    "graduates": "Məzun Tələbə",
-    "enroll": "Kursa Yazıl"
+    "badge": "Azərbaycanda №1 Peşəkar Akademiya"
   },
   "stats": {
     "students": "Tələbə",
@@ -68,7 +65,6 @@
     "submit": "Müraciət Et",
     "success": "Qeydiyyatınız alındı. Tezliklə əlaqə saxlayacağıq.",
     "error": "Xəta baş verdi. Yenidən cəhd edin.",
-    "course_label": "Seçilmiş kurs",
     "err_name": "Ad ən azı 2 simvol olmalıdır",
     "err_email": "Düzgün email daxil edin",
     "err_phone": "Düzgün telefon nömrəsi daxil edin",
@@ -84,7 +80,6 @@
   "newsletter": {
     "title": "Xəbərlərdən Xəbərdar Olun",
     "placeholder": "Email ünvanınız",
-    "subscribe": "Abunə Ol",
     "button": "Abunə Ol",
     "success": "Abunəliyiniz təsdiqləndi!",
     "error": "Xəta baş verdi.",
@@ -98,7 +93,6 @@
     "links_title": "Keçidlər",
     "legal_title": "Hüquqi",
     "contact_title": "Əlaqə",
-    "newsletter_title": "Yeniliklərdən xəbərdar olun",
     "newsletter_text": "Ən son təhsil xəbərləri və endirimlərdən ilk siz xəbərdar olun.",
     "address": "Bakı, Azərbaycan",
     "social_label": "Sosial şəbəkələr",
@@ -116,7 +110,6 @@
     "about_description": "Cahan Academy haqqında ətraflı məlumat, missiyamız və komandamız.",
     "contact_title": "Əlaqə — Cahan Academy",
     "contact_description": "Suallarınız var? Bizimlə əlaqə saxlayın, komandamız sizə ən qısa zamanda cavab verəcəkdir.",
-    "faq_title": "Tez-tez Verilən Suallar — Cahan Academy",
     "privacy_title": "Məxfilik Siyasəti — Cahan Academy",
     "privacy_description": "Cahan Academy məxfilik siyasəti və məlumatların qorunması haqqında məlumat.",
     "terms_title": "İstifadə Şərtləri — Cahan Academy",
@@ -144,8 +137,6 @@
     "page_title": "Müəllimlərimiz",
     "page_description": "Sahəsində peşəkar və təcrübəli ekspertlərdən ibarət komandamızla tanış olun. Hər bir müəllimimiz öz sahəsində illərin təcrübəsinə malikdir.",
     "search_placeholder": "Müəllim axtar...",
-    "stat_teachers": "Müəllim",
-    "stat_experts": "Yüksək ixtisaslı mütəxəssislər",
     "no_results_title": "Müəllim tapılmadı",
     "no_results_desc": "Axtarış meyarlarınıza uyğun müəllim yoxdur.",
     "clear_search": "Axtarışı təmizlə",
@@ -245,8 +236,6 @@
     "privacy_policy_title": "Məxfilik Siyasəti",
     "terms_of_use_title": "İstifadə Şərtləri",
     "last_updated": "Son yenilənmə",
-    "privacy_content": "Cahan Academy olaraq sizin məxfiliyiniz bizim üçün önəmlidir. Bu sənəddə məlumatlarınızın necə toplandığı və qorunduğu barədə məlumat verilir...",
-    "terms_content": "Bu veb-saytdan istifadə etməklə siz aşağıdakı şərtləri qəbul etmiş hesab olunursunuz...",
     "eyebrow": "Hüquqi məlumat",
     "toc": "Mündəricat",
     "see_also": "Həmçinin oxuyun",
@@ -294,7 +283,6 @@
     "description": "Saytın düzgün işləməsi və xidmətimizi yaxşılaşdırmaq üçün kuki fayllarından istifadə edirik. Saytdan istifadəyə davam etməklə buna razılıq verirsiniz.",
     "accept": "Qəbul Et",
     "decline": "Rədd Et",
-    "learn_more": "Daha ətraflı",
     "close": "Bildirişi bağla"
   },
   "common": {
@@ -306,7 +294,6 @@
     "language": "Dil",
     "main_nav": "Əsas menyu",
     "home": "Ana səhifə",
-    "view_all": "Hamısına bax",
     "breadcrumb_label": "Naviqasiya yolu",
     "pagination_label": "Səhifələr",
     "prev": "Əvvəlki",
