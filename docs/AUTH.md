@@ -60,7 +60,7 @@ npm install --save-dev @types/bcryptjs
 import { SignJWT, jwtVerify } from 'jose';
 import { env } from '../config/env';
 
-const ACCESS_SECRET  = new TextEncoder().encode(env.JWT_ACCESS_SECRET);
+const ACCESS_SECRET  = new TextEncoder().encode(env.JWT_SECRET);
 const REFRESH_SECRET = new TextEncoder().encode(env.JWT_REFRESH_SECRET);
 
 export interface JWTPayload {
@@ -732,7 +732,7 @@ export default function AdminLoginPage() {
 # apps/api/.env
 
 # JWT — iki ayrı secret (vacibdir!)
-JWT_ACCESS_SECRET=min_32_char_random_string_for_access_tokens_here
+JWT_SECRET=min_32_char_random_string_for_access_tokens_here
 JWT_REFRESH_SECRET=another_different_32_char_random_string_for_refresh
 
 # Generasiya etmək üçün:
@@ -872,7 +872,7 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 ```
 BACKEND
-  [ ]  JWT_ACCESS_SECRET  — ən az 32 simvol, unikal
+  [ ]  JWT_SECRET  — ən az 32 simvol, unikal
   [ ]  JWT_REFRESH_SECRET — ən az 32 simvol, fərqli
   [ ]  bcrypt salt rounds: 12
   [ ]  Refresh token HttpOnly + Secure Cookie

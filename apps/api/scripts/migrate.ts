@@ -180,6 +180,36 @@ async function migrate() {
   `;
   console.log('  ✅ posts cədvəli hazır');
 
+  // FAQs table (src/config/schema.ts `faqs`) — was missing from this script, so GET /api/faqs
+  // returned 500 in production (checked 2026-11-22).
+  await sql`
+    CREATE TABLE IF NOT EXISTS faqs (
+      id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      question    JSONB NOT NULL,
+      answer      JSONB NOT NULL,
+      "order"     INTEGER NOT NULL DEFAULT 0,
+      is_active   BOOLEAN NOT NULL DEFAULT true,
+      created_at  TIMESTAMP NOT NULL DEFAULT NOW(),
+      updated_at  TIMESTAMP NOT NULL DEFAULT NOW()
+    );
+  `;
+  console.log('  ✅ faqs cədvəli hazır');
+
+  // Team members table (same as drizzle/0000_add_team_members.sql) — GET /api/team returned 500.
+  await sql`
+    CREATE TABLE IF NOT EXISTS team_members (
+      id           TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      name         VARCHAR(255) NOT NULL,
+      position_az  VARCHAR(255) NOT NULL,
+      position_en  VARCHAR(255) NOT NULL,
+      position_ru  VARCHAR(255) NOT NULL,
+      image        VARCHAR(1000),
+      "order"      INTEGER NOT NULL DEFAULT 0,
+      created_at   TIMESTAMP NOT NULL DEFAULT NOW()
+    );
+  `;
+  console.log('  ✅ team_members cədvəli hazır');
+
   console.log('\n🎉 Migrasiya uğurla tamamlandı!');
   process.exit(0);
 }

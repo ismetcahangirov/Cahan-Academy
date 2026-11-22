@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { FAQRepository } from '../repositories/faq.repository.js';
 import { apiResponse } from '../utils/apiResponse.js';
+import { param } from '../utils/sanitize.js';
 import { z } from 'zod';
 
 const faqRepo = new FAQRepository();
@@ -50,7 +51,7 @@ export const createFaq = async (req: Request, res: Response, next: NextFunction)
 
 export const updateFaq = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = param(req, 'id');
     const validatedData = faqSchema.partial().parse(req.body);
     const faq = await faqRepo.update(id, validatedData as any);
     if (!faq) {
@@ -65,7 +66,7 @@ export const updateFaq = async (req: Request, res: Response, next: NextFunction)
 
 export const deleteFaq = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = param(req, 'id');
     const faq = await faqRepo.delete(id);
     if (!faq) {
       res.status(404).json(apiResponse(false, 'FAQ not found'));
@@ -79,7 +80,7 @@ export const deleteFaq = async (req: Request, res: Response, next: NextFunction)
 
 export const updateFaqStatus = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = param(req, 'id');
     const { isActive } = z.object({ isActive: z.boolean() }).parse(req.body);
     const faq = await faqRepo.updateStatus(id, isActive);
     if (!faq) {

@@ -1,4 +1,8 @@
 import { ImageResponse } from 'next/og';
+import { SITE_URL } from '@/lib/utils';
+
+// Brand colours only (#5C000E, white, black and their mixes). The domain shown is the canonical one.
+const SITE_HOST = new URL(SITE_URL).host;
 
 export const runtime = 'edge';
 
@@ -27,7 +31,7 @@ export default async function Image({ params }: { params: { locale: string; slug
 
   if (!course) {
     return new ImageResponse(
-      <div style={{ background: '#800020', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 48 }}>
+      <div style={{ background: '#5C000E', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 48 }}>
         Cahan Academy
       </div>
     );
@@ -37,7 +41,7 @@ export default async function Image({ params }: { params: { locale: string; slug
     (
       <div
         style={{
-          background: '#800020',
+          background: '#5C000E',
           width: '100%',
           height: '100%',
           display: 'flex',
@@ -51,7 +55,7 @@ export default async function Image({ params }: { params: { locale: string; slug
       >
         {/* Left side: Info */}
         <div style={{ display: 'flex', flexDirection: 'column', width: '60%', zIndex: 10 }}>
-          <div style={{ background: '#C9A84C', color: '#800020', padding: '10px 20px', borderRadius: '10px', fontSize: '24px', fontWeight: 'bold', alignSelf: 'flex-start', marginBottom: '30px' }}>
+          <div style={{ background: '#EBE0E2', color: '#5C000E', padding: '10px 20px', borderRadius: '10px', fontSize: '24px', fontWeight: 'bold', alignSelf: 'flex-start', marginBottom: '30px' }}>
             {course.category.name}
           </div>
           
@@ -65,11 +69,11 @@ export default async function Image({ params }: { params: { locale: string; slug
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '30px', marginTop: '40px' }}>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontSize: '18px', color: '#C9A84C', fontWeight: 'bold', textTransform: 'uppercase' }}>Müddət</span>
+              <span style={{ fontSize: '18px', color: '#EBE0E2', fontWeight: 'bold', textTransform: 'uppercase' }}>Müddət</span>
               <span style={{ fontSize: '24px' }}>{course.duration}</span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontSize: '18px', color: '#C9A84C', fontWeight: 'bold', textTransform: 'uppercase' }}>Reytinq</span>
+              <span style={{ fontSize: '18px', color: '#EBE0E2', fontWeight: 'bold', textTransform: 'uppercase' }}>Reytinq</span>
               <span style={{ fontSize: '24px' }}>⭐ {course.rating}</span>
             </div>
           </div>
@@ -82,8 +86,8 @@ export default async function Image({ params }: { params: { locale: string; slug
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              background: '#C9A84C',
-              color: '#800020',
+              background: '#EBE0E2',
+              color: '#5C000E',
               width: '120px',
               height: '120px',
               borderRadius: '30px',
@@ -94,13 +98,13 @@ export default async function Image({ params }: { params: { locale: string; slug
           >
             C
           </div>
-          <div style={{ marginTop: '30px', fontSize: '24px', fontWeight: 'bold', color: '#C9A84C' }}>
-            cahanacademy.az
+          <div style={{ marginTop: '30px', fontSize: '24px', fontWeight: 'bold', color: '#EBE0E2' }}>
+            {SITE_HOST}
           </div>
         </div>
 
         {/* Decorative elements */}
-        <div style={{ position: 'absolute', bottom: -50, right: -50, width: 300, height: 300, borderRadius: '50%', background: '#C9A84C', opacity: 0.1 }} />
+        <div style={{ position: 'absolute', bottom: -50, right: -50, width: 300, height: 300, borderRadius: '50%', background: '#EBE0E2', opacity: 0.1 }} />
       </div>
     ),
     {

@@ -1,4 +1,8 @@
 import { ImageResponse } from 'next/og';
+import { SITE_URL } from '@/lib/utils';
+
+// Brand colours only (#5C000E, white, black and their mixes). The domain shown is the canonical one.
+const SITE_HOST = new URL(SITE_URL).host;
 
 export const runtime = 'edge';
 
@@ -27,7 +31,7 @@ export default async function Image({ params }: { params: { locale: string; slug
 
   if (!teacher) {
     return new ImageResponse(
-      <div style={{ background: '#800020', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 48 }}>
+      <div style={{ background: '#5C000E', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 48 }}>
         Cahan Academy
       </div>
     );
@@ -37,7 +41,7 @@ export default async function Image({ params }: { params: { locale: string; slug
     (
       <div
         style={{
-          background: '#800020',
+          background: '#5C000E',
           width: '100%',
           height: '100%',
           display: 'flex',
@@ -50,7 +54,7 @@ export default async function Image({ params }: { params: { locale: string; slug
         }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', width: '60%' }}>
-          <div style={{ background: '#C9A84C', color: '#800020', padding: '10px 20px', borderRadius: '10px', fontSize: '20px', fontWeight: 'bold', alignSelf: 'flex-start', marginBottom: '30px', textTransform: 'uppercase' }}>
+          <div style={{ background: '#EBE0E2', color: '#5C000E', padding: '10px 20px', borderRadius: '10px', fontSize: '20px', fontWeight: 'bold', alignSelf: 'flex-start', marginBottom: '30px', textTransform: 'uppercase' }}>
             Müəllim Heyəti
           </div>
           
@@ -58,11 +62,11 @@ export default async function Image({ params }: { params: { locale: string; slug
             {teacher.name}
           </h1>
           
-          <p style={{ fontSize: '32px', color: '#C9A84C', margin: '0 0 40px 0', fontWeight: 'bold' }}>
+          <p style={{ fontSize: '32px', color: '#EBE0E2', margin: '0 0 40px 0', fontWeight: 'bold' }}>
             {teacher.position}
           </p>
           
-          <div style={{ borderLeft: '4px solid #C9A84C', paddingLeft: '24px' }}>
+          <div style={{ borderLeft: '4px solid #EBE0E2', paddingLeft: '24px' }}>
             <p style={{ fontSize: '24px', opacity: 0.9, margin: 0, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', fontStyle: 'italic' }}>
               {teacher.bio}
             </p>
@@ -75,8 +79,8 @@ export default async function Image({ params }: { params: { locale: string; slug
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                background: '#C9A84C',
-                color: '#800020',
+                background: '#EBE0E2',
+                color: '#5C000E',
                 width: '140px',
                 height: '140px',
                 borderRadius: '35px',
@@ -87,12 +91,12 @@ export default async function Image({ params }: { params: { locale: string; slug
             >
                 C
             </div>
-            <div style={{ marginTop: '40px', fontSize: '24px', fontWeight: 'bold', color: '#C9A84C', opacity: 0.8 }}>
-                cahanacademy.az
+            <div style={{ marginTop: '40px', fontSize: '24px', fontWeight: 'bold', color: '#EBE0E2', opacity: 0.8 }}>
+                {SITE_HOST}
             </div>
         </div>
 
-        <div style={{ position: 'absolute', top: -100, right: -100, width: 400, height: 400, borderRadius: '50%', border: '2px solid #C9A84C', opacity: 0.1 }} />
+        <div style={{ position: 'absolute', top: -100, right: -100, width: 400, height: 400, borderRadius: '50%', border: '2px solid #EBE0E2', opacity: 0.1 }} />
       </div>
     ),
     {

@@ -1,16 +1,17 @@
 import { MetadataRoute } from 'next';
+import { SITE_URL } from '@/lib/utils';
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://cahanacademy.az';
-
   return {
     rules: [
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/admin/', '/api/'],
+        // The admin CMS lives under /dashboard and /login (with or without a locale prefix).
+        disallow: ['/dashboard', '/*/dashboard', '/login', '/*/login', '/api/'],
       },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
   };
 }

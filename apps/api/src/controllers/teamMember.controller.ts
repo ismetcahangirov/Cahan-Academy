@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { apiResponse } from '../utils/apiResponse.js';
+import { param } from '../utils/sanitize.js';
 import {
   getAllTeamMembers,
   getTeamMemberById,
@@ -37,7 +38,7 @@ export const createTeamMemberAdmin = asyncHandler(async (req: Request, res: Resp
 
 // PUT /api/team/admin/:id
 export const updateTeamMemberAdmin = asyncHandler(async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const id = param(req, 'id');
   const validated = TeamMemberSchema.parse(req.body);
   const existing = await getTeamMemberById(id);
   if (!existing) {
@@ -49,7 +50,7 @@ export const updateTeamMemberAdmin = asyncHandler(async (req: Request, res: Resp
 
 // DELETE /api/team/admin/:id
 export const deleteTeamMemberAdmin = asyncHandler(async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const id = param(req, 'id');
   const existing = await getTeamMemberById(id);
   if (!existing) {
     return apiResponse.error(res, { message: 'Komanda üzvü tapılmadı', status: 404 });

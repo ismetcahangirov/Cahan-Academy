@@ -26,12 +26,13 @@ export const authMiddleware = async (req: AuthRequest, res: Response, next: Next
       id: payload.sub as string,
       email: payload.email as string,
       role: payload.role as string,
-      isSuperAdmin: payload.isSuperAdmin as boolean,
+      isSuperAdmin: payload.isSuperAdmin === true,
     };
 
     next();
   } catch (error) {
-    console.error('Auth Error:', error);
+    // Expected for expired tokens; log the code only (no token, no stack) to keep logs clean.
+    console.warn('Auth rejected:', (error as { code?: string })?.code ?? 'unknown');
     res.status(401).json(apiResponse(false, 'Unauthorized: Invalid or expired token'));
   }
 };
