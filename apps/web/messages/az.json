@@ -33,7 +33,32 @@
     "message": "Mesaj",
     "send": "Göndər",
     "success": "Müraciətiniz qəbul edildi. Tezliklə sizinlə əlaqə saxlayacağıq.",
-    "error": "Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin."
+    "error": "Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.",
+    "eyebrow": "Bizə yazın",
+    "lead": "Suallarınız var? Bizimlə əlaqə saxlayın, komandamız sizə ən qısa zamanda cavab verəcəkdir.",
+    "form_title": "Mesaj yazın",
+    "form_hint": "Bütün sahələr məcburidir.",
+    "info_title": "Bizi tapın",
+    "info_lead": "Zəng edin, yazın və ya akademiyaya gəlin.",
+    "address_label": "Ünvan",
+    "address_value": "Bakı şəhəri, Nizami küç. 12",
+    "map_link": "Xəritədə aç",
+    "hours_label": "İş saatları",
+    "hours_week": "Bazar ertəsi – Şənbə: 09:00 – 18:00",
+    "hours_sunday": "Bazar: istirahət günü",
+    "social_label": "Sosial şəbəkələr",
+    "ph_name": "Məs: Əli Əliyev",
+    "ph_email": "ad@poçt.az",
+    "ph_subject": "Müraciətinizin mövzusu",
+    "ph_message": "Mesajınızı buraya yazın…",
+    "err_name": "Ad ən azı 2 simvol olmalıdır",
+    "err_email": "Düzgün email daxil edin",
+    "err_subject": "Mövzu ən azı 3 simvol olmalıdır",
+    "err_message": "Mesaj ən azı 10 simvol olmalıdır",
+    "err_too_long": "Mətn çox uzundur",
+    "success_title": "Təşəkkür edirik",
+    "send_another": "Yeni mesaj göndər",
+    "error_title": "Mesaj göndərilmədi"
   },
   "enroll": {
     "title": "Kursa Yazıl",
@@ -43,19 +68,7 @@
     "course": "Kurs seçin",
     "submit": "Müraciət Et",
     "success": "Qeydiyyatınız alındı. Tezliklə əlaqə saxlayacağıq.",
-    "error": "Xəta baş verdi. Yenidən cəhd edin.",
-    "course_label": "Seçilmiş kurs",
-    "err_name": "Ad ən azı 2 simvol olmalıdır",
-    "err_email": "Düzgün email daxil edin",
-    "err_phone": "Düzgün telefon nömrəsi daxil edin",
-    "name_placeholder": "Adınız və soyadınız",
-    "email_placeholder": "ad@mail.az",
-    "phone_placeholder": "+994 50 000 00 00",
-    "phone_hint": "Sizinlə bu nömrə ilə əlaqə saxlayacağıq",
-    "errors_summary": "Formada düzəldilməli sahələr var.",
-    "error_rate": "Çox sayda müraciət göndərildi. Bir neçə dəqiqə sonra yenidən cəhd edin.",
-    "success_title": "Təşəkkür edirik",
-    "success_again": "Başqa müraciət göndər"
+    "error": "Xəta baş verdi. Yenidən cəhd edin."
   },
   "newsletter": {
     "title": "Xəbərlərdən Xəbərdar Olun",
@@ -139,7 +152,21 @@
     "author_label": "Müəllif",
     "share": "Paylaş",
     "related_posts": "Oxşar məqalələr",
-    "back_to_blog": "Bloqa qayıt"
+    "back_to_blog": "Bloqa qayıt",
+    "search_label": "Məqalələrdə axtar",
+    "clear_search": "Axtarışı təmizlə",
+    "results_count": "{count} məqalə",
+    "no_results_desc": "Başqa söz yoxlayın və ya axtarışı təmizləyin.",
+    "empty_title": "Hələ boşdur",
+    "empty_desc": "Tezliklə ilk məqalələr burada olacaq.",
+    "error_title": "Bir az sonra",
+    "error_desc": "Məqalələri indi yükləmək mümkün olmadı. Bir az sonra yenidən cəhd edin.",
+    "latest_label": "Son məqalə",
+    "article_label": "Bloq məqaləsi",
+    "breadcrumb_label": "Naviqasiya",
+    "link_copied": "Keçid kopyalandı",
+    "reading_time": "Oxu müddəti",
+    "published_on": "Dərc tarixi"
   },
   "about": {
     "badge": "Haqqımızda",
@@ -162,21 +189,94 @@
     "value_student_desc": "Məzunlarımızın iş tapması və inkişafı bizim əsas prioritetimizdir.",
     "team_title": "Peşəkar Komandamız",
     "team_subtitle": "Sizə ən yaxşı təhsili vermək üçün çalışan sahə mütəxəssisləri.",
-    "all_teachers": "Bütün müəllimlər"
+    "all_teachers": "Bütün müəllimlər",
+    "history_eyebrow": "Hekayəmiz",
+    "history_step1": "Başlanğıc",
+    "history_step2": "Bu gün",
+    "history_step3": "Sabah",
+    "mission_eyebrow": "Nə üçün varıq",
+    "values_eyebrow": "Bizi birləşdirən",
+    "team_eyebrow": "Akademiyanın simaları",
+    "team_empty_title": "Tezliklə",
+    "team_empty_desc": "Komandamız haqqında məlumat tezliklə burada olacaq. Hələlik müəllimlərimizlə tanış olun.",
+    "team_error_title": "Bir az sonra",
+    "team_error_desc": "Komanda siyahısını indi yükləmək mümkün olmadı. Bir az sonra yenidən baxın və ya müəllimlərimizlə tanış olun."
   },
   "faq": {
     "badge": "Suallarınız Var?",
     "title": "Tez-tez Verilən Suallar",
     "description": "Akademiyamız, dərslərimiz və qeydiyyat prosesi haqqında ən çox soruşulan sualların cavablarını burada tapa bilərsiniz.",
     "meta_title": "Tez-tez Verilən Suallar | Cahan Academy",
-    "meta_description": "Cahan Academy haqqında tez-tez verilən suallar və cavabları."
+    "meta_description": "Cahan Academy haqqında tez-tez verilən suallar və cavabları.",
+    "still_title": "Sualınız qaldı?",
+    "still_desc": "Cavabı burada tapmadınızsa, bizə yazın — komandamız cavab verəcək.",
+    "still_cta": "Bizə yazın",
+    "fallback": [
+      {
+        "q": "Kursa necə yazıla bilərəm?",
+        "a": "Kurs səhifəsində «Kursa yazıl» düyməsini basın və formu doldurun. Komandamız sizinlə əlaqə saxlayacaq."
+      },
+      {
+        "q": "Kursun qiyməti və müddəti haqqında harada məlumat ala bilərəm?",
+        "a": "Hər kursun qiyməti, müddəti və səviyyəsi kurs səhifəsində göstərilir. Əlavə sualınız olarsa, əlaqə formu ilə bizə yazın."
+      },
+      {
+        "q": "Müəllimlər haqqında məlumatı harada tapım?",
+        "a": "«Müəllimlər» bölməsində hər müəllimin profili, ixtisası və tədris etdiyi kurslar var."
+      },
+      {
+        "q": "Sizinlə necə əlaqə saxlaya bilərəm?",
+        "a": "«Əlaqə» səhifəsindəki formu doldurun və ya orada göstərilən telefon və e-poçt ünvanından istifadə edin."
+      }
+    ]
   },
   "legal": {
     "privacy_policy_title": "Məxfilik Siyasəti",
     "terms_of_use_title": "İstifadə Şərtləri",
     "last_updated": "Son yenilənmə",
     "privacy_content": "Cahan Academy olaraq sizin məxfiliyiniz bizim üçün önəmlidir. Bu sənəddə məlumatlarınızın necə toplandığı və qorunduğu barədə məlumat verilir...",
-    "terms_content": "Bu veb-saytdan istifadə etməklə siz aşağıdakı şərtləri qəbul etmiş hesab olunursunuz..."
+    "terms_content": "Bu veb-saytdan istifadə etməklə siz aşağıdakı şərtləri qəbul etmiş hesab olunursunuz...",
+    "eyebrow": "Hüquqi məlumat",
+    "toc": "Mündəricat",
+    "see_also": "Həmçinin oxuyun",
+    "privacy_lead": "Cahan Academy olaraq sizin məxfiliyiniz bizim üçün önəmlidir. Bu sənəddə məlumatlarınızın necə toplandığı və qorunduğu izah olunur.",
+    "terms_lead": "Bu veb-saytdan istifadə etməklə siz aşağıdakı şərtləri qəbul etmiş olursunuz.",
+    "privacy_sections": [
+      {
+        "title": "Məlumatların toplanması",
+        "body": "Biz sizin veb-saytımızda qeydiyyatdan keçdiyinizdə, kurslara yazıldığınızda və ya əlaqə formunu doldurduğunuzda təqdim etdiyiniz məlumatları (ad, email, telefon) toplayırıq."
+      },
+      {
+        "title": "İstifadə məqsədi",
+        "body": "Toplanılan məlumatlar təhsil xidmətlərinin göstərilməsi, sizinlə əlaqə saxlanılması və xidmət keyfiyyətinin artırılması üçün istifadə olunur."
+      },
+      {
+        "title": "Təhlükəsizlik",
+        "body": "Məlumatlarınızın təhlükəsizliyini təmin etmək üçün ən müasir şifrələmə texnologiyalarından və server təhlükəsizlik protokollarından istifadə edirik."
+      },
+      {
+        "title": "Əlaqə",
+        "body": "Məxfilik siyasəti ilə bağlı hər hansı sualınız olarsa, bizimlə əlaqə saxlaya bilərsiniz: info@cahanacademy.az"
+      }
+    ],
+    "terms_sections": [
+      {
+        "title": "Ümumi şərtlər",
+        "body": "Cahan Academy veb-saytından istifadə etməklə siz bütün şərtlərlə razı olduğunuzu təsdiq edirsiniz. Əgər bu şərtlərlə razı deyilsinizsə, xidmətdən istifadəni dayandırın."
+      },
+      {
+        "title": "Müəllif hüquqları",
+        "body": "Veb-saytda yer alan bütün materiallar (mətnlər, videolar, loqolar) Cahan Academy-yə məxsusdur və icazəsiz kopyalanması qadağandır."
+      },
+      {
+        "title": "İstifadə qaydaları",
+        "body": "İstifadəçilər xidmətlərdən yalnız qanuni məqsədlər üçün istifadə etməli və saytın fəaliyyətinə mane olacaq hərəkətlərdən çəkinməlidirlər."
+      },
+      {
+        "title": "Dəyişikliklər",
+        "body": "Biz istənilən vaxt bu şərtləri dəyişdirmək hüququnu özümüzdə saxlayırıq. Dəyişikliklər saytda dərc edildiyi andan qüvvəyə minir."
+      }
+    ]
   },
   "cookie": {
     "title": "Kuki faylları",
@@ -248,67 +348,5 @@
     "cta_title": "Bu gün başlayın",
     "cta_text": "Pulsuz məsləhət üçün bizə yazın. Hansı kursun sizə uyğun olduğunu birlikdə müəyyən edək.",
     "cta_call": "Zəng edin"
-  },
-  "coursesPage": {
-    "eyebrow": "Kurs kataloqu",
-    "breadcrumb_label": "Naviqasiya yolu",
-    "search_label": "Kurs axtarışı",
-    "search_clear": "Axtarışı təmizlə",
-    "filter_category": "Kateqoriya",
-    "filter_level": "Səviyyə",
-    "show_all_categories": "Bütün kateqoriyalar ({count})",
-    "show_fewer_categories": "Daha az göstər",
-    "reset": "Filtrləri sıfırla",
-    "results": "{count, plural, one {# kurs} other {# kurs}}",
-    "list_label": "Kurs siyahısı",
-    "empty_title": "Heç nə tapılmadı",
-    "empty_desc": "Axtarışı dəyişin və ya filtrləri sıfırlayın.",
-    "unavailable_title": "Kurslar tezliklə",
-    "unavailable_desc": "Kurs siyahısını hazırda göstərə bilmirik. Bir az sonra yenidən baxın və ya bizimlə əlaqə saxlayın.",
-    "pagination_label": "Səhifələr",
-    "prev": "Əvvəlki",
-    "next": "Növbəti",
-    "page": "Səhifə {page}",
-    "page_status": "Səhifə {page} / {total}",
-    "back": "Bütün kurslar",
-    "detail_script": "Sizin üçün kurs",
-    "meta_price": "Qiymət",
-    "meta_duration": "Müddət",
-    "meta_level": "Səviyyə",
-    "meta_students": "Tələbələr",
-    "meta_rating": "Reytinq",
-    "meta_category": "Kateqoriya",
-    "price_on_request": "Qiymət üçün əlaqə saxlayın",
-    "facts_title": "Kurs məlumatları",
-    "about_title": "Kurs haqqında",
-    "syllabus_title": "Kurs proqramı",
-    "syllabus_count": "{count, plural, one {# modul} other {# modul}}",
-    "highlights_title": "Kursun üstünlükləri",
-    "highlight_1": "Peşəkar sertifikat",
-    "highlight_2": "Praktiki layihələr",
-    "highlight_3": "1-ə-1 müəllim dəstəyi",
-    "highlight_4": "Ömürlük giriş imkanı",
-    "highlight_5": "İş axtarışında kömək",
-    "highlight_6": "Onlayn və oflayn variantlar",
-    "teacher_title": "Müəlliminiz",
-    "enroll_title": "Kursa yazılın",
-    "enroll_lead": "Formu doldurun, komandamız sizinlə əlaqə saxlayıb növbəti addımları izah edəcək.",
-    "related_title": "Oxşar kurslar"
-  },
-  "teachersPage": {
-    "eyebrow": "Müəllim heyəti",
-    "search_label": "Müəllim axtarışı",
-    "results": "{count, plural, one {# müəllim} other {# müəllim}}",
-    "list_label": "Müəllimlər siyahısı",
-    "empty_title": "Heç kim tapılmadı",
-    "unavailable_title": "Komanda tezliklə",
-    "unavailable_desc": "Müəllimlərin siyahısını hazırda göstərə bilmirik. Bir az sonra yenidən baxın.",
-    "detail_script": "Müəlliminiz",
-    "about_title": "Haqqında",
-    "courses_title": "Tədris etdiyi kurslar",
-    "courses_count": "{count, plural, one {# kurs} other {# kurs}}",
-    "no_courses_title": "Kurslar tezliklə",
-    "no_courses_desc": "Bu müəllimin kursları hələ əlavə olunmayıb. Bütün kurslara baxa bilərsiniz.",
-    "all_courses": "Bütün kurslar"
   }
 }

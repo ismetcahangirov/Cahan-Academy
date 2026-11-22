@@ -51,7 +51,7 @@ export async function launchBrowser(opts = {}) {
  * Browser context for one theme x width.
  * { theme: 'light'|'dark', width, height?, base, consent = true, reducedMotion?, deviceScaleFactor?, mobile? }
  */
-export async function newContext(browser, { theme = 'light', width = 1440, height, base = DEFAULT_BASE, consent = true, reducedMotion, deviceScaleFactor = 1, mobile, extra = {} } = {}) {
+export async function newContext(browser, { theme = 'light', width = 1440, height, base = DEFAULT_BASE, consent = true, reducedMotion, deviceScaleFactor = 1, mobile, renderAll = true, extra = {} } = {}) {
   const isMobile = mobile ?? width < 600;
   const context = await browser.newContext({
     viewport: { width, height: height || (width < 600 ? 844 : 900) },
@@ -70,6 +70,21 @@ export async function newContext(browser, { theme = 'light', width = 1440, heigh
       /* storage blocked: colorScheme emulation still applies */
     }
   }, theme);
+  // Sections with `content-visibility: auto` (.cv-auto) are not painted while off-screen, so a full-page
+  // screenshot or a page-wide colour audit would see them blank. Render everything for those tools;
+  // perf-probe passes renderAll: false to measure the real page.
+  if (renderAll) {
+    await context.addInitScript(() => {
+      const add = () => {
+        const s = document.createElement('style');
+        s.dataset.qa = 'render-all';
+        s.textContent = '.cv-auto{content-visibility:visible!important}';
+        document.head.appendChild(s);
+      };
+      if (document.head) add();
+      else document.addEventListener('DOMContentLoaded', add, { once: true });
+    });
+  }
   if (consent) await context.addCookies([{ name: 'cookie_consent', value: 'accepted', url: new URL(base).origin }]);
   return context;
 }
