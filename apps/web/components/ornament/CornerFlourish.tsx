@@ -1,11 +1,13 @@
 import { cn } from '@/lib/utils';
+import { BRAND_SPRITE } from '../brand/Brand';
 
 /**
  * CornerFlourish — a line-art corner bracket with scrolls. Four rotations.
  * Usually placed by <OrnateFrame>; standalone: put it in a `relative` parent.
  *
  * <CornerFlourish corner="tl" className="absolute left-2 top-2 h-8 w-8" />
- * Props: corner 'tl'|'tr'|'bl'|'br', className (size + position), draw (one-shot stroke draw).
+ * Props: corner 'tl'|'tr'|'bl'|'br', className (size + position), draw (one-shot stroke draw; renders the
+ * paths inline — otherwise the shape comes from the cached sprite /brand/sprite.svg#orn-corner).
  */
 export type Corner = 'tl' | 'tr' | 'bl' | 'br';
 
@@ -26,6 +28,20 @@ export default function CornerFlourish({
   draw?: boolean;
 }) {
   const t = TRANSFORM[corner];
+  if (!draw) {
+    // the usual case: one cached sprite symbol instead of 9 inline nodes per corner
+    return (
+      <svg
+        viewBox="0 0 64 64"
+        aria-hidden="true"
+        focusable="false"
+        className={cn('pointer-events-none text-ornament', className)}
+        style={t ? { transform: t } : undefined}
+      >
+        <use href={`${BRAND_SPRITE}#orn-corner`} width="64" height="64" />
+      </svg>
+    );
+  }
   return (
     <svg
       viewBox="0 0 64 64"

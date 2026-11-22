@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import { EdelweissGlyph } from './Edelweiss';
+import { BRAND_SPRITE } from '../brand/Brand';
 
 /**
  * OrnamentDivider — hairline with curled flourishes and an edelweiss in the middle.
@@ -7,10 +8,25 @@ import { EdelweissGlyph } from './Edelweiss';
  *
  * <OrnamentDivider />                       centred (default)
  * <OrnamentDivider align="start" />         glyph at the start, flourish running to the right
- * <OrnamentDivider motif="dot" draw={false} />
- * Props: align 'center'|'start', motif 'edelweiss'|'dot'|'none', draw (one-shot stroke draw), className.
+ * <OrnamentDivider motif="dot" />
+ * Props: align 'center'|'start', motif 'edelweiss'|'dot'|'none', draw (one-shot stroke draw, inline paths;
+ * default off = cached sprite symbol), className.
  */
 function Flourish({ flip, draw, className }: { flip?: boolean; draw?: boolean; className?: string }) {
+  if (!draw) {
+    return (
+      <svg
+        viewBox="0 0 120 16"
+        aria-hidden="true"
+        focusable="false"
+        preserveAspectRatio="xMaxYMid meet"
+        className={cn('h-4 overflow-visible', className)}
+        style={flip ? { transform: 'scaleX(-1)' } : undefined}
+      >
+        <use href={`${BRAND_SPRITE}#orn-flourish`} width="120" height="16" />
+      </svg>
+    );
+  }
   return (
     <svg
       viewBox="0 0 120 16"
@@ -42,7 +58,7 @@ function Motif({ motif }: { motif: 'edelweiss' | 'dot' | 'none' }) {
 export default function OrnamentDivider({
   align = 'center',
   motif = 'edelweiss',
-  draw = true,
+  draw = false,
   className,
 }: {
   align?: 'center' | 'start';

@@ -19,7 +19,7 @@ export default function CTASection() {
   const th = useTranslations('hero');
 
   return (
-    <section aria-labelledby="cta-title" className="overflow-x-clip px-4 pb-28 pt-20 sm:px-6 sm:pt-24 lg:px-8">
+    <section aria-labelledby="cta-title" className="cv-auto overflow-x-clip px-4 pb-28 pt-20 sm:px-6 sm:pt-24 lg:px-8">
       <Reveal className="relative mx-auto max-w-4xl">
         <DrapedRibbon className="absolute -right-5 -top-8 z-[3] w-44 sm:-right-10 sm:-top-10 sm:w-64" />
         <OrnateFrame paper className="relative overflow-hidden px-6 pb-12 pt-14 text-center sm:px-14">

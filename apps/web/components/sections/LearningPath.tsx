@@ -19,7 +19,7 @@ export default function LearningPath() {
   const th = useTranslations('hero');
 
   return (
-    <section aria-labelledby="path-title" className="relative py-20 sm:py-24">
+    <section aria-labelledby="path-title" className="cv-auto relative py-20 sm:py-24">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1fr_1.15fr] lg:gap-16 lg:px-8">
         <Reveal className="flex flex-col items-center text-center lg:items-start lg:text-left">
           <ScriptTitle

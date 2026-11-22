@@ -4,8 +4,9 @@ Usage (from apps/web):
   python scripts/font-coverage.py                  # the files lib/fonts.ts ships (assets/fonts/*.woff2)
   python scripts/font-coverage.py path/to/a.woff2  # any font file(s)
 
-Each shipped face is ONE subset file (no unicode-range split), so a character is covered when the
-font's cmap has a glyph for it. Also checks the uppercase forms used by the small-caps styles
+Faces are grouped by family: `x-latin.woff2` + `x-cyrillic.woff2` form one face (unicode-range split in
+lib/fonts.ts; the latin subset must hold every Azerbaijani letter, the cyrillic subset every Russian one),
+a file without a suffix must hold everything. Also checks the uppercase forms used by the small-caps styles
 (.sc is text-transform: uppercase; with <html lang="az"> "i" -> "İ"). Exit code 1 when anything is missing.
 Adapted from the dashboard's client/scripts/font-coverage.py (which reads @fontsource CSS).
 Requires: pip install fonttools brotli
@@ -13,20 +14,30 @@ Requires: pip install fonttools brotli
 import glob
 import os
 import sys
+from collections import defaultdict
 
 from fontTools.ttLib import TTFont
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FONT_DIR = os.path.join(HERE, "..", "assets", "fonts")
 
-AZ = "əƏğĞıİşŞçÇöÖüÜ"
-AZ_UPPER = "ƏĞIİŞÇÖÜ"
+AZ = "əƏğĞıİşŞçÇöÖüÜ" + "ƏĞIİŞÇÖÜ"
 RU = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя"
 EXTRA = "№«»—–…“”‘’"
 # ₼ (manat) is reported, not required: Cormorant SC does not draw it (EB Garamond and Great Vibes do),
 # so never put ₼ in small-caps text; prices in serif may use it.
 OPTIONAL = "₼"
-TEST = AZ + AZ_UPPER + RU + EXTRA
+
+# which characters each subset kind must contain
+REQUIRED = {"latin": AZ + EXTRA, "cyrillic": RU, "full": AZ + RU + EXTRA}
+
+
+def kind_of(name):
+    stem = os.path.splitext(name)[0]
+    for k in ("latin", "cyrillic"):
+        if stem.endswith("-" + k):
+            return stem[: -len(k) - 1], k
+    return stem, "full"
 
 
 def main(paths):
@@ -35,21 +46,34 @@ def main(paths):
     if not files:
         print("no font files found")
         return 1
+    families = defaultdict(dict)
     failed = 0
     for path in files:
+        family, kind = kind_of(os.path.basename(path))
         font = TTFont(path)
-        cmap = font.getBestCmap() or {}
-        missing = [c for c in TEST if ord(c) not in cmap]
+        cmap = set((font.getBestCmap() or {}).keys())
+        families[family][kind] = cmap
         name = os.path.basename(path)
-        family = font["name"].getDebugName(1) or "?"
-        opt = [c for c in OPTIONAL if ord(c) not in cmap]
+        missing = [c for c in REQUIRED[kind] if ord(c) not in cmap]
+        opt = [c for c in OPTIONAL if ord(c) not in cmap and kind != "cyrillic"]
+        label = font["name"].getDebugName(1) or "?"
         if missing:
             failed += 1
-            print(f"FAIL {name} ({family}): missing {' '.join(missing)}")
+            print(f"FAIL {name} ({label}, {kind}): missing {' '.join(missing)}")
         else:
-            print(f"PASS {name} ({family}): {len(TEST)} test characters, {len(cmap)} glyphs mapped" + (f"; optional missing: {' '.join(opt)}" if opt else ""))
+            note = f"; optional missing: {' '.join(opt)}" if opt else ""
+            print(f"PASS {name} ({label}, {kind}): {len(REQUIRED[kind])} required characters, {len(cmap)} glyphs{note}")
     print()
-    print("ALL PASS" if not failed else f"{failed} file(s) FAILED")
+    for family, kinds in sorted(families.items()):
+        union = set().union(*kinds.values())
+        missing = [c for c in AZ + RU + EXTRA if ord(c) not in union]
+        if missing:
+            failed += 1
+            print(f"FAIL family {family}: missing {' '.join(missing)}")
+        else:
+            print(f"PASS family {family} ({' + '.join(sorted(kinds))}): Azerbaijani + Cyrillic + punctuation")
+    print()
+    print("ALL PASS" if not failed else f"{failed} check(s) FAILED")
     return 1 if failed else 0
 
 

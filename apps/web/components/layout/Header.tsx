@@ -22,6 +22,17 @@ export default function Header() {
   const tc = useTranslations('common');
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  // the drawer is mounted on first use (keeps ~150 nodes out of the initial hydration),
+  // then opened two frames later so the slide-in transition runs
+  const [drawerMounted, setDrawerMounted] = useState(false);
+  const openMenu = () => {
+    if (drawerMounted) {
+      setMobileOpen(true);
+      return;
+    }
+    setDrawerMounted(true);
+    requestAnimationFrame(() => requestAnimationFrame(() => setMobileOpen(true)));
+  };
 
   return (
     <>
@@ -64,10 +75,10 @@ export default function Header() {
             </Link>
             <button
               type="button"
-              onClick={() => setMobileOpen(true)}
+              onClick={openMenu}
               aria-label={tc('menu_open')}
               aria-expanded={mobileOpen}
-              aria-controls="mobile-menu"
+              aria-controls={drawerMounted ? 'mobile-menu' : undefined}
               className={cn('btn btn-ghost btn-icon btn-sm text-accent-text lg:hidden')}
             >
               <Menu size={20} strokeWidth={1.6} aria-hidden="true" />
@@ -76,7 +87,7 @@ export default function Header() {
         </div>
       </header>
 
-      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} />
+      {drawerMounted && <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} />}
     </>
   );
 }

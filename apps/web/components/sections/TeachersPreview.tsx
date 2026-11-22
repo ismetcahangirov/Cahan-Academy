@@ -18,7 +18,7 @@ export default async function TeachersPreview() {
   if (!teachers.length) return null;
 
   return (
-    <section aria-labelledby="teachers-title" className="py-20 sm:py-24">
+    <section aria-labelledby="teachers-title" className="cv-auto py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
           <ScriptTitle

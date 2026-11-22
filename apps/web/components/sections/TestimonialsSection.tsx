@@ -57,7 +57,7 @@ export default function TestimonialsSection({
   const t = useTranslations('home');
 
   return (
-    <section aria-labelledby="testimonials-title" className="theme-wine band-wine relative overflow-hidden py-28 sm:py-32">
+    <section aria-labelledby="testimonials-title" className="cv-auto theme-wine band-wine relative overflow-hidden py-28 sm:py-32">
       <WaveEdge invert fill={topFill} className="absolute inset-x-0 -top-px" />
       <LaceEdge size={24} className="absolute inset-x-0 top-9 md:top-12" />
       <LaceCorner corner="bl" className="absolute bottom-10 left-0 w-28 sm:w-40" />

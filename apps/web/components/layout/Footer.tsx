@@ -57,7 +57,7 @@ export default function Footer({ waveFill = 'var(--page-base)' }: { waveFill?: s
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative mt-auto">
+    <footer className="cv-auto relative mt-auto">
       <div className="theme-wine band-wine relative overflow-hidden pb-8 pt-24 sm:pt-28">
         <WaveEdge invert fill={waveFill} className="absolute inset-x-0 -top-px" />
         <LaceCorner corner="bl" className="absolute bottom-0 left-0 w-20 sm:w-36" />

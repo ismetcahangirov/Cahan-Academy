@@ -1,4 +1,4 @@
-import { MARK } from '../brand/brandPaths';
+import { BRAND_VIEWBOX, SpriteUse } from '../brand/Brand';
 import { cn } from '@/lib/utils';
 import ThemedImg from './ThemedImg';
 
@@ -38,21 +38,17 @@ export default function WaxSeal({
         imgClassName="!h-full object-contain"
       />
       <svg
-        viewBox={MARK.viewBox}
+        viewBox={BRAND_VIEWBOX.mark.join(' ')}
         aria-hidden="true"
         focusable="false"
         className="absolute left-1/2 top-1/2 w-[50%] -translate-x-[48%] -translate-y-[52%]"
       >
         {/* highlight edge (light tone, offset down-right) then the pressed mark (deep tone) */}
         <g fill="#C6A6AB" transform="translate(8 8)">
-          {MARK.paths.map((p, i) => (
-            <path key={i} d={p.d} />
-          ))}
+          <SpriteUse id="mark" />
         </g>
         <g fill="#3C0009">
-          {MARK.paths.map((p, i) => (
-            <path key={i} d={p.d} />
-          ))}
+          <SpriteUse id="mark" />
         </g>
       </svg>
     </div>

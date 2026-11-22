@@ -20,6 +20,7 @@ const COOKIE_EXPIRE_DAYS = 365;
 export default function CookieConsent() {
   const [visible, setVisible] = useState(false);
   const t = useTranslations('cookie');
+  const tf = useTranslations('footer');
 
   useEffect(() => {
     if (Cookies.get(COOKIE_NAME)) return;
@@ -58,7 +59,7 @@ export default function CookieConsent() {
         <p className="mt-2 text-[1rem] leading-relaxed text-ink-muted">
           {t('description')}{' '}
           <Link href="/privacy-policy" className="link">
-            {t('learn_more')}
+            {tf('privacy')}
           </Link>
         </p>
         <div className="mt-4 flex flex-wrap gap-2">

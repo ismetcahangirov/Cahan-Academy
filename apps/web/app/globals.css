@@ -52,10 +52,11 @@
   --color-focus: var(--focus);
 
   /* fonts: next/font/local variables set on <html> by lib/fonts.ts */
-  --font-script: var(--font-great-vibes), "Segoe Script", cursive;
-  --font-serif: var(--font-eb-garamond), "Garamond", "Georgia", serif;
-  --font-sc: var(--font-cormorant-sc), var(--font-eb-garamond), "Georgia", serif;
-  --font-sans: var(--font-eb-garamond), "Garamond", "Georgia", serif;
+  /* Latin face + Cyrillic face (unicode-range split, see lib/fonts.ts) */
+  --font-script: var(--font-great-vibes), var(--font-great-vibes-cyr), "Segoe Script", cursive;
+  --font-serif: var(--font-eb-garamond), var(--font-eb-garamond-cyr), "Garamond", "Georgia", serif;
+  --font-sc: var(--font-cormorant-sc), var(--font-eb-garamond), var(--font-eb-garamond-cyr), "Georgia", serif;
+  --font-sans: var(--font-eb-garamond), var(--font-eb-garamond-cyr), "Garamond", "Georgia", serif;
 
   /* LEGACY aliases so pages that are not migrated yet still build and stay readable.
      Do NOT use them in migrated code (color-lint flags them). Note: `accent` is now the solid wine
@@ -75,8 +76,8 @@
   --color-muted-foreground: var(--ink-muted);
   --color-accent-foreground: var(--ink);
   --color-destructive: var(--accent-text);
-  --font-heading: var(--font-eb-garamond), "Garamond", "Georgia", serif;
-  --font-body: var(--font-eb-garamond), "Garamond", "Georgia", serif;
+  --font-heading: var(--font-eb-garamond), var(--font-eb-garamond-cyr), "Garamond", "Georgia", serif;
+  --font-body: var(--font-eb-garamond), var(--font-eb-garamond-cyr), "Garamond", "Georgia", serif;
 }
 
 /* ------------------------------------------------------------------ theme-independent */
@@ -1057,6 +1058,14 @@ select.field {
 .reveal-stagger > *:nth-child(6) { --reveal-delay: calc(var(--stagger) * 5); }
 .reveal-stagger > *:nth-child(n + 7) { --reveal-delay: calc(var(--stagger) * 6); }
 
+/* Long pages: sections below the fold skip style/layout/paint until they come near the viewport
+   (measured on the home page: ~1 s less main-thread work at 4x CPU). `auto` remembers the real size
+   once rendered. Never on the first screen. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
 /* ------------------------------------------------------------------ landing shell */
 .site-header {
   background-color: var(--page);
@@ -1098,13 +1107,12 @@ select.field {
   transform: scaleX(1);
 }
 
-/* wine hero / band background: radial wine gradient (stays on the wine->black segment) + parchment grain */
+/* wine hero / band background: radial wine gradient (stays on the wine->black segment). The hero has no
+   raster grain on purpose: a full-bleed background image becomes the LCP element (measured: +3 s on
+   mobile/slow 4G); bands lower on the page (.band-wine) carry the parchment grain. */
 .hero-wine {
   background-color: #2E0007;
-  background-image:
-    url("/ornaments/parchment-dark.webp"),
-    radial-gradient(120% 85% at 50% 12%, #5C000E 0%, #3C0009 46%, #1E0005 100%);
-  background-size: 512px 512px, 100% 100%;
+  background-image: radial-gradient(120% 85% at 50% 12%, #5C000E 0%, #3C0009 46%, #1E0005 100%);
 }
 .band-wine {
   background-color: #2E0007;
