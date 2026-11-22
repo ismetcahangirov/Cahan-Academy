@@ -8,6 +8,5 @@ export { default as Spinner, Skeleton } from './Spinner';
 export { default as EmptyState } from './EmptyState';
 export { default as Table } from './Table';
 export { default as Reveal } from './Reveal';
-export { default as Breadcrumbs, type Crumb } from './Breadcrumbs';
-export { default as FilterChip } from './FilterChip';
-export { default as Pagination } from './Pagination';
+// Breadcrumbs, FilterChip, Pagination, Feedback: import from their own files (keeps them out of every
+// bundle that imports this barrel).
