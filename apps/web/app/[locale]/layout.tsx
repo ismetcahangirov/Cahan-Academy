@@ -8,6 +8,7 @@ import { SITE_URL } from '@/lib/utils';
 import CookieConsent from '@/components/ui/CookieConsent';
 import RevealObserver from '@/components/ui/RevealObserver';
 import ThemeScript from '@/components/layout/ThemeScript';
+import ThemeSync from '@/components/layout/ThemeSync';
 import '../globals.css';
 
 export function generateStaticParams() {
@@ -66,6 +67,7 @@ export default async function LocaleLayout({
           {children}
           <CookieConsent />
           <RevealObserver />
+          <ThemeSync />
         </NextIntlClientProvider>
       </body>
     </html>
