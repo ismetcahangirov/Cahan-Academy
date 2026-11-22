@@ -313,7 +313,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
               <CoverImage
                 src={coverSrc(teacher.image)}
                 alt=""
-                sketch="notebook"
+                sketch={sketchFor(teacher.position, teacher.name)}
                 rounded="arch"
                 sizes="10rem"
                 className="mx-auto mt-5 aspect-[4/5] w-32"

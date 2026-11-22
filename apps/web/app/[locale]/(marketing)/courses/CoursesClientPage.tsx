@@ -130,9 +130,12 @@ export default function CoursesClientPage({ initialCourses, initialCategories, l
   // the ONE featured card of the view: the first popular course of the unfiltered first page
   const featuredId = !hasFilters && current === 1 ? (visible.find((c) => c.isPopular) ?? visible[0])?.id : undefined;
 
+  // phones: one horizontally scrolling row per filter (every chip); from `sm` the chips wrap and a long
+  // category list collapses to the first few behind a "show all" toggle
   const collapsible = chips.length > CHIPS_COLLAPSED + 2;
-  const shownChips =
-    collapsible && !showAllChips ? chips.filter((c, i) => i < CHIPS_COLLAPSED || c.slug === category) : chips;
+  const folded = (i: number, slug: string) => collapsible && !showAllChips && i >= CHIPS_COLLAPSED && slug !== category;
+  const chipRow =
+    '-mx-4 flex flex-nowrap items-center gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0 [&::-webkit-scrollbar]:hidden';
 
   const resetPage = () => setPage(1);
   const resetAll = () => {
@@ -223,7 +226,7 @@ export default function CoursesClientPage({ initialCourses, initialCategories, l
           <p id="filter-category" className="sc text-[0.8rem] text-ink-subtle lg:pt-3">
             {tp('filter_category')}
           </p>
-          <div role="group" aria-labelledby="filter-category" className="flex flex-wrap items-center gap-2">
+          <div role="group" aria-labelledby="filter-category" className={chipRow}>
             <FilterChip
               pressed={category === 'all'}
               count={courses.length}
@@ -234,9 +237,10 @@ export default function CoursesClientPage({ initialCourses, initialCategories, l
             >
               {t('filter_all')}
             </FilterChip>
-            {shownChips.map((chip) => (
+            {chips.map((chip, i) => (
               <FilterChip
                 key={chip.slug}
+                className={folded(i, chip.slug) ? 'sm:hidden' : undefined}
                 pressed={category === chip.slug}
                 count={chip.count}
                 onClick={() => {
@@ -252,7 +256,7 @@ export default function CoursesClientPage({ initialCourses, initialCategories, l
                 type="button"
                 aria-expanded={showAllChips}
                 onClick={() => setShowAllChips((v) => !v)}
-                className="sc min-h-10 px-2 text-[0.8rem] text-accent-text underline decoration-line-strong underline-offset-4 hover:decoration-current"
+                className="sc hidden min-h-10 px-2 text-[0.8rem] text-accent-text underline sm:inline decoration-line-strong underline-offset-4 hover:decoration-current"
               >
                 {showAllChips ? tp('show_fewer_categories') : tp('show_all_categories', { count: chips.length })}
               </button>
@@ -262,7 +266,7 @@ export default function CoursesClientPage({ initialCourses, initialCategories, l
           <p id="filter-level" className="sc mt-2 text-[0.8rem] text-ink-subtle lg:mt-0 lg:pt-3">
             {tp('filter_level')}
           </p>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className={chipRow}>
             <div role="group" aria-labelledby="filter-level" className="contents">
               {LEVELS.map((lv) => (
                 <FilterChip
@@ -277,7 +281,7 @@ export default function CoursesClientPage({ initialCourses, initialCategories, l
                 </FilterChip>
               ))}
             </div>
-            <span aria-hidden="true" className="mx-1 hidden h-6 w-px bg-line sm:block" />
+            <span aria-hidden="true" className="mx-1 h-6 w-px shrink-0 bg-line" />
             <FilterChip
               pressed={popularOnly}
               icon={<Feather size={14} strokeWidth={1.6} aria-hidden="true" />}

@@ -4,12 +4,11 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Search, X } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import TeacherCard from '@/components/cards/TeacherCard';
+import TeacherTile from '@/components/teachers/TeacherTile';
 import { Button, EmptyState, Input } from '@/components/ui';
 import Reveal from '@/components/ui/Reveal';
 import Pagination from '@/components/courses/Pagination';
 import { matches } from '@/components/courses/search';
-import { coverSrc } from '@/components/courses/media';
 import type { Teacher } from '@/types/teacher';
 
 /**
@@ -142,7 +141,7 @@ export default function TeachersClientPage({ teachers, locale }: TeachersClientP
           <Reveal as="ul" stagger className="mt-10 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
             {visible.map((teacher) => (
               <li key={teacher.id}>
-                <TeacherCard teacher={{ ...teacher, image: coverSrc(teacher.image) }} />
+                <TeacherTile teacher={teacher} />
               </li>
             ))}
           </Reveal>

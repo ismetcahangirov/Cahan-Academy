@@ -12,7 +12,7 @@ import Reveal from '@/components/ui/Reveal';
 import { EdelweissGlyph, LaceCorner, OrnamentDivider, OrnateFrame, ScriptTitle, WaveEdge } from '@/components/ornament';
 import Breadcrumbs from '@/components/courses/Breadcrumbs';
 import CourseTile from '@/components/courses/CourseTile';
-import { coverSrc } from '@/components/courses/media';
+import { coverSrc, sketchFor } from '@/components/courses/media';
 import { alternatesFor, metaDescription } from '@/components/courses/seo';
 
 interface PageProps {
@@ -100,7 +100,7 @@ export default async function TeacherDetailPage({ params }: PageProps) {
                 <CoverImage
                   src={image}
                   alt={teacher.name}
-                  sketch="notebook"
+                  sketch={sketchFor(teacher.position, teacher.slug)}
                   rounded="arch"
                   priority
                   sizes="(min-width: 1024px) 24rem, (min-width: 768px) 20rem, 17rem"

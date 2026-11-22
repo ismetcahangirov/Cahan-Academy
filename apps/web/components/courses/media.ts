@@ -23,8 +23,8 @@ export function coverSrc(src?: string | null): string | null {
 }
 
 const RULES: [RegExp, SketchName][] = [
-  [/dizayn|design|дизайн|ui|ux|qrafik|graphic/i, 'inkwell'],
-  [/data|analit|elm|science|данн|machine|ml/i, 'lamp'],
+  [/dizayn|design|дизайн|\bui\b|\bux\b|qrafik|graphic/i, 'inkwell'],
+  [/data|analit|\belm|science|данн|machine|\bml\b/i, 'lamp'],
   [/dil|lang|ingilis|english|язык|англ/i, 'globe'],
   [/proqram|program|veb|web|front|back|kod|code|прогр|разраб/i, 'notebook'],
   [/kiber|cyber|təhlük|secur|безопас/i, 'books'],

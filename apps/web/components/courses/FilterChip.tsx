@@ -28,7 +28,7 @@ export default function FilterChip({
       type="button"
       aria-pressed={pressed}
       className={cn(
-        'sc inline-flex min-h-10 items-center gap-1.5 rounded-full border px-3.5 text-[0.8rem] leading-none',
+        'sc inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-full border px-3.5 text-[0.8rem] leading-none',
         'transition-[background-color,border-color,color] duration-150',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus)]',
         pressed
