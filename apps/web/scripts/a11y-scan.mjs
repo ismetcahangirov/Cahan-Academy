@@ -13,6 +13,7 @@
  *           and must not be invisible.
  *   trap    with a [role=dialog][aria-modal] open, 30 Tabs never leave it.
  *   motion  with prefers-reduced-motion: reduce, nothing loops or runs longer than 200 ms (spinners excepted).
+ * Each target gets --timeout seconds (default 120) before it is reported as failed.
  * Output: <out>/a11y.json + <out>/a11y.txt; exit code 1 on any failure.
  */
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -29,6 +30,7 @@ const api = args.api || DEFAULT_API;
 const out = args.out || 'a11y';
 const themes = list(args.themes, 'light,dark');
 const widths = list(args.widths, '1440,390').map(Number);
+const TARGET_TIMEOUT = Number(args.timeout || 120) * 1000;
 assertLocal(base);
 
 async function runAxe(page) {
@@ -116,14 +118,21 @@ try {
         const label = `${target.admin ? 'admin:' : ''}${target.path}${target.name ? ` #${target.name}` : ''} ${theme} ${width}`;
         let issues = [];
         try {
-          if (target.admin) await loginContext(context, { api, base });
-          await openTarget(page, target, { base, scroll: false });
-          const axe = await runAxe(page);
-          issues = [
-            ...axe.map((v) => ({ check: `axe:${v.id}`, impact: v.impact, el: `${v.help} (${v.count}) — ${v.nodes.join(' | ')}` })),
-            ...(await scanMotion(page)),
-            ...(await scanFocus(page)),
-          ];
+          const scan = async () => {
+            if (target.admin) await loginContext(context, { api, base });
+            await openTarget(page, target, { base, scroll: false });
+            const axe = await runAxe(page);
+            return [
+              ...axe.map((v) => ({ check: `axe:${v.id}`, impact: v.impact, el: `${v.help} (${v.count}) — ${v.nodes.join(' | ')}` })),
+              ...(await scanMotion(page)),
+              ...(await scanFocus(page)),
+            ];
+          };
+          // one stuck page must not hang the whole run
+          issues = await Promise.race([
+            scan(),
+            new Promise((_, reject) => setTimeout(() => reject(new Error(`timed out after ${TARGET_TIMEOUT / 1000} s`)), TARGET_TIMEOUT)),
+          ]);
         } catch (e) {
           issues = [{ check: 'action', impact: 'critical', el: e.message.split('\n')[0] }];
         }
