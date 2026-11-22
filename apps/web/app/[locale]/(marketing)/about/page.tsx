@@ -12,6 +12,10 @@ import CTASection from '@/components/sections/CTASection';
 import JsonLd from '@/components/seo/JsonLd';
 import { SITE_URL, absoluteUrl } from '@/lib/utils';
 
+// ISR: static HTML, regenerated in the background at most this often (same window as the
+// fetches it renders: team list, 1 d). Explicit, so a page whose build-time fetch failed still revalidates.
+export const revalidate = 86400;
+
 interface Props {
   params: Promise<{ locale: string }>;
 }

@@ -129,7 +129,8 @@ export const getTeacher = (slug: string, locale?: string) =>
     });
 
 // ─── Blog ────────────────────────────────────────────────────────────────────
-export const getBlogPosts = (params?: { locale?: string; limit?: number; excludeSlug?: string }) => {
+/** `revalidate` (s) overrides the 60 s default, e.g. the hourly sitemap (a lower fetch value wins over the route's). */
+export const getBlogPosts = (params?: { locale?: string; limit?: number; excludeSlug?: string; revalidate?: number }) => {
   const query = new URLSearchParams();
   if (params?.locale) query.append('locale', params.locale);
   if (params?.limit) query.append('limit', params.limit.toString());
@@ -137,7 +138,7 @@ export const getBlogPosts = (params?: { locale?: string; limit?: number; exclude
 
   return apiFetch<{ data: BlogPost[] }>(`/blog?${query.toString()}`, {
     tags: ['blog'],
-    revalidate: 60,
+    revalidate: params?.revalidate ?? 60,
   })
     .then((res) => res.data)
     .catch(() => [] as BlogPost[]);

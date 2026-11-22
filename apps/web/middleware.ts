@@ -29,5 +29,7 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)'],
+  // Generated OG images are skipped too: Next links them as `/az/opengraph-image?…`, and the locale
+  // middleware would 307 that (the default locale has no prefix); crawlers want a direct 200.
+  matcher: ['/((?!api|_next|_vercel|.*opengraph-image|.*\\..*).*)'],
 };

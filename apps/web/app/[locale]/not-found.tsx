@@ -1,10 +1,14 @@
-import { getLocale } from 'next-intl/server';
+'use client';
+
+import { useLocale } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { BrandLockup } from '@/components/brand';
 import { LaceCorner, OrnateFrame, ScriptTitle, SketchIllustration } from '@/components/ornament';
 import { buttonClass } from '@/components/ui/Button';
 
 // Shown for notFound() calls inside /[locale] (unknown course/teacher/blog slug).
+// Client component on purpose: a server not-found that calls getLocale() reads headers() and, because
+// Next renders the boundary with every page of the segment, turned every route dynamic.
 // Copy is inline so it does not depend on message keys (works even if message loading failed).
 const COPY = {
   az: { title: 'Səhifə tapılmadı', body: 'Axtardığınız səhifə mövcud deyil və ya köçürülüb.', home: 'Ana səhifə' },
@@ -12,8 +16,8 @@ const COPY = {
   ru: { title: 'Страница не найдена', body: 'Страница не существует или была перемещена.', home: 'На главную' },
 } as const;
 
-export default async function LocaleNotFound() {
-  const locale = await getLocale();
+export default function LocaleNotFound() {
+  const locale = useLocale();
   const t = COPY[locale as keyof typeof COPY] ?? COPY.az;
 
   return (

@@ -15,6 +15,10 @@ import CourseTile from '@/components/courses/CourseTile';
 import { coverSrc, sketchFor } from '@/components/courses/media';
 import { alternatesFor, metaDescription } from '@/components/courses/seo';
 
+// ISR: static HTML, regenerated in the background at most this often (same window as the
+// fetches it renders: teacher, 1 d). Explicit, so a page whose build-time fetch failed still revalidates.
+export const revalidate = 86400;
+
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
 }

@@ -29,6 +29,10 @@ import { coverSrc, sketchFor } from '@/components/courses/media';
 import { alternatesFor, metaDescription } from '@/components/courses/seo';
 import { parseSyllabus, toRoman } from '@/components/courses/syllabus';
 
+// ISR: static HTML, regenerated in the background at most this often (same window as the
+// fetches it renders: course, 1 h). Explicit, so a page whose build-time fetch failed still revalidates.
+export const revalidate = 3600;
+
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
 }

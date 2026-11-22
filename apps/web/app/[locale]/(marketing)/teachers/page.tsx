@@ -9,6 +9,10 @@ import CatalogHead from '@/components/courses/CatalogHead';
 import { alternatesFor, metaDescription } from '@/components/courses/seo';
 import TeachersClientPage from './TeachersClientPage';
 
+// ISR: static HTML, regenerated in the background at most this often (same window as the
+// fetches it renders: teachers, 1 d). Explicit, so a page whose build-time fetch failed still revalidates.
+export const revalidate = 86400;
+
 interface PageProps {
   params: Promise<{ locale: string }>;
 }

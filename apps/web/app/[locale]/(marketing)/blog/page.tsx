@@ -7,6 +7,10 @@ import { pageAlternates } from '@/components/legal/seo';
 import JsonLd from '@/components/seo/JsonLd';
 import { absoluteUrl } from '@/lib/utils';
 
+// ISR: static HTML, regenerated in the background at most this often (same window as the
+// fetches it renders: posts, 1 min). Explicit, so a page whose build-time fetch failed still revalidates.
+export const revalidate = 60;
+
 interface PageProps {
   params: Promise<{ locale: string }>;
 }

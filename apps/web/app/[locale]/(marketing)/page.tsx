@@ -11,6 +11,10 @@ import CTASection from '@/components/sections/CTASection';
 import JsonLd from '@/components/seo/JsonLd';
 import { SITE_URL, absoluteUrl, localizedPath } from '@/lib/utils';
 
+// ISR: static HTML, regenerated in the background at most this often (same window as the
+// fetches it renders: courses 1 h, teachers 1 d). Explicit, so a page whose build-time fetch failed still revalidates.
+export const revalidate = 3600;
+
 interface Props {
   params: Promise<{ locale: string }>;
 }

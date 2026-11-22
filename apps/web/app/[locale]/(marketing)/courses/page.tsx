@@ -9,6 +9,10 @@ import CatalogHead from '@/components/courses/CatalogHead';
 import { alternatesFor } from '@/components/courses/seo';
 import CoursesClientPage, { type Category } from './CoursesClientPage';
 
+// ISR: static HTML, regenerated in the background at most this often (same window as the
+// fetches it renders: courses + categories, 1 h). Explicit, so a page whose build-time fetch failed still revalidates.
+export const revalidate = 3600;
+
 interface PageProps {
   params: Promise<{ locale: string }>;
 }

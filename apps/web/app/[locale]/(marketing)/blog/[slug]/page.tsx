@@ -15,6 +15,10 @@ import { toArticleHtml } from '@/components/blog/data';
 import { pageAlternates } from '@/components/legal/seo';
 import styles from '@/components/blog/article.module.css';
 
+// ISR: static HTML, regenerated in the background at most this often (same window as the
+// fetches it renders: post + related, 1 min). Explicit, so a page whose build-time fetch failed still revalidates.
+export const revalidate = 60;
+
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
 }

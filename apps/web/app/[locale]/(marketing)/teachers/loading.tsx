@@ -1,8 +1,14 @@
-import { getTranslations } from 'next-intl/server';
+'use client';
+
+import { useTranslations } from 'next-intl';
 import CatalogSkeleton from '@/components/courses/CatalogSkeleton';
 
-/** Shown while the server renders this route (client navigation): palette skeleton, same layout. */
-export default async function Loading() {
-  const t = await getTranslations('courses');
+/**
+ * Shown while the server renders this route (client navigation): palette skeleton, same layout.
+ * Client component: a server loading.tsx calling getTranslations() without a locale reads headers()
+ * and made the whole route dynamic.
+ */
+export default function Loading() {
+  const t = useTranslations('courses');
   return <CatalogSkeleton variant="teachers" label={t('loading')} />;
 }
