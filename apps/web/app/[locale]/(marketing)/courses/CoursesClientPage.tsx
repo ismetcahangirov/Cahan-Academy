@@ -7,8 +7,8 @@ import { Link } from '@/i18n/routing';
 import CourseCard from '@/components/cards/CourseCard';
 import { Button, EmptyState, Input } from '@/components/ui';
 import Reveal from '@/components/ui/Reveal';
-import FilterChip from '@/components/courses/FilterChip';
-import Pagination from '@/components/courses/Pagination';
+import FilterChip from '@/components/ui/FilterChip';
+import Pagination from '@/components/ui/Pagination';
 import { matches } from '@/components/courses/search';
 import type { Course, CourseLevel } from '@/types/course';
 

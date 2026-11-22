@@ -7,7 +7,7 @@ import adminApi from '@/lib/adminApi';
 import { Badge, Button } from '@/components/ui';
 import CourseModal from '@/components/admin/CourseModal';
 import { DataView, PageHead, RowAction, Thumb } from '@/components/admin/AdminUI';
-import { useAdminFeedback } from '@/components/admin/feedback';
+import { useFeedback } from '@/components/ui/Feedback';
 import { useAdminList } from '@/components/admin/useAdminList';
 import { asBool, assertOk } from '@/components/admin/utils';
 
@@ -24,7 +24,7 @@ interface Course {
 
 export default function CoursesAdminPage() {
   const t = useTranslations('admin');
-  const { confirm, ok } = useAdminFeedback();
+  const { confirm, ok } = useFeedback();
   const { items, setItems, loading, error, reload } = useAdminList<Course>('/courses/admin/list');
   const [modalOpen, setModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Course | null>(null);

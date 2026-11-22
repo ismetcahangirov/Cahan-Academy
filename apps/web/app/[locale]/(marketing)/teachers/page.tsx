@@ -4,9 +4,8 @@ import { getTeachers } from '@/lib/api';
 import { absoluteUrl } from '@/lib/utils';
 import type { Teacher } from '@/types/teacher';
 import JsonLd from '@/components/seo/JsonLd';
-import Breadcrumbs from '@/components/courses/Breadcrumbs';
-import CatalogHead from '@/components/courses/CatalogHead';
-import { alternatesFor, metaDescription } from '@/components/courses/seo';
+import PageBand from '@/components/layout/PageBand';
+import { alternatesFor, metaDescription } from '@/lib/seo';
 import TeachersClientPage from './TeachersClientPage';
 
 // ISR: static HTML, regenerated in the background at most this often (same window as the
@@ -35,11 +34,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function TeachersPage({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const [t, tp, tcp, tc, teachers] = await Promise.all([
+  const [t, tp, teachers] = await Promise.all([
     getTranslations({ locale, namespace: 'teachers' }),
     getTranslations({ locale, namespace: 'teachersPage' }),
-    getTranslations({ locale, namespace: 'coursesPage' }),
-    getTranslations({ locale, namespace: 'common' }),
     getTeachers(locale),
   ]);
 
@@ -59,18 +56,9 @@ export default async function TeachersPage({ params }: PageProps) {
           })),
         }}
       />
-      <CatalogHead
-        breadcrumbs={
-          <Breadcrumbs
-            locale={locale}
-            label={tcp('breadcrumb_label')}
-            align="center"
-            items={[
-              { name: tc('home'), path: '' },
-              { name: t('page_title'), path: '/teachers' },
-            ]}
-          />
-        }
+      <PageBand
+        id="teachers-title"
+        trail={{ locale, items: [{ path: '/teachers' }] }}
         eyebrow={tp('eyebrow')}
         title={t('page_title')}
         lead={t('page_description')}

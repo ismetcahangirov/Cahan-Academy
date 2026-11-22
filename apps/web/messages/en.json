@@ -306,7 +306,14 @@
     "language": "Language",
     "main_nav": "Main navigation",
     "home": "Home",
-    "view_all": "View all"
+    "view_all": "View all",
+    "breadcrumb_label": "Breadcrumb",
+    "pagination_label": "Pages",
+    "prev": "Previous",
+    "next": "Next",
+    "page": "Page {page}",
+    "page_status": "Page {page} of {total}",
+    "error": "Something went wrong. Please try again."
   },
   "theme": {
     "toggle": "Switch between light and dark theme",
@@ -376,11 +383,6 @@
     "empty_desc": "Try another search or reset the filters.",
     "unavailable_title": "Courses coming soon",
     "unavailable_desc": "We cannot show the course list right now. Please check back soon or get in touch with us.",
-    "pagination_label": "Pages",
-    "prev": "Previous",
-    "next": "Next",
-    "page": "Page {page}",
-    "page_status": "Page {page} of {total}",
     "back": "All courses",
     "detail_script": "A course for you",
     "meta_price": "Price",

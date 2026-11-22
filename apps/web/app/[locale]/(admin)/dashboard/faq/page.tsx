@@ -7,7 +7,7 @@ import adminApi from '@/lib/adminApi';
 import { Button, Card, EmptyState, Skeleton, StatusPill } from '@/components/ui';
 import FaqModal from '@/components/admin/FaqModal';
 import { PageHead, RowAction } from '@/components/admin/AdminUI';
-import { useAdminFeedback } from '@/components/admin/feedback';
+import { useFeedback } from '@/components/ui/Feedback';
 import { useAdminList } from '@/components/admin/useAdminList';
 import { apiMessage, assertOk } from '@/components/admin/utils';
 import { cn } from '@/lib/utils';
@@ -23,7 +23,7 @@ interface Faq {
 
 export default function FAQAdminPage() {
   const t = useTranslations('admin');
-  const { confirm, ok, fail } = useAdminFeedback();
+  const { confirm, ok, fail } = useFeedback();
   const { items, setItems, loading, error, reload } = useAdminList<Faq>('/faqs/admin/all');
   const [open, setOpen] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);

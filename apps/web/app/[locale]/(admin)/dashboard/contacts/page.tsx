@@ -6,7 +6,7 @@ import { Eye, MailOpen } from 'lucide-react';
 import adminApi from '@/lib/adminApi';
 import { Button, Modal, StatusPill } from '@/components/ui';
 import { DataView, PageHead, RowAction, Toolbar } from '@/components/admin/AdminUI';
-import { useAdminFeedback } from '@/components/admin/feedback';
+import { useFeedback } from '@/components/ui/Feedback';
 import { useAdminList } from '@/components/admin/useAdminList';
 import { apiMessage, asBool, assertOk, fmtDate } from '@/components/admin/utils';
 
@@ -24,7 +24,7 @@ interface Msg {
 export default function ContactsPage() {
   const t = useTranslations('admin');
   const locale = useLocale();
-  const { fail } = useAdminFeedback();
+  const { fail } = useFeedback();
   const { items, setItems, loading, error, reload } = useAdminList<Msg>('/contacts');
   const [q, setQ] = useState('');
   const [selected, setSelected] = useState<Msg | null>(null);

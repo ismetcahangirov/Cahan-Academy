@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import PageBand from '@/components/about/PageBand';
+import PageBand from '@/components/layout/PageBand';
 import BlogList from '@/components/blog/BlogList';
 import { loadPosts } from '@/components/blog/data';
-import { pageAlternates } from '@/components/legal/seo';
+import { alternatesFor } from '@/lib/seo';
 import JsonLd from '@/components/seo/JsonLd';
 import { absoluteUrl } from '@/lib/utils';
 
@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: t('blog_title'),
     description: t('blog_description'),
-    alternates: pageAlternates(locale, '/blog'),
+    alternates: alternatesFor(locale, '/blog'),
     openGraph: { title: t('blog_title'), description: t('blog_description'), type: 'website', locale },
   };
 }
@@ -50,7 +50,7 @@ export default async function BlogPage({ params }: PageProps) {
           })),
         }}
       />
-      <PageBand id="blog-title" eyebrow={t('hero_badge')} title={t('page_title')} lead={t('page_subtitle')} />
+      <PageBand id="blog-title" trail={{ locale, items: [{ path: '/blog' }] }} eyebrow={t('hero_badge')} title={t('page_title')} lead={t('page_subtitle')} />
       <div className="mx-auto max-w-6xl px-4 pb-24 pt-10 sm:px-6 sm:pt-14 lg:px-8">
         <BlogList posts={posts} failed={failed} />
       </div>

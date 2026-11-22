@@ -29,7 +29,8 @@ import { EdelweissGlyph, LaceEdge, OrnamentDivider } from '@/components/ornament
 import LanguageSwitcher from '@/components/layout/LanguageSwitcher';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import { Button, Spinner } from '@/components/ui';
-import { AdminFeedbackProvider } from './feedback';
+import { FeedbackProvider } from '@/components/ui/Feedback';
+import { apiMessage } from './utils';
 
 /**
  * AdminShell — the CMS frame: wine sidebar (lockup, nav with an edelweiss marker on the active item,
@@ -129,7 +130,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const current = NAV.find((n) => isActive(pathname, n.href));
 
   return (
-    <AdminFeedbackProvider>
+    <FeedbackProvider errorMessage={(e) => apiMessage(e, t('common.delete_error'))}>
       <a href="#admin-main" className="btn btn-primary btn-sm sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-3 focus:z-[80]">
         {tc('skip_to_content')}
       </a>
@@ -255,6 +256,6 @@ export default function AdminShell({ children }: { children: ReactNode }) {
           {children}
         </main>
       </div>
-    </AdminFeedbackProvider>
+    </FeedbackProvider>
   );
 }

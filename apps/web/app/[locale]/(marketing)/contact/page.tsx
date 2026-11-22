@@ -3,8 +3,8 @@ import type { ReactNode } from 'react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Clock, ExternalLink, Mail, MapPin, Phone, type LucideIcon } from 'lucide-react';
 import ContactForm from '@/components/forms/ContactForm';
-import PageBand from '@/components/about/PageBand';
-import { pageAlternates } from '@/components/legal/seo';
+import PageBand from '@/components/layout/PageBand';
+import { alternatesFor } from '@/lib/seo';
 import { OrnateFrame, ScriptTitle, SketchIllustration } from '@/components/ornament';
 import JsonLd from '@/components/seo/JsonLd';
 import { absoluteUrl } from '@/lib/utils';
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: t('contact_title'),
     description: t('contact_description'),
-    alternates: pageAlternates(locale, '/contact'),
+    alternates: alternatesFor(locale, '/contact'),
     openGraph: { title: t('contact_title'), description: t('contact_description'), type: 'website', locale },
   };
 }
@@ -65,7 +65,7 @@ export default async function ContactPage({ params }: Props) {
         }}
       />
 
-      <PageBand id="contact-title" eyebrow={t('eyebrow')} title={t('title')} lead={t('lead')} />
+      <PageBand id="contact-title" trail={{ locale, items: [{ path: '/contact' }] }} eyebrow={t('eyebrow')} title={t('title')} lead={t('lead')} />
 
       <div className="mx-auto grid max-w-6xl items-start gap-6 px-4 pb-24 pt-12 sm:px-6 sm:pt-16 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-10 lg:px-8">
         <OrnateFrame as="section" aria-labelledby="contact-form-title" className="px-5 pb-8 pt-9 sm:px-10 sm:pb-10 sm:pt-11">

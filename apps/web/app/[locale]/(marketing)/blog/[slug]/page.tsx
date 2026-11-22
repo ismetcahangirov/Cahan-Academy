@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, Calendar, ChevronRight, Clock } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { getBlogPost, getBlogPosts } from '@/lib/api';
 import { SITE_URL, absoluteUrl, cn } from '@/lib/utils';
@@ -11,9 +11,10 @@ import { isRealImage, sketchFor } from '@/lib/media';
 import { OrnamentDivider, OrnateFrame, ScriptTitle, WaxSeal } from '@/components/ornament';
 import { Button, Reveal } from '@/components/ui';
 import JsonLd from '@/components/seo/JsonLd';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import ShareButton from '@/components/blog/ShareButton';
 import { toArticleHtml } from '@/components/blog/data';
-import { pageAlternates } from '@/components/legal/seo';
+import { alternatesFor } from '@/lib/seo';
 import styles from '@/components/blog/article.module.css';
 
 // ISR: static HTML, regenerated in the background at most this often (same window as the
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {
       title: `${post.title} — Cahan Academy`,
       description: post.excerpt,
-      alternates: pageAlternates(locale, `/blog/${post.slug}`),
+      alternates: alternatesFor(locale, `/blog/${post.slug}`),
       openGraph: {
         title: post.title,
         description: post.excerpt,
@@ -103,39 +104,18 @@ export default async function BlogPostPage({ params }: PageProps) {
           },
         }}
       />
-      <JsonLd
-        data={{
-          '@context': 'https://schema.org',
-          '@type': 'BreadcrumbList',
-          itemListElement: [
-            { '@type': 'ListItem', position: 1, name: t('home'), item: absoluteUrl(locale) },
-            { '@type': 'ListItem', position: 2, name: t('page_title'), item: absoluteUrl(locale, '/blog') },
-            { '@type': 'ListItem', position: 3, name: post.title, item: url },
-          ],
-        }}
-      />
 
       <article className="pb-20">
         <header className="mx-auto max-w-4xl px-4 pt-8 sm:px-6 sm:pt-12 lg:px-8">
-          <nav aria-label={t('breadcrumb_label')}>
-            <ol className="sc flex min-w-0 items-center gap-1.5 text-[0.8rem] text-ink-muted">
-              <li className="shrink-0">
-                <Link href="/" className="hover:text-accent-text">
-                  {t('home')}
-                </Link>
-              </li>
-              <li className="inline-flex shrink-0 items-center gap-1.5">
-                <ChevronRight size={13} strokeWidth={1.6} className="text-ornament-soft" aria-hidden="true" />
-                <Link href="/blog" className="hover:text-accent-text">
-                  {t('page_title')}
-                </Link>
-              </li>
-              <li aria-current="page" className="hidden min-w-0 items-center gap-1.5 text-ink sm:inline-flex">
-                <ChevronRight size={13} strokeWidth={1.6} className="shrink-0 text-ornament-soft" aria-hidden="true" />
-                <span className="truncate">{post.title}</span>
-              </li>
-            </ol>
-          </nav>
+          <Breadcrumbs
+            locale={locale}
+            label={t('breadcrumb_label')}
+            items={[
+              { name: t('home'), path: '' },
+              { name: t('page_title'), path: '/blog' },
+              { name: post.title, path: `/blog/${post.slug}` },
+            ]}
+          />
 
           <div className="mt-10 text-center sm:mt-12">
             <p className="sc text-[0.85rem] text-accent-text">{t('article_label')}</p>

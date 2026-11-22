@@ -10,10 +10,10 @@ import CoverImage from '@/components/cards/CoverImage';
 import { Button, Card, EmptyState } from '@/components/ui';
 import Reveal from '@/components/ui/Reveal';
 import { EdelweissGlyph, LaceCorner, OrnamentDivider, OrnateFrame, ScriptTitle, WaveEdge } from '@/components/ornament';
-import Breadcrumbs from '@/components/courses/Breadcrumbs';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import CourseCard from '@/components/cards/CourseCard';
 import { isRealImage, sketchFor } from '@/lib/media';
-import { alternatesFor, metaDescription } from '@/components/courses/seo';
+import { alternatesFor, metaDescription } from '@/lib/seo';
 
 // ISR: static HTML, regenerated in the background at most this often (same window as the
 // fetches it renders: teacher, 1 d). Explicit, so a page whose build-time fetch failed still revalidates.

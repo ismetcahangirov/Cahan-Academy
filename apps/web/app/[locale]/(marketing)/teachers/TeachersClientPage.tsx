@@ -7,7 +7,7 @@ import { Link } from '@/i18n/routing';
 import TeacherCard from '@/components/cards/TeacherCard';
 import { Button, EmptyState, Input } from '@/components/ui';
 import Reveal from '@/components/ui/Reveal';
-import Pagination from '@/components/courses/Pagination';
+import Pagination from '@/components/ui/Pagination';
 import { matches } from '@/components/courses/search';
 import type { Teacher } from '@/types/teacher';
 

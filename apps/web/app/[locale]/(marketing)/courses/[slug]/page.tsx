@@ -22,11 +22,11 @@ import {
   TimelineItem,
   WaveEdge,
 } from '@/components/ornament';
-import Breadcrumbs from '@/components/courses/Breadcrumbs';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import CourseCard from '@/components/cards/CourseCard';
 import StickyEnroll from '@/components/courses/StickyEnroll';
 import { isRealImage, sketchFor } from '@/lib/media';
-import { alternatesFor, metaDescription } from '@/components/courses/seo';
+import { alternatesFor, metaDescription } from '@/lib/seo';
 import { parseSyllabus, toRoman } from '@/components/courses/syllabus';
 
 // ISR: static HTML, regenerated in the background at most this often (same window as the

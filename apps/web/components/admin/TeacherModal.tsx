@@ -10,7 +10,7 @@ import adminApi from '@/lib/adminApi';
 import { Button, FormField, Input, Modal, Textarea } from '@/components/ui';
 import ImageUpload from './ImageUpload';
 import { LangTabs, type Lang } from './AdminUI';
-import { useAdminFeedback } from './feedback';
+import { useFeedback } from '@/components/ui/Feedback';
 import { apiMessage, slugify } from './utils';
 
 interface Props {
@@ -26,7 +26,7 @@ const POS = { az: 'positionAz', en: 'positionEn', ru: 'positionRu' } as const;
 /** Teacher create / edit: name, slug, photo, bio + position in az / en / ru. */
 export default function TeacherModal({ isOpen, onClose, onSuccess, teacherToEdit }: Props) {
   const t = useTranslations('admin');
-  const { ok } = useAdminFeedback();
+  const { ok } = useFeedback();
   const [tab, setTab] = useState<Lang>('az');
   const [serverError, setServerError] = useState('');
 

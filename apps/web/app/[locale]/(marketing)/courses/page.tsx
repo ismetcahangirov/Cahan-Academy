@@ -4,9 +4,8 @@ import { apiFetch, getCourses } from '@/lib/api';
 import { absoluteUrl } from '@/lib/utils';
 import type { Course } from '@/types/course';
 import JsonLd from '@/components/seo/JsonLd';
-import Breadcrumbs from '@/components/courses/Breadcrumbs';
-import CatalogHead from '@/components/courses/CatalogHead';
-import { alternatesFor } from '@/components/courses/seo';
+import PageBand from '@/components/layout/PageBand';
+import { alternatesFor } from '@/lib/seo';
 import CoursesClientPage, { type Category } from './CoursesClientPage';
 
 // ISR: static HTML, regenerated in the background at most this often (same window as the
@@ -36,10 +35,9 @@ const getCategories = () =>
 export default async function CoursesPage({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const [t, tp, tc] = await Promise.all([
+  const [t, tp] = await Promise.all([
     getTranslations({ locale, namespace: 'courses' }),
     getTranslations({ locale, namespace: 'coursesPage' }),
-    getTranslations({ locale, namespace: 'common' }),
   ]);
 
   // getCourses() resolves to [] when the API is down: the client shows a calm "coming soon" state
@@ -61,18 +59,9 @@ export default async function CoursesPage({ params }: PageProps) {
           })),
         }}
       />
-      <CatalogHead
-        breadcrumbs={
-          <Breadcrumbs
-            locale={locale}
-            label={tp('breadcrumb_label')}
-            align="center"
-            items={[
-              { name: tc('home'), path: '' },
-              { name: t('page_title'), path: '/courses' },
-            ]}
-          />
-        }
+      <PageBand
+        id="courses-title"
+        trail={{ locale, items: [{ path: '/courses' }] }}
         eyebrow={tp('eyebrow')}
         title={t('page_title')}
         lead={t('page_subtitle')}

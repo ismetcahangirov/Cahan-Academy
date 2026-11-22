@@ -7,7 +7,7 @@ import adminApi from '@/lib/adminApi';
 import { Button } from '@/components/ui';
 import CategoryModal from '@/components/admin/CategoryModal';
 import { DataView, PageHead, RowAction, Thumb } from '@/components/admin/AdminUI';
-import { useAdminFeedback } from '@/components/admin/feedback';
+import { useFeedback } from '@/components/ui/Feedback';
 import { useAdminList } from '@/components/admin/useAdminList';
 import { assertOk } from '@/components/admin/utils';
 
@@ -21,7 +21,7 @@ interface Category {
 
 export default function CategoriesAdminPage() {
   const t = useTranslations('admin');
-  const { confirm, ok } = useAdminFeedback();
+  const { confirm, ok } = useFeedback();
   const { items, setItems, loading, error, reload } = useAdminList<Category>('/categories');
   const [modalOpen, setModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Category | null>(null);

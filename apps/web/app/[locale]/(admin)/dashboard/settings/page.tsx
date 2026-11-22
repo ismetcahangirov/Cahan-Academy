@@ -10,13 +10,13 @@ import adminApi from '@/lib/adminApi';
 import { useAuth } from '@/context/AuthContext';
 import { Button, FormField, Input, Card, CardHeader } from '@/components/ui';
 import { ScriptTitle } from '@/components/ornament';
-import { useAdminFeedback } from '@/components/admin/feedback';
+import { useFeedback } from '@/components/ui/Feedback';
 import { apiMessage, assertOk } from '@/components/admin/utils';
 
 export default function SettingsPage() {
   const t = useTranslations('admin');
   const { user, updateUser, logout } = useAuth();
-  const { ok } = useAdminFeedback();
+  const { ok } = useFeedback();
   const [profileError, setProfileError] = useState('');
   const [pwError, setPwError] = useState('');
 

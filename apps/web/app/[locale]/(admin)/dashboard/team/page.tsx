@@ -7,7 +7,7 @@ import adminApi from '@/lib/adminApi';
 import { Button } from '@/components/ui';
 import TeamMemberModal from '@/components/admin/TeamMemberModal';
 import { DataView, PageHead, RowAction, Thumb } from '@/components/admin/AdminUI';
-import { useAdminFeedback } from '@/components/admin/feedback';
+import { useFeedback } from '@/components/ui/Feedback';
 import { useAdminList } from '@/components/admin/useAdminList';
 import { assertOk } from '@/components/admin/utils';
 
@@ -23,7 +23,7 @@ interface Member {
 
 export default function TeamAdminPage() {
   const t = useTranslations('admin');
-  const { confirm, ok } = useAdminFeedback();
+  const { confirm, ok } = useFeedback();
   const { items, setItems, loading, error, reload } = useAdminList<Member>('/team');
   const [modalOpen, setModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Member | null>(null);

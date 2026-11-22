@@ -524,10 +524,22 @@ html::-webkit-scrollbar-thumb:hover,
 .btn:active:not(:disabled) {
   transform: scale(0.97);
 }
+/* Disabled = tint tokens, never `opacity` (half-transparent wine over a dark surface leaves the tone line).
+ * A busy button (aria-busy, `loading`) keeps its own look: only the spinner says it is working. */
 .btn:disabled,
 .btn[aria-disabled="true"] {
   cursor: not-allowed;
-  opacity: 0.5;
+}
+.btn:disabled:not([aria-busy="true"]),
+.btn[aria-disabled="true"]:not([aria-busy="true"]) {
+  color: var(--ink-subtle);
+  border-color: var(--line);
+  background-color: transparent;
+  box-shadow: none;
+}
+.btn-primary:disabled:not([aria-busy="true"]),
+.btn-primary[aria-disabled="true"]:not([aria-busy="true"]) {
+  background-color: var(--surface-3);
 }
 .btn svg {
   flex-shrink: 0;
@@ -1144,7 +1156,12 @@ select.field {
   transition: opacity var(--dur-3) var(--ease-silk), visibility 0s;
 }
 
-/* long-form text (blog posts, legal pages) — the typography plugin, retoned to the palette */
+} /* @layer components */
+
+@layer utilities {
+/* long-form text (blog posts, legal pages) — the typography plugin, retoned to the palette.
+ * In the utilities layer AFTER the plugin's `.prose` (same specificity, later wins); in the components
+ * layer it lost to `.prose` and the plugin's grey defaults reached the text. */
 .prose-ornate {
   --tw-prose-body: var(--ink);
   --tw-prose-headings: var(--ink);
@@ -1166,8 +1183,7 @@ select.field {
   --tw-prose-td-borders: var(--line-hair);
   font-size: 1.125rem;
 }
-
-} /* @layer components */
+}
 
 /* motion safety nets (outside layers so they win) */
 @media (prefers-reduced-motion: reduce) {

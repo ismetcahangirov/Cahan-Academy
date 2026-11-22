@@ -10,7 +10,7 @@ import adminApi from '@/lib/adminApi';
 import { Button, FormField, Input, Modal, Select, Textarea } from '@/components/ui';
 import ImageUpload from './ImageUpload';
 import { LangTabs, type Lang } from './AdminUI';
-import { useAdminFeedback } from './feedback';
+import { useFeedback } from '@/components/ui/Feedback';
 import { apiMessage, asBool, slugify } from './utils';
 
 interface Props {
@@ -27,7 +27,7 @@ const SYL = { az: 'syllabusAz', en: 'syllabusEn', ru: 'syllabusRu' } as const;
 /** Course create / edit: title, description, syllabus in az / en / ru + slug, category, teacher, price, level… */
 export default function CourseModal({ isOpen, onClose, onSuccess, courseToEdit }: Props) {
   const t = useTranslations('admin');
-  const { ok } = useAdminFeedback();
+  const { ok } = useFeedback();
   const [tab, setTab] = useState<Lang>('az');
   const [serverError, setServerError] = useState('');
   const [categories, setCategories] = useState<{ id: string; nameAz: string }[]>([]);

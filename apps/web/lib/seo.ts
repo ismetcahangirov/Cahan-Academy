@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { LOCALES, localizedPath } from '@/lib/utils';
 
 /**
- * Canonical + hreflang for one page (relative to metadataBase = SITE_URL, so they resolve to the
+ * The one canonical + hreflang helper for every page (relative to metadataBase = SITE_URL, so they resolve to the
  * canonical origin). With localePrefix 'as-needed' the az page has no prefix.
  * alternatesFor('en', '/courses') → { canonical: '/en/courses', languages: { az: '/courses', en: …, ru: …, 'x-default': '/courses' } }
  */

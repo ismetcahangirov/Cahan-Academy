@@ -10,7 +10,7 @@ import adminApi from '@/lib/adminApi';
 import { Button, FormField, Input, Modal } from '@/components/ui';
 import ImageUpload from './ImageUpload';
 import { LangTabs, type Lang } from './AdminUI';
-import { useAdminFeedback } from './feedback';
+import { useFeedback } from '@/components/ui/Feedback';
 import { apiMessage } from './utils';
 
 interface Props {
@@ -33,7 +33,7 @@ const POS = { az: 'positionAz', en: 'positionEn', ru: 'positionRu' } as const;
 /** Team member create / edit. */
 export default function TeamMemberModal({ isOpen, onClose, onSuccess, memberToEdit }: Props) {
   const t = useTranslations('admin');
-  const { ok } = useAdminFeedback();
+  const { ok } = useFeedback();
   const [tab, setTab] = useState<Lang>('az');
   const [serverError, setServerError] = useState('');
 
