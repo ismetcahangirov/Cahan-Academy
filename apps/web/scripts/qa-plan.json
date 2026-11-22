@@ -1,0 +1,399 @@
+[
+  {
+    "path": "/"
+  },
+  {
+    "path": "/courses"
+  },
+  {
+    "path": "/courses/{course}"
+  },
+  {
+    "path": "/teachers"
+  },
+  {
+    "path": "/teachers/{teacher}"
+  },
+  {
+    "path": "/blog"
+  },
+  {
+    "path": "/blog/{post}"
+  },
+  {
+    "path": "/about"
+  },
+  {
+    "path": "/contact"
+  },
+  {
+    "path": "/faq"
+  },
+  {
+    "path": "/privacy-policy"
+  },
+  {
+    "path": "/terms"
+  },
+  {
+    "path": "/en"
+  },
+  {
+    "path": "/en/courses"
+  },
+  {
+    "path": "/en/courses/{course}"
+  },
+  {
+    "path": "/en/teachers"
+  },
+  {
+    "path": "/en/teachers/{teacher}"
+  },
+  {
+    "path": "/en/blog"
+  },
+  {
+    "path": "/en/blog/{post}"
+  },
+  {
+    "path": "/en/about"
+  },
+  {
+    "path": "/en/contact"
+  },
+  {
+    "path": "/en/faq"
+  },
+  {
+    "path": "/en/privacy-policy"
+  },
+  {
+    "path": "/en/terms"
+  },
+  {
+    "path": "/ru"
+  },
+  {
+    "path": "/ru/courses"
+  },
+  {
+    "path": "/ru/courses/{course}"
+  },
+  {
+    "path": "/ru/teachers"
+  },
+  {
+    "path": "/ru/teachers/{teacher}"
+  },
+  {
+    "path": "/ru/blog"
+  },
+  {
+    "path": "/ru/blog/{post}"
+  },
+  {
+    "path": "/ru/about"
+  },
+  {
+    "path": "/ru/contact"
+  },
+  {
+    "path": "/ru/faq"
+  },
+  {
+    "path": "/ru/privacy-policy"
+  },
+  {
+    "path": "/ru/terms"
+  },
+  {
+    "path": "/kit"
+  },
+  {
+    "path": "/no-such-page",
+    "name": "404"
+  },
+  {
+    "path": "/en/no-such-page",
+    "name": "404"
+  },
+  {
+    "path": "/courses/no-such-course",
+    "name": "404"
+  },
+  {
+    "path": "/",
+    "name": "mobile-menu",
+    "widths": [
+      390
+    ],
+    "actions": [
+      "click=header button[aria-expanded]",
+      "wait=600"
+    ]
+  },
+  {
+    "path": "/",
+    "name": "lang-menu",
+    "widths": [
+      1440
+    ],
+    "actions": [
+      "click=header button[aria-controls][aria-label*=\":\"]",
+      "wait=300"
+    ]
+  },
+  {
+    "path": "/contact",
+    "name": "validation",
+    "actions": [
+      "click=main form button[type=submit]",
+      "wait=500"
+    ]
+  },
+  {
+    "path": "/courses/{course}",
+    "name": "enroll-validation",
+    "actions": [
+      "scroll=#enroll form",
+      "click=#enroll form button[type=submit]",
+      "wait=500"
+    ]
+  },
+  {
+    "path": "/courses",
+    "name": "no-results",
+    "actions": [
+      "fill=main input[type=search]|zzzzqqq",
+      "wait=600"
+    ]
+  },
+  {
+    "path": "/teachers",
+    "name": "no-results",
+    "actions": [
+      "fill=main input[type=search]|zzzzqqq",
+      "wait=600"
+    ]
+  },
+  {
+    "path": "/faq",
+    "name": "open",
+    "actions": [
+      "click=main button[aria-expanded=\"false\"]",
+      "wait=300"
+    ]
+  },
+  {
+    "path": "/",
+    "name": "newsletter-error",
+    "widths": [
+      1440
+    ],
+    "actions": [
+      "fill=footer input[type=email]|not-an-email",
+      "click=footer form button[type=submit]",
+      "wait=400"
+    ]
+  },
+  {
+    "path": "/login"
+  },
+  {
+    "path": "/en/login"
+  },
+  {
+    "path": "/ru/login"
+  },
+  {
+    "path": "/login",
+    "name": "validation",
+    "actions": [
+      "click=main form button[type=submit]",
+      "wait=400"
+    ]
+  },
+  {
+    "path": "/login",
+    "name": "wrong-password",
+    "actions": [
+      "fill=input[type=email]|admin@cahan.az",
+      "fill=input[type=password]|wrong",
+      "click=main form button[type=submit]",
+      "wait=1200"
+    ]
+  },
+  {
+    "path": "admin:/dashboard"
+  },
+  {
+    "path": "admin:/dashboard/courses"
+  },
+  {
+    "path": "admin:/dashboard/teachers"
+  },
+  {
+    "path": "admin:/dashboard/categories"
+  },
+  {
+    "path": "admin:/dashboard/blog"
+  },
+  {
+    "path": "admin:/dashboard/faq"
+  },
+  {
+    "path": "admin:/dashboard/team"
+  },
+  {
+    "path": "admin:/dashboard/leads"
+  },
+  {
+    "path": "admin:/dashboard/contacts"
+  },
+  {
+    "path": "admin:/dashboard/newsletter"
+  },
+  {
+    "path": "admin:/dashboard/users"
+  },
+  {
+    "path": "admin:/dashboard/settings"
+  },
+  {
+    "path": "admin:/en/dashboard"
+  },
+  {
+    "path": "admin:/ru/dashboard/courses"
+  },
+  {
+    "path": "admin:/dashboard/courses",
+    "name": "create",
+    "actions": [
+      "click=main button:has(svg.lucide-plus)",
+      "wait=500"
+    ]
+  },
+  {
+    "path": "admin:/dashboard/teachers",
+    "name": "create",
+    "actions": [
+      "click=main button:has(svg.lucide-plus)",
+      "wait=500"
+    ]
+  },
+  {
+    "path": "admin:/dashboard/categories",
+    "name": "create",
+    "actions": [
+      "click=main button:has(svg.lucide-plus)",
+      "wait=500"
+    ]
+  },
+  {
+    "path": "admin:/dashboard/blog",
+    "name": "create",
+    "actions": [
+      "click=main button:has(svg.lucide-plus)",
+      "wait=500"
+    ]
+  },
+  {
+    "path": "admin:/dashboard/faq",
+    "name": "create",
+    "actions": [
+      "click=main button:has(svg.lucide-plus)",
+      "wait=500"
+    ]
+  },
+  {
+    "path": "admin:/dashboard/team",
+    "name": "create",
+    "actions": [
+      "click=main button:has(svg.lucide-plus)",
+      "wait=500"
+    ]
+  },
+  {
+    "path": "admin:/dashboard/users",
+    "name": "create",
+    "actions": [
+      "click=main button:has(svg.lucide-user-plus)",
+      "wait=500"
+    ]
+  },
+  {
+    "path": "admin:/dashboard/courses",
+    "name": "create-validation",
+    "actions": [
+      "click=main button:has(svg.lucide-plus)",
+      "wait=400",
+      "click=[role=dialog] button[type=submit]",
+      "wait=400"
+    ]
+  },
+  {
+    "path": "admin:/dashboard/courses",
+    "name": "edit",
+    "actions": [
+      "click=main button:has(svg.lucide-pencil)",
+      "wait=500"
+    ]
+  },
+  {
+    "path": "admin:/dashboard/courses",
+    "name": "confirm-delete",
+    "actions": [
+      "click=main button:has(svg.lucide-trash-2)",
+      "wait=500"
+    ]
+  },
+  {
+    "path": "admin:/dashboard/faq",
+    "name": "toast",
+    "actions": [
+      "click=main button:has(svg.lucide-trash-2)",
+      "wait=400",
+      "click=[role=dialog] .btn-danger",
+      "wait=700"
+    ]
+  },
+  {
+    "path": "admin:/dashboard/contacts",
+    "name": "view",
+    "actions": [
+      "click=main button:has(svg.lucide-eye)",
+      "wait=500"
+    ]
+  },
+  {
+    "path": "admin:/dashboard/settings",
+    "name": "validation",
+    "actions": [
+      "click=main form:nth-of-type(2) button[type=submit]",
+      "wait=400"
+    ]
+  },
+  {
+    "path": "admin:/dashboard",
+    "name": "drawer",
+    "widths": [
+      390
+    ],
+    "actions": [
+      "click=header button[aria-expanded]",
+      "wait=600"
+    ]
+  },
+  {
+    "path": "admin:/dashboard",
+    "name": "lang-menu",
+    "widths": [
+      1440
+    ],
+    "actions": [
+      "click=header button[aria-controls][aria-label*=\":\"]",
+      "wait=300"
+    ]
+  }
+]
