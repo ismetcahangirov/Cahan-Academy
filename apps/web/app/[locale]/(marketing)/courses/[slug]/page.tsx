@@ -172,7 +172,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                   [tp('meta_level'), levelLabel],
                 ].map(([label, value]) => (
                   <div key={label} className="min-w-0 px-2 text-center first:pl-0 last:pr-0 sm:px-4">
-                    <dt className="sc text-[0.72rem] text-ink-subtle sm:text-[0.8rem]">{label}</dt>
+                    <dt className="sc text-[0.72rem] text-ink-muted sm:text-[0.8rem]">{label}</dt>
                     <dd className="num mt-1 break-words text-[1.02rem] font-semibold leading-snug text-ink sm:text-[1.2rem]">{value}</dd>
                   </div>
                 ))}

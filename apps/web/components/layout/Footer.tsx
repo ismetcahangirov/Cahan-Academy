@@ -157,7 +157,7 @@ export default function Footer({ waveFill = 'var(--page-base)' }: { waveFill?: s
             <p className="text-[0.95rem] text-ink-muted">
               © <span className="num">{year}</span> Cahan Academy. {tf('rights')}
             </p>
-            <p className="sc text-[0.78rem] text-ink-subtle">{tf('made_in')}</p>
+            <p className="sc text-[0.78rem] text-ink-muted">{tf('made_in')}</p>
           </div>
         </div>
       </div>

@@ -53,7 +53,7 @@ export default function HeroSection() {
         </div>
         <a
           href="#academy"
-          className="sc mt-12 hidden flex-col items-center gap-1 text-[0.78rem] text-ink-subtle transition-colors hover:text-ink sm:flex"
+          className="sc mt-12 hidden flex-col items-center gap-1 text-[0.78rem] text-ink-muted transition-colors hover:text-ink sm:flex"
         >
           {th('hero_scroll')}
           <ChevronDown size={18} strokeWidth={1.4} aria-hidden="true" />

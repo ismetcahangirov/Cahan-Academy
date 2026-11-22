@@ -61,7 +61,7 @@ theme). Tailwind utilities exist for the semantic ones:
 | `--field` | `bg-field` | `#FFFFFF` | `#170004` | inputs |
 | `--ink` | `text-ink` | `#170004` | `#FFFFFF` | body text |
 | `--ink-muted` | `text-ink-muted` | `#86424D` | `#C19EA3` | secondary text (AA) |
-| `--ink-subtle` | `text-ink-subtle` | `#A5737A` | `#A06B73` | placeholder, disabled, tertiary |
+| `--ink-subtle` | `text-ink-subtle` | `#A5737A` | `#A06B73` | placeholder, disabled, decorative icons — **not for readable text** (3.9:1, below AA) |
 | `--accent` | `bg-accent` | `#5C000E` | `#5C000E` | primary fills (**white inside `.theme-wine`**) |
 | `--accent-hover` / `-fg` | | `#4A000B` / `#FFF` | `#742632` / `#FFF` | |
 | `--accent-text` | `text-accent-text` | `#5C000E` | `#E2D1D4` | links, active labels, icons |

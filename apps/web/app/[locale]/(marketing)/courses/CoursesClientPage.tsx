@@ -223,7 +223,7 @@ export default function CoursesClientPage({ initialCourses, initialCategories, l
         </div>
 
         <div className="mt-5 grid gap-x-6 gap-y-3 border-t border-line-hair pt-5 lg:grid-cols-[7.5rem_1fr] lg:items-start lg:gap-y-4">
-          <p id="filter-category" className="sc text-[0.8rem] text-ink-subtle lg:pt-3">
+          <p id="filter-category" className="sc text-[0.8rem] text-ink-muted lg:pt-3">
             {tp('filter_category')}
           </p>
           <div role="group" aria-labelledby="filter-category" className={chipRow}>
@@ -263,7 +263,7 @@ export default function CoursesClientPage({ initialCourses, initialCategories, l
             )}
           </div>
 
-          <p id="filter-level" className="sc mt-2 text-[0.8rem] text-ink-subtle lg:mt-0 lg:pt-3">
+          <p id="filter-level" className="sc mt-2 text-[0.8rem] text-ink-muted lg:mt-0 lg:pt-3">
             {tp('filter_level')}
           </p>
           <div className={chipRow}>

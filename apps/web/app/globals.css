@@ -1187,6 +1187,18 @@ select.field {
 }
 }
 
+/* Copy rendered in all three languages (app/[locale]/not-found.tsx): <html lang> shows one. */
+.i18n-az,
+.i18n-en,
+.i18n-ru {
+  display: none;
+}
+html[lang="az"] .i18n-az,
+html[lang="en"] .i18n-en,
+html[lang="ru"] .i18n-ru {
+  display: revert;
+}
+
 /* motion safety nets (outside layers so they win) */
 @media (prefers-reduced-motion: reduce) {
   .orn-sway,
