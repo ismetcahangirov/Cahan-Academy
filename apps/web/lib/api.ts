@@ -194,7 +194,8 @@ export interface CourseSummary {
   rating: string | null;
   studentsCount: string | null;
   category: { name?: string; slug?: string };
-  teacher: { name?: string; image?: string | null; position?: string };
+  /** `slug` since the API returns it (older API: absent → match by name). */
+  teacher: { name?: string; slug?: string | null; image?: string | null; position?: string };
 }
 export interface Teacher {
   id: string;

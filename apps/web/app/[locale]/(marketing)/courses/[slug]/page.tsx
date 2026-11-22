@@ -90,7 +90,8 @@ export default async function CourseDetailPage({ params }: PageProps) {
     getTranslations({ locale, namespace: 'common' }),
     getTranslations({ locale, namespace: 'teachers' }),
     getCourses(locale),
-    course.teacher?.name ? getTeachers(locale) : Promise.resolve([]),
+    // only an API without teacher.slug needs the list (name match below)
+    course.teacher?.name && !course.teacher.slug ? getTeachers(locale) : Promise.resolve([]),
   ]);
 
   const levelLabel =
@@ -99,8 +100,8 @@ export default async function CourseDetailPage({ params }: PageProps) {
     ] ?? course.level;
   const syllabus = parseSyllabus(course.syllabus);
   const teacher = course.teacher?.name ? course.teacher : null;
-  // the course endpoint has no teacher slug: link the profile when the name matches a listed teacher
-  const teacherSlug = teacher ? teachers.find((x) => x.name === teacher.name)?.slug : undefined;
+  // the API sends teacher.slug; an older API did not — then link the profile when the name matches
+  const teacherSlug = teacher ? (teacher.slug ?? teachers.find((x) => x.name === teacher.name)?.slug) : undefined;
   const sameCategory = all.filter((c) => c.slug !== course.slug && c.category?.slug === course.category?.slug);
   const related = (sameCategory.length ? sameCategory : all.filter((c) => c.slug !== course.slug && c.isPopular)).slice(0, 3);
   const image = isRealImage(course.image) ? course.image : null;
