@@ -11,8 +11,20 @@ import { LOCALES } from './nav';
  * LanguageSwitcher — small-caps pill that opens a menu of real links (crawlable).
  * Escape / outside click close it and focus returns to the button.
  * variant 'menu' (header) | 'inline' (mobile drawer: three pills side by side).
+ * buttonClassName restyles the menu trigger (e.g. the bordered pill on the admin login); align = which edge
+ * of the trigger the menu lines up with (default 'right').
  */
-export default function LanguageSwitcher({ variant = 'menu', className }: { variant?: 'menu' | 'inline'; className?: string }) {
+export default function LanguageSwitcher({
+  variant = 'menu',
+  className,
+  buttonClassName,
+  align = 'right',
+}: {
+  variant?: 'menu' | 'inline';
+  className?: string;
+  buttonClassName?: string;
+  align?: 'left' | 'right';
+}) {
   const locale = useLocale();
   const pathname = usePathname();
   const t = useTranslations('common');
@@ -70,7 +82,7 @@ export default function LanguageSwitcher({ variant = 'menu', className }: { vari
         aria-expanded={open}
         aria-controls={menuId}
         aria-label={`${t('language')}: ${LOCALES.find((l) => l.code === locale)?.name ?? locale}`}
-        className="btn btn-ghost btn-sm gap-1.5 px-2.5 text-accent-text"
+        className={cn('btn btn-ghost btn-sm gap-1.5 px-2.5 text-accent-text', buttonClassName)}
       >
         <Languages size={16} strokeWidth={1.6} aria-hidden="true" />
         <span>{locale.toUpperCase()}</span>
@@ -83,7 +95,7 @@ export default function LanguageSwitcher({ variant = 'menu', className }: { vari
       </button>
 
       {open && (
-        <ul id={menuId} className="menu-panel orn-pop absolute right-0 top-full z-50 mt-2 min-w-[11rem]">
+        <ul id={menuId} className={cn('menu-panel orn-pop absolute top-full z-50 mt-2 min-w-[11rem]', align === 'left' ? 'left-0' : 'right-0')}>
           {LOCALES.map((l) => (
             <li key={l.code}>
               <Link

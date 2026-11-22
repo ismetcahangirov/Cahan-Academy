@@ -90,17 +90,23 @@ An inline `<head>` script (`ThemeScript`) applies `.dark` before first paint (no
 
 | role | family | class | rules |
 |---|---|---|---|
-| Title | **Cahan Display** 400 (the academy's own face; 300/700 shipped, not used yet) | `.script-title`, `font-script`, `<ScriptTitle>` (historic names, kept) | short fixed headings (2–4 words): hero, section, page, modal, empty state. Always weight 400, upright (`font-style: normal`, set by the classes). **Never** data (course/teacher/post names), body text, buttons, inputs, nav, tables, numbers. |
+| Title | **Cahan Display** 400 (the academy's own face; only Regular ships — Light/Bold OTFs are in `docs/brand/font/cahan-display`) | `.script-title`, `font-script`, `<ScriptTitle>` (historic names, kept) | short fixed headings (2–4 words): hero, section, page, modal, empty state. Always weight 400, upright (`font-style: normal`, set by the classes). **Never** data (course/teacher/post names), body text, buttons, inputs, nav, tables, numbers. |
 | Serif body + data | **EB Garamond** 400–800 + italic | default `font-serif` | everything readable; `.num` = lining tabular figures; `.time-italic` for dates/times. |
 | Small caps | **Cormorant SC** 600/700 | `.sc`, `font-sc` | eyebrows, labels, buttons, badges, nav, table headers. Always `text-transform: uppercase` (built into `.sc`, `.btn`, `.badge`, `.field-label`…). With `<html lang="az">` this gives the dotted **İ** — Cormorant SC draws lowercase `i` dotless ("Giriş" would read "Gırış"). Never remove the uppercase. Cormorant SC has no `₼`. |
 
 Fonts are self-hosted with `next/font/local` (`lib/fonts.ts`, files in `assets/fonts/`, `display: swap`,
 metric-adjusted fallback). EB Garamond is split into a `-latin` subset (Basic Latin, Latin-1,
-Latin Ext-A, Ə/ə, punctuation, №, ₼ — preloaded, everything az/en pages need) and a `-cyrillic` subset (only
+Latin Ext-A, Ə/ə, punctuation, №, ₼ — everything az/en pages need) and a `-cyrillic` subset (only
 downloaded on ru pages, via `unicode-range`); Cormorant SC is one small file per weight (600/700, not preloaded).
-**Cahan Display** (`cahan-display-{light,regular,bold}.woff2`, SIL OFL `assets/fonts/OFL-CahanDisplay.txt`) is one
-file per weight that already covers Latin, every Azerbaijani letter, Russian Cyrillic, № and ₼, so it has no
-unicode-range split; it is preloaded. Its hhea and typo metrics are equal (950/−300, UPM 1000, line gap 0), so the
+**Cahan Display** (`cahan-display-regular.woff2`, SIL OFL `assets/fonts/OFL-CahanDisplay.txt`) is one file that
+already covers Latin, every Azerbaijani letter, Russian Cyrillic, № and ₼, so it has no unicode-range split.
+**Preload = the first screen only:** EB Garamond Latin upright + Cahan Display 400 (2 files). The Latin italic is a
+separate `localFont` call with `preload: false` that declares the same `font-family` ('Cahan EB Garamond'), so it
+stays one family (real italic, no synthesized oblique) without being preloaded. A face that is not used must not
+ship in `lib/fonts.ts` at all: next/font preloads every file of a `preload: true` call. Check after a build with
+`grep -o '<link rel="preload"[^>]*as="font"[^>]*>'` on a page's HTML. Note: on **Windows** next 15.5 writes an
+empty `.next/server/next-font-manifest.json` (its manifest plugin matches `/next-font-loader/index.js?` against a
+backslash module path), so a local Windows build never emits font preloads; check on Linux (CI / Vercel / Docker). Its hhea and typo metrics are equal (950/−300, UPM 1000, line gap 0), so the
 automatic `adjustFontFallback: 'Times New Roman'` fallback lines up. Source OTFs, README (how it was drawn) and the
 licence live in `docs/brand/font/cahan-display/`; the font is built in its own project, not in this repo.
 Proof: `npm run fonts:coverage` (every subset + every family). Rebuild EB Garamond / Cormorant SC: download the OFL TTFs from
@@ -125,6 +131,7 @@ Import from `@/components/ornament` (all server-component friendly, decorative, 
 | `OrnamentDivider` | under every `ScriptTitle` (built in), between long-text sections, in modals/footers | stacked dividers |
 | `CornerFlourish` / `OrnateFrame` | featured panels, stat tiles, teacher portraits, CTA panel, timelines | every row of a dense list |
 | `LaceEdge` (CSS bg strip) / `LaceCorner` (lazy img) | section **edges and corners** only (hero, wine bands, footer, drawer) | behind text/data, inside tables |
+| `EdelweissCorner` (CSS bg `--tex-edel-corner`, dark variant swaps in) | the four corners of the admin login (same artwork + sizes as the dashboard's auth pages) | behind text/data, mixed with lace on one surface |
 | `WaveEdge` | where two bands meet; `fill` = colour of the neighbour (`var(--paper-base)`/`var(--page-base)`), `invert` at the top of a band | more than one wave per join |
 | `DrapedRibbon` | hero corner, closing CTA, celebratory spots — max one per view region | list pages |
 | `BookmarkRibbon` | the ONE featured card in a view (`<Card variant="featured">`, `CourseCard featured`) | several per grid |

@@ -57,16 +57,18 @@ export default async function PageBand({
   return (
     <div className={cn('relative', className)}>
       <section aria-labelledby={id} className="theme-wine hero-wine relative isolate overflow-hidden">
-        <LaceCorner corner="tl" priority onWine className="absolute left-0 top-0 w-20 sm:w-36 lg:w-44" />
-        <LaceCorner corner="tr" priority onWine className="absolute right-0 top-0 w-20 sm:w-36 lg:w-44" />
+        {/* phones: smaller corners and a taller top padding, so the breadcrumb starts below the lace */}
+        <LaceCorner corner="tl" priority onWine className="absolute left-0 top-0 w-14 sm:w-36 lg:w-44" />
+        <LaceCorner corner="tr" priority onWine className="absolute right-0 top-0 w-14 sm:w-36 lg:w-44" />
         <div
           className={cn(
-            'relative mx-auto max-w-3xl px-4 pt-8 text-center sm:px-6 sm:pt-12 lg:px-8',
+            'relative mx-auto max-w-3xl px-4 text-center sm:px-6 sm:pt-12 lg:px-8',
+            trail ? 'pt-[4.25rem]' : 'pt-8',
             seal ? 'pb-24 sm:pb-28' : 'pb-20 sm:pb-24'
           )}
         >
           {trail && tc && (
-            <div className="orn-reveal flex justify-center px-10 sm:px-0">
+            <div className="orn-reveal flex justify-center">
               <Breadcrumbs
                 locale={trail.locale}
                 label={tc('breadcrumb_label')}
