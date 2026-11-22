@@ -33,6 +33,7 @@ export default function ScriptTitle({
   size = 'page',
   as,
   divider = true,
+  dividerLine = 'taper',
   entity,
   id,
   className,
@@ -46,6 +47,8 @@ export default function ScriptTitle({
   size?: keyof typeof SIZES;
   as?: ElementType;
   divider?: boolean;
+  /** Divider line style, see OrnamentDivider `line`. */
+  dividerLine?: 'flourish' | 'taper';
   entity?: ReactNode;
   id?: string;
   className?: string;
@@ -69,7 +72,7 @@ export default function ScriptTitle({
           </div>
         )}
       </div>
-      {divider && <OrnamentDivider align={center ? 'center' : 'start'} className="mt-3" />}
+      {divider && <OrnamentDivider align={center ? 'center' : 'start'} line={dividerLine} className="mt-3" />}
       {lead && (
         <p className={cn('mt-4 text-[1.1rem] leading-relaxed text-ink-muted', center && 'mx-auto max-w-2xl')}>{lead}</p>
       )}

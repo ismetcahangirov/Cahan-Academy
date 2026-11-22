@@ -3,7 +3,7 @@ import { EdelweissGlyph } from './Edelweiss';
 import { BRAND_SPRITE } from '../brand/Brand';
 
 /**
- * OrnamentDivider — hairline with curled flourishes and an edelweiss in the middle.
+ * OrnamentDivider — edelweiss in the middle, plain strokes tapering from thick (centre) to thin (ends).
  * Goes under every ScriptTitle, between sections of long text, inside modals and cards.
  *
  * <OrnamentDivider />                       centred (default)
@@ -55,29 +55,56 @@ function Motif({ motif }: { motif: 'edelweiss' | 'dot' | 'none' }) {
   return <EdelweissGlyph className="h-4 w-4 shrink-0 text-current" />;
 }
 
+/** Plain tapered stroke: thickest next to the motif, thinning to a point at the outer end. */
+function Taper({ flip, className }: { flip?: boolean; className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 120 4"
+      aria-hidden="true"
+      focusable="false"
+      preserveAspectRatio="none"
+      className={cn('h-1', className)}
+      style={flip ? { transform: 'scaleX(-1)' } : undefined}
+    >
+      <path d="M0 2L118 1Q120 2 118 3Z" fill="currentColor" />
+    </svg>
+  );
+}
+
 export default function OrnamentDivider({
   align = 'center',
   motif = 'edelweiss',
+  line = 'taper',
   draw = false,
   className,
 }: {
   align?: 'center' | 'start';
   motif?: 'edelweiss' | 'dot' | 'none';
+  /** 'taper' = plain stroke tapering from thick (centre) to thin (default); 'flourish' = curled hairline. */
+  line?: 'flourish' | 'taper';
   draw?: boolean;
   className?: string;
 }) {
+  const centerW = 'w-24 sm:w-32';
+  const startW = 'w-40 sm:w-56';
   return (
     <div
       role="presentation"
       className={cn(
-        'flex items-center gap-1.5 text-ornament',
+        'flex items-center text-ornament',
+        line === 'taper' ? 'gap-2.5' : 'gap-1.5',
         align === 'center' ? 'justify-center' : 'justify-start',
         className
       )}
     >
-      {align === 'center' && <Flourish draw={draw} className="w-24 sm:w-32" />}
+      {align === 'center' &&
+        (line === 'taper' ? <Taper className={centerW} /> : <Flourish draw={draw} className={centerW} />)}
       <Motif motif={motif} />
-      <Flourish flip draw={draw} className={align === 'center' ? 'w-24 sm:w-32' : 'w-40 sm:w-56'} />
+      {line === 'taper' ? (
+        <Taper flip className={align === 'center' ? centerW : startW} />
+      ) : (
+        <Flourish flip draw={draw} className={align === 'center' ? centerW : startW} />
+      )}
     </div>
   );
 }
