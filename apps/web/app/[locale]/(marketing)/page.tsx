@@ -1,13 +1,15 @@
-import { setRequestLocale } from 'next-intl/server';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { Metadata } from 'next';
-import HeroSection         from '@/components/sections/HeroSection';
-import StatsSection        from '@/components/sections/StatsSection';
-import FeaturesSection     from '@/components/sections/FeaturesSection';
-import CoursesPreview      from '@/components/sections/CoursesPreview';
+import HeroSection from '@/components/sections/HeroSection';
+import StatsSection from '@/components/sections/StatsSection';
+import FeaturesSection from '@/components/sections/FeaturesSection';
+import LearningPath from '@/components/sections/LearningPath';
+import CoursesPreview from '@/components/sections/CoursesPreview';
+import TeachersPreview from '@/components/sections/TeachersPreview';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
-import CTASection          from '@/components/sections/CTASection';
-import JsonLd             from '@/components/seo/JsonLd';
+import CTASection from '@/components/sections/CTASection';
+import JsonLd from '@/components/seo/JsonLd';
+import { SITE_URL, absoluteUrl, localizedPath } from '@/lib/utils';
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -17,63 +19,79 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'meta' });
 
+  // OG/Twitter image comes from the file-based app/[locale]/opengraph-image.tsx
   return {
-    title:       t('home_title'),
+    title: t('home_title'),
     description: t('home_description'),
+    alternates: {
+      canonical: localizedPath(locale),
+      languages: {
+        az: localizedPath('az'),
+        en: localizedPath('en'),
+        ru: localizedPath('ru'),
+        'x-default': localizedPath('az'),
+      },
+    },
     openGraph: {
-      title:       t('home_title'),
+      title: t('home_title'),
       description: t('home_description'),
-      type:        'website',
+      type: 'website',
       locale,
-      images: [{ url: '/og/home-og.jpg', width: 1200, height: 630 }],
     },
     twitter: {
-      card:        'summary_large_image',
-      title:       t('home_title'),
+      card: 'summary_large_image',
+      title: t('home_title'),
       description: t('home_description'),
-      images:      ['/og/home-og.jpg'],
     },
   };
 }
 
+/*
+ * Home = the design showcase (see apps/web/docs/DESIGN.md "Home composition"):
+ * wine hero (lace, ribbon, seal) → wave → parchment: stats + strengths → learning-path timeline →
+ * parchment courses band (featured card with bookmark) → teachers in arched frames →
+ * wine testimonials band → closing invitation → wine footer.
+ */
 export default async function HomePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
   return (
     <>
-      {/* JSON-LD Organization */}
       <JsonLd
         data={{
-          '@context':   'https://schema.org',
-          '@type':      'EducationalOrganization',
-          name:         'Cahan Academy',
-          url:          'https://cahanacademy.az',
-          logo:         'https://cahanacademy.az/logo.png',
-          description:  'Azərbaycanda peşəkar texnologiya təhsili — proqramlaşdırma, dizayn, marketinq.',
+          '@context': 'https://schema.org',
+          '@type': 'EducationalOrganization',
+          name: 'Cahan Academy',
+          url: absoluteUrl(locale),
+          logo: `${SITE_URL}/icon-512.png`,
+          description: 'Azərbaycanda peşəkar texnologiya təhsili — proqramlaşdırma, dizayn, marketinq.',
           address: {
-            '@type':           'PostalAddress',
-            addressLocality:   'Bakı',
-            addressCountry:    'AZ',
+            '@type': 'PostalAddress',
+            addressLocality: 'Bakı',
+            addressCountry: 'AZ',
           },
           contactPoint: {
-            '@type':       'ContactPoint',
-            telephone:     '+994-50-123-45-67',
-            contactType:   'customer service',
+            '@type': 'ContactPoint',
+            telephone: '+994-50-123-45-67',
+            contactType: 'customer service',
           },
           sameAs: [
             'https://facebook.com/cahanacademy',
             'https://instagram.com/cahanacademy',
             'https://linkedin.com/company/cahanacademy',
-            'https://youtube.com/@cahanacademy'
-          ]
+            'https://youtube.com/@cahanacademy',
+          ],
         }}
       />
 
       <HeroSection />
-      <StatsSection />
-      <FeaturesSection />
+      <FeaturesSection>
+        <StatsSection bare />
+      </FeaturesSection>
+      <LearningPath />
       <CoursesPreview />
+      <TeachersPreview />
       <TestimonialsSection />
       <CTASection />
     </>

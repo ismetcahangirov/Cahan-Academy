@@ -7,7 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "mock-api": "node scripts/mock-api.mjs --port 5101 --images none",
+    "mock-api:images": "node scripts/mock-api.mjs --port 5101",
+    "lint:color": "node scripts/color-lint.mjs",
+    "audit:color": "node scripts/color-audit.mjs",
+    "shots": "node scripts/screenshots.mjs",
+    "perf": "node scripts/perf-probe.mjs",
+    "fonts:coverage": "python scripts/font-coverage.py"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

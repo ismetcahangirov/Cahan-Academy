@@ -51,12 +51,22 @@
     "subscribe": "Abunə Ol",
     "button": "Abunə Ol",
     "success": "Abunəliyiniz təsdiqləndi!",
-    "error": "Xəta baş verdi."
+    "error": "Xəta baş verdi.",
+    "invalid_email": "Düzgün e-poçt ünvanı daxil edin"
   },
   "footer": {
     "rights": "Bütün hüquqlar qorunur.",
     "privacy": "Gizlilik Siyasəti",
-    "terms": "İstifadə Şərtləri"
+    "terms": "İstifadə Şərtləri",
+    "tagline": "Peşəkar müəllimlər, praktiki dərslər və sertifikatlı proqramlarla karyeranızı irəli aparın.",
+    "links_title": "Keçidlər",
+    "legal_title": "Hüquqi",
+    "contact_title": "Əlaqə",
+    "newsletter_title": "Yeniliklərdən xəbərdar olun",
+    "newsletter_text": "Ən son təhsil xəbərləri və endirimlərdən ilk siz xəbərdar olun.",
+    "address": "Bakı, Azərbaycan",
+    "social_label": "Sosial şəbəkələr",
+    "made_in": "Azərbaycanda hazırlanıb"
   },
   "meta": {
     "home_title": "Cahan Academy — Peşəkar Təhsil Mərkəzi",
@@ -103,7 +113,8 @@
     "no_results_title": "Müəllim tapılmadı",
     "no_results_desc": "Axtarış meyarlarınıza uyğun müəllim yoxdur.",
     "clear_search": "Axtarışı təmizlə",
-    "back_to_list": "Bütün müəllimlərə qayıt"
+    "back_to_list": "Bütün müəllimlərə qayıt",
+    "view_profile": "Profilə bax"
   },
   "blog": {
     "hero_badge": "Xəbərlər",
@@ -156,10 +167,74 @@
     "terms_content": "Bu veb-saytdan istifadə etməklə siz aşağıdakı şərtləri qəbul etmiş hesab olunursunuz..."
   },
   "cookie": {
-    "title": "Kukla (Cookie) Bildirişi",
-    "description": "Biz sizə daha yaxşı xidmət göstərmək üçün kuklalardan istifadə edirik. Saytımızdan istifadə etməyə davam edərək bunu qəbul edirsiniz.",
+    "title": "Kuki faylları",
+    "description": "Saytın düzgün işləməsi və xidmətimizi yaxşılaşdırmaq üçün kuki fayllarından istifadə edirik. Saytdan istifadəyə davam etməklə buna razılıq verirsiniz.",
     "accept": "Qəbul Et",
     "decline": "Rədd Et",
-    "learn_more": "Daha ətraflı"
+    "learn_more": "Daha ətraflı",
+    "close": "Bildirişi bağla"
+  },
+  "common": {
+    "close": "Bağla",
+    "cancel": "Ləğv et",
+    "menu_open": "Menyunu aç",
+    "menu_close": "Menyunu bağla",
+    "skip_to_content": "Əsas məzmuna keç",
+    "language": "Dil",
+    "main_nav": "Əsas menyu",
+    "home": "Ana səhifə",
+    "view_all": "Hamısına bax"
+  },
+  "theme": {
+    "toggle": "Açıq və tünd mövzu arasında keçid",
+    "dark": "Tünd mövzu"
+  },
+  "home": {
+    "hero_scroll": "Davamına baxın",
+    "stats_title": "Rəqəmlərlə akademiya",
+    "features_eyebrow": "Niyə biz?",
+    "features_title": "Üstünlüklərimiz",
+    "features_lead": "Adi kurs deyil — karyera dəyişdirən bir təcrübə.",
+    "f1_title": "Sertifikatlı proqramlar",
+    "f1_desc": "Beynəlxalq standartlara uyğun sertifikatlar ilə karyeranızı gücləndir.",
+    "f2_title": "Praktiki yanaşma",
+    "f2_desc": "Real layihələr və praktiki tapşırıqlarla öyrən, nəzəriyyə ilə kifayətlənmə.",
+    "f3_title": "Fərdi mentorluq",
+    "f3_desc": "Peşəkar müəllimlər ilə fərdi mentorluq seansları və daimi dəstək.",
+    "f4_title": "Güclü icma",
+    "f4_desc": "1200+ tələbə ilə əlaqə qurun, fikir mübadiləsi edin, böyüyün.",
+    "f5_title": "Çevik qrafik",
+    "f5_desc": "Həftəiçi axşam, həftəsonu — sizə uyğun vaxtda öyrənin.",
+    "f6_title": "8 illik təcrübə",
+    "f6_desc": "Azərbaycanda 8 ildən artıq peşəkar təhsil və sertifikatlaşma təcrübəsi.",
+    "path_eyebrow": "Necə başlamalı?",
+    "path_title": "Öyrənmə yolu",
+    "path_lead": "Müraciətdən ilk dərsə qədər dörd sadə addım.",
+    "step1_title": "Kursu seçin",
+    "step1_desc": "Kurslar səhifəsində sizə uyğun istiqaməti və səviyyəni tapın.",
+    "step2_title": "Müraciət göndərin",
+    "step2_desc": "Qısa formu doldurun: ad, əlaqə məlumatı və seçdiyiniz kurs.",
+    "step3_title": "Sizinlə əlaqə saxlayırıq",
+    "step3_desc": "Komandamız müraciətinizi nəzərdən keçirir və təfərrüatları sizinlə razılaşdırır.",
+    "step4_title": "Dərslərə başlayın",
+    "step4_desc": "Müəllimlə praktiki dərslərə qoşulun və öyrəndiklərinizi layihələrdə tətbiq edin.",
+    "courses_eyebrow": "Təlimlərimiz",
+    "courses_title": "Populyar kurslar",
+    "courses_all": "Bütün kurslara bax",
+    "courses_empty_title": "Kurslar tezliklə",
+    "courses_empty_desc": "Kurs siyahısı hazırda yüklənmədi. Bütün kurslar səhifəsinə keçin və ya bir az sonra yenidən baxın.",
+    "teachers_eyebrow": "Komandamız",
+    "teachers_title": "Müəllimlərimiz",
+    "teachers_all": "Bütün müəllimlər",
+    "testimonials_eyebrow": "Tələbə rəyləri",
+    "testimonials_title": "Onlar danışır",
+    "testimonials_prev": "Əvvəlki rəy",
+    "testimonials_next": "Növbəti rəy",
+    "testimonials_goto": "Rəy {n}",
+    "testimonials_rating": "Qiymət: 5 üzərindən {n}",
+    "cta_eyebrow": "Daha gec deyil",
+    "cta_title": "Bu gün başlayın",
+    "cta_text": "Pulsuz məsləhət üçün bizə yazın. Hansı kursun sizə uyğun olduğunu birlikdə müəyyən edək.",
+    "cta_call": "Zəng edin"
   }
 }

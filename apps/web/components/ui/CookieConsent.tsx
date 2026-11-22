@@ -1,114 +1,76 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslations, useLocale } from 'next-intl';
-import Link from 'next/link';
-import { Cookie, X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { X } from 'lucide-react';
+import { Link } from '@/i18n/routing';
+import { EdelweissGlyph } from '../ornament/Edelweiss';
+import CornerFlourish from '../ornament/CornerFlourish';
 
+/**
+ * CookieConsent — framed notice in the bottom corner (bottom sheet on phones). Appears after 1.5s,
+ * CSS entrance (transform/opacity), never covers the page before the visitor can read it.
+ * Accept stores `cookie_consent=accepted` for a year; decline / close hide it for this visit.
+ */
 const COOKIE_NAME = 'cookie_consent';
 const COOKIE_VALUE = 'accepted';
 const COOKIE_EXPIRE_DAYS = 365;
 
 export default function CookieConsent() {
-  const [isVisible, setIsVisible] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
+  const [visible, setVisible] = useState(false);
   const t = useTranslations('cookie');
-  const locale = useLocale();
+  const tf = useTranslations('footer');
 
   useEffect(() => {
-    const consent = Cookies.get(COOKIE_NAME);
-    if (!consent) {
-      const timer = setTimeout(() => setIsVisible(true), 2000);
-      return () => clearTimeout(timer);
-    }
+    if (Cookies.get(COOKIE_NAME)) return;
+    const timer = window.setTimeout(() => setVisible(true), 1500);
+    return () => window.clearTimeout(timer);
   }, []);
 
-  const handleAccept = () => {
-    Cookies.set(COOKIE_NAME, COOKIE_VALUE, { expires: COOKIE_EXPIRE_DAYS, path: '/' });
-    setIsVisible(false);
-  };
+  if (!visible) return null;
 
-  const handleDecline = () => {
-    if (!showDetails) {
-      setShowDetails(true);
-    } else {
-      setIsVisible(false);
-    }
+  const accept = () => {
+    Cookies.set(COOKIE_NAME, COOKIE_VALUE, { expires: COOKIE_EXPIRE_DAYS, path: '/', sameSite: 'lax' });
+    setVisible(false);
   };
 
   return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 100, opacity: 0 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="fixed bottom-4 left-4 right-4 md:left-auto md:right-8 md:max-w-md z-[100]"
+    <section
+      role="region"
+      aria-labelledby="cookie-title"
+      className="orn-rise fixed inset-x-3 bottom-3 z-[70] sm:inset-x-auto sm:bottom-6 sm:right-6 sm:max-w-md"
+    >
+      <div className="card-ornate relative p-5 pr-12 sm:p-6 sm:pr-12">
+        <CornerFlourish corner="tl" className="absolute left-2.5 top-2.5 h-5 w-5" />
+        <button
+          type="button"
+          onClick={() => setVisible(false)}
+          aria-label={t('close')}
+          className="btn btn-ghost btn-icon btn-sm absolute right-3 top-3"
         >
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-800 p-6 overflow-hidden relative">
-            {/* Background decoration */}
-            <div className="absolute -top-12 -right-12 w-24 h-24 bg-bordo/5 rounded-full blur-2xl" />
+          <X size={17} strokeWidth={1.6} aria-hidden="true" />
+        </button>
 
-            <div className="flex gap-4 items-start">
-              <div className="p-3 bg-bordo/10 rounded-xl shrink-0">
-                <Cookie className="w-6 h-6 text-bordo" />
-              </div>
-
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                  {t('title')}
-                </h3>
-
-                <AnimatePresence>
-                  {showDetails && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden"
-                    >
-                      <p className="text-sm text-bordo dark:text-bordo/80 mb-4 leading-relaxed font-medium">
-                        {t('description')}{' '}
-                        <Link
-                          href={`/${locale}/privacy-policy`}
-                          className="underline hover:text-bordo-dark"
-                        >
-                          {t('learn_more')}
-                        </Link>
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <div className="flex gap-3">
-                  <button
-                    onClick={handleAccept}
-                    className="flex-1 py-2.5 px-4 border-2 border-bordo text-bordo hover:bg-bg-gray-700  rounded-xl font-bold text-sm transition-all active:scale-95"
-                  >
-                    {t('accept')}
-                  </button>
-                  <button
-                    onClick={handleDecline}
-                    className="py-2.5 px-4 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold text-sm transition-all active:scale-95"
-                  >
-                    {showDetails ? t('decline') : t('learn_more')}
-                  </button>
-                </div>
-              </div>
-
-              <button
-                onClick={() => setIsVisible(false)}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        <h2 id="cookie-title" className="flex items-center gap-2 text-[1.2rem] font-semibold text-ink">
+          <EdelweissGlyph className="h-4 w-4 text-accent-text" />
+          {t('title')}
+        </h2>
+        <p className="mt-2 text-[1rem] leading-relaxed text-ink-muted">
+          {t('description')}{' '}
+          <Link href="/privacy-policy" className="link">
+            {tf('privacy')}
+          </Link>
+        </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button type="button" onClick={accept} className="btn btn-primary btn-sm">
+            {t('accept')}
+          </button>
+          <button type="button" onClick={() => setVisible(false)} className="btn btn-ghost btn-sm">
+            {t('decline')}
+          </button>
+        </div>
+      </div>
+    </section>
   );
 }

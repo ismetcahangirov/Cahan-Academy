@@ -1,80 +1,59 @@
-'use client';
+import { useTranslations } from 'next-intl';
+import { Award, BookOpen, Shield, Target, Users, Zap } from 'lucide-react';
+import ScriptTitle from '../ornament/ScriptTitle';
+import SketchIllustration from '../ornament/SketchIllustration';
+import Reveal from '../ui/Reveal';
 
-import { motion } from 'framer-motion';
-import { Shield, Zap, Target, Users, BookOpen, Award } from 'lucide-react';
+/**
+ * FeaturesSection — "Why us": parchment section, centred script title, six features in a ruled grid
+ * (icon in a thin ring, serif title, muted text). Copy lives in messages `home.f1…f6`.
+ * Two of the claims (1200+ students, 8 years) are listed under "Owner must confirm".
+ */
+const FEATURES = [
+  { n: 1, icon: Shield },
+  { n: 2, icon: Zap },
+  { n: 3, icon: Target },
+  { n: 4, icon: Users },
+  { n: 5, icon: BookOpen },
+  { n: 6, icon: Award },
+] as const;
 
-const features = [
-  {
-    icon: Shield,
-    title: 'Sertifikatlı Proqramlar',
-    description: 'Beynəlxalq standartlara uyğun sertifikatlar ilə karyeranızı gücləndir.',
-  },
-  {
-    icon: Zap,
-    title: 'Praktiki Yanaşma',
-    description: 'Real layihələr və praktiki tapşırıqlarla öyrən, nəzəriyyə ilə kifayətlənmə.',
-  },
-  {
-    icon: Target,
-    title: 'Fərdi Mentorluq',
-    description: 'Peşəkar müəllimlər ilə fərdi mentorluq seansları və daimi dəstək.',
-  },
-  {
-    icon: Users,
-    title: 'Güclü İcma',
-    description: '1200+ tələbə ilə əlaqə qurun, fikir mübadiləsi edin, böyüyün.',
-  },
-  {
-    icon: BookOpen,
-    title: 'Çevik Qrafik',
-    description: 'Həftəiçi axşam, həftəsonu — sizə uyğun vaxtda öyrənin.',
-  },
-  {
-    icon: Award,
-    title: '8 İllik Təcrübə',
-    description: 'Azərbaycanda 8 ildən artıq peşəkar təhsil və sertifikatlaşma təcrübəsi.',
-  },
-];
+export default function FeaturesSection({ children }: { children?: React.ReactNode }) {
+  const t = useTranslations('home');
 
-export default function FeaturesSection() {
   return (
-    <section className="py-24 bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <span className="text-primary text-sm font-semibold uppercase tracking-widest">Niyə Biz?</span>
-          <h2 className="font-heading text-4xl sm:text-5xl font-bold mt-3 mb-5">
-            Cahan Academy-nin <span className="text-primary">Üstünlükləri</span>
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Adi kurs deyil — karyera dəyişdirən bir təcrübə.
-          </p>
-        </motion.div>
+    <section id="academy" aria-labelledby="features-title" className="paper relative overflow-hidden pb-16 pt-20 sm:pt-24">
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        {children}
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map(({ icon: Icon, title, description }, i) => (
-            <motion.div
-              key={title}
-              className="group p-7 rounded-2xl border border-border bg-card hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.08 }}
-            >
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors">
-                <Icon size={22} className="text-primary" />
-              </div>
-              <h3 className="font-heading text-lg font-semibold mb-2">{title}</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">{description}</p>
-            </motion.div>
-          ))}
+        <div className={children ? 'mt-20 sm:mt-24' : undefined}>
+          <Reveal>
+            <ScriptTitle
+              id="features-title"
+              align="center"
+              size="section"
+              eyebrow={t('features_eyebrow')}
+              title={t('features_title')}
+              lead={t('features_lead')}
+            />
+          </Reveal>
+
+          <Reveal as="ul" stagger className="mt-12 grid gap-x-10 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
+            {FEATURES.map(({ n, icon: Icon }) => (
+              <li key={n} className="flex gap-4 border-t border-line py-6">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-line-strong bg-surface text-accent-text">
+                  <Icon size={20} strokeWidth={1.5} aria-hidden="true" />
+                </span>
+                <div>
+                  <h3 className="text-[1.2rem] font-semibold leading-snug text-ink">{t(`f${n}_title`)}</h3>
+                  <p className="mt-1.5 text-[1.02rem] leading-relaxed text-ink-muted">{t(`f${n}_desc`)}</p>
+                </div>
+              </li>
+            ))}
+          </Reveal>
+          <div className="mt-10 flex justify-center">
+            <SketchIllustration name="cap" className="w-36 sm:w-44" />
+          </div>
         </div>
       </div>
     </section>

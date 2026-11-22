@@ -44,6 +44,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Colour law (static, fails only for files not in apps/web/scripts/color-lint-pending.txt)
+        run: node apps/web/scripts/color-lint.mjs
+
       - name: API Typecheck
         run: npm run typecheck --workspace=@academy/api
 
