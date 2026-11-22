@@ -1,11 +1,4 @@
 # Files still to be migrated to the ornate colour law (scripts/color-lint.mjs skips failing on them).
 # When you migrate a file, DELETE its line here in the same PR. Paths are relative to apps/web.
-app/[locale]/(marketing)/courses/CoursesClientPage.tsx
-app/[locale]/(marketing)/courses/[slug]/opengraph-image.tsx
-app/[locale]/(marketing)/courses/[slug]/page.tsx
-app/[locale]/(marketing)/teachers/TeachersClientPage.tsx
-app/[locale]/(marketing)/teachers/[slug]/opengraph-image.tsx
-app/[locale]/(marketing)/teachers/[slug]/page.tsx
 app/[locale]/opengraph-image.tsx
-components/forms/EnrollForm.tsx
 components/forms/NewsletterForm.tsx

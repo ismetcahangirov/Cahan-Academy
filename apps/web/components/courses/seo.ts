@@ -1,0 +1,26 @@
+import type { Metadata } from 'next';
+import { LOCALES, localizedPath } from '@/lib/utils';
+
+/**
+ * Canonical + hreflang for one page (relative to metadataBase = SITE_URL, so they resolve to the
+ * canonical origin). With localePrefix 'as-needed' the az page has no prefix.
+ * alternatesFor('en', '/courses') → { canonical: '/en/courses', languages: { az: '/courses', en: …, ru: …, 'x-default': '/courses' } }
+ */
+export function alternatesFor(locale: string, path: string): Metadata['alternates'] {
+  return {
+    canonical: localizedPath(locale, path),
+    languages: {
+      ...Object.fromEntries(LOCALES.map((l) => [l, localizedPath(l, path)])),
+      'x-default': localizedPath('az', path),
+    },
+  };
+}
+
+/** First sentence-ish slice of a description for <meta name="description"> (≤ 160 chars). */
+export function metaDescription(text?: string | null, max = 160): string | undefined {
+  const clean = text?.replace(/\s+/g, ' ').trim();
+  if (!clean) return undefined;
+  if (clean.length <= max) return clean;
+  const cut = clean.slice(0, max - 1);
+  return `${cut.slice(0, Math.max(cut.lastIndexOf(' '), max - 30)).trim()}…`;
+}
