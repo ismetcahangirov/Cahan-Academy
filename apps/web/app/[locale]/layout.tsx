@@ -1,11 +1,13 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
+import type { Metadata, Viewport } from 'next';
 import { routing } from '@/i18n/routing';
-import { playfair, inter } from '@/lib/fonts';
-import { Metadata } from 'next';
+import { fontVariables } from '@/lib/fonts';
 import CookieConsent from '@/components/ui/CookieConsent';
-import "../globals.css";
+import RevealObserver from '@/components/ui/RevealObserver';
+import ThemeScript from '@/components/layout/ThemeScript';
+import '../globals.css';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -24,18 +26,35 @@ export const metadata: Metadata = {
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION_CODE,
   },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '48x48' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon-16.png', type: 'image/png', sizes: '16x16' },
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
+  },
+  manifest: '/site.webmanifest',
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#FAF7F8' },
+    { media: '(prefers-color-scheme: dark)', color: '#120003' },
+  ],
 };
 
 export default async function LocaleLayout({
   children,
-  params
+  params,
 }: {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
 
-  if (!routing.locales.includes(locale as any)) {
+  if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
     notFound();
   }
 
@@ -43,11 +62,16 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${playfair.variable} ${inter.variable}`}>
-      <body className="antialiased">
+    // lang drives the Azerbaijani dotted İ in uppercase small caps; the theme script edits class before hydration
+    <html lang={locale} className={fontVariables} suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
+      <body>
         <NextIntlClientProvider messages={messages}>
           {children}
           <CookieConsent />
+          <RevealObserver />
         </NextIntlClientProvider>
       </body>
     </html>
