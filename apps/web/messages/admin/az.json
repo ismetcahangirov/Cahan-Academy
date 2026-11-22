@@ -317,11 +317,11 @@
     "err_password": "Şifrə ən azı 6 simvol olmalıdır.",
     "create_error": "Admini yaratmaq mümkün olmadı.",
     "delete_body": "Bu admin həmişəlik silinəcək və sistemə girə bilməyəcək.",
-    "cannot_delete_self": "Öz hesabınızı silə bilməzsiniz",
     "viewer_title": "Məlumat",
     "viewer_text": "Sizdə yalnız adi admin hüququ var. Yeni admin yaratmaq və ya silmək üçün super admin hüququ lazımdır.",
     "empty_title": "Admin yoxdur",
-    "empty_desc": "Siyahı boşdur."
+    "empty_desc": "Siyahı boşdur.",
+    "you": "Siz"
   },
   "settings": {
     "title": "Tənzimləmələr",

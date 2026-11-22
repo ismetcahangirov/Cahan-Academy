@@ -317,11 +317,11 @@
     "err_password": "The password must be at least 6 characters.",
     "create_error": "Could not create the admin.",
     "delete_body": "This admin will be deleted permanently and will no longer be able to sign in.",
-    "cannot_delete_self": "You cannot delete your own account",
     "viewer_title": "Notice",
     "viewer_text": "You only have regular admin rights. Creating or deleting admins requires super admin rights.",
     "empty_title": "No admins",
-    "empty_desc": "The list is empty."
+    "empty_desc": "The list is empty.",
+    "you": "You"
   },
   "settings": {
     "title": "Settings",

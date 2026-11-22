@@ -139,14 +139,12 @@ export default function UsersPage() {
         ]}
         actions={
           isSuper
-            ? (a) => (
-                <RowAction
-                  icon={Trash2}
-                  label={a.id === user?.id ? t('users.cannot_delete_self') : `${t('common.delete')}: ${a.name}`}
-                  disabled={a.id === user?.id}
-                  onClick={() => askDelete(a)}
-                />
-              )
+            ? (a) =>
+                a.id === user?.id ? (
+                  <span className="sc px-2 text-[0.8rem] tracking-[0.1em] text-ink-muted">{t('users.you')}</span>
+                ) : (
+                  <RowAction icon={Trash2} label={`${t('common.delete')}: ${a.name}`} onClick={() => askDelete(a)} />
+                )
             : undefined
         }
       />

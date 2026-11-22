@@ -97,7 +97,7 @@ export function StatCard({ label, value, icon: Icon, hint }: { label: string; va
           <p className="num mt-2 text-[2.4rem] font-semibold leading-none text-ink">{value}</p>
           {hint && <p className="mt-2 text-[0.95rem] text-ink-muted">{hint}</p>}
         </div>
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line bg-accent-soft text-accent-text">
+        <span className="hidden h-11 w-11 shrink-0 items-center sm:flex justify-center rounded-full border border-line bg-accent-soft text-accent-text">
           <Icon size={20} strokeWidth={1.6} aria-hidden="true" />
         </span>
       </div>
@@ -306,7 +306,7 @@ export function LangTabs({ value, onChange, errorLangs = [] }: { value: Lang; on
     refs.current[LANGS[next]]?.focus();
   };
   return (
-    <div role="tablist" aria-label={t('common.tabs_label')} className="inline-flex gap-1 rounded-full border border-line bg-surface-2 p-1">
+    <div role="tablist" aria-label={t('common.tabs_label')} className="flex max-w-full gap-1 rounded-full border border-line bg-surface-2 p-1 sm:inline-flex">
       {LANGS.map((l) => {
         const active = l === value;
         return (
@@ -322,13 +322,14 @@ export function LangTabs({ value, onChange, errorLangs = [] }: { value: Lang; on
             tabIndex={active ? 0 : -1}
             onKeyDown={onKey}
             onClick={() => onChange(l)}
-            className={cn('btn btn-sm', active ? 'btn-primary' : 'btn-ghost')}
+            aria-label={`${t(`common.lang_${l}`)}${errorLangs.includes(l) ? ' ' + t('common.tab_has_errors') : ''}`}
+            className={cn('btn btn-sm min-w-0 flex-1 px-2 sm:flex-none sm:px-4', active ? 'btn-primary' : 'btn-ghost')}
           >
-            {t(`common.lang_${l}`)}
+            <span aria-hidden="true" className="sm:hidden">{l.toUpperCase()}</span>
+            <span aria-hidden="true" className="hidden sm:inline">{t(`common.lang_${l}`)}</span>
             {errorLangs.includes(l) && (
               <>
                 <AlertCircle size={14} strokeWidth={2} aria-hidden="true" />
-                <span className="sr-only">{t('common.tab_has_errors')}</span>
               </>
             )}
           </button>

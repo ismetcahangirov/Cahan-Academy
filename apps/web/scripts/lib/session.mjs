@@ -114,6 +114,8 @@ export async function loginContext(context, { api = DEFAULT_API, base = DEFAULT_
   const s = await apiLogin(api, { email, password });
   const hosts = [...new Set([new URL(base).hostname, new URL(api).hostname])];
   await context.addCookies(hosts.map((domain) => ({ name: 'refreshToken', value: s.refreshToken, domain, path: '/', httpOnly: true, sameSite: 'Lax' })));
+  // middleware only lets /dashboard through when the UX marker cookie (context/sessionMarker.ts) is present
+  await context.addCookies([{ name: 'cahan_admin', value: '1', url: new URL(base).origin }]);
   return s;
 }
 

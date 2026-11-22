@@ -103,7 +103,7 @@ export default function DashboardPage() {
         </Card>
       ) : (
         <>
-          <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label={t('dashboard.stats_label')}>
+          <ul className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4" aria-label={t('dashboard.stats_label')}>
             {loading && !stats
               ? [0, 1, 2, 3].map((i) => (
                   <li key={i}>
@@ -190,12 +190,12 @@ export default function DashboardPage() {
             ) : (
               <div className="mt-4 h-52 w-full" role="img" aria-label={t('dashboard.totals_title')}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={bars} margin={{ top: 8, right: 12, bottom: 0, left: -18 }}>
-                    <CartesianGrid stroke="var(--line-hair)" vertical={false} />
-                    <XAxis dataKey="name" tick={AXIS} tickLine={false} axisLine={{ stroke: 'var(--line)' }} />
-                    <YAxis tick={AXIS} tickLine={false} axisLine={false} allowDecimals={false} />
+                  <BarChart data={bars} layout="vertical" margin={{ top: 4, right: 16, bottom: 0, left: 0 }}>
+                    <CartesianGrid stroke="var(--line-hair)" horizontal={false} />
+                    <XAxis type="number" tick={AXIS} tickLine={false} axisLine={false} allowDecimals={false} />
+                    <YAxis type="category" dataKey="name" tick={AXIS} tickLine={false} axisLine={{ stroke: 'var(--line)' }} width={104} />
                     <Tooltip {...TOOLTIP} />
-                    <Bar dataKey="value" fill="var(--accent-text)" radius={[4, 4, 0, 0]} maxBarSize={56} isAnimationActive={false} />
+                    <Bar dataKey="value" fill="var(--accent-text)" radius={[0, 4, 4, 0]} maxBarSize={28} isAnimationActive={false} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
