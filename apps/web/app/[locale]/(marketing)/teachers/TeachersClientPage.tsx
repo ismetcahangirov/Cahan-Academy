@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Search, X } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import TeacherTile from '@/components/teachers/TeacherTile';
+import TeacherCard from '@/components/cards/TeacherCard';
 import { Button, EmptyState, Input } from '@/components/ui';
 import Reveal from '@/components/ui/Reveal';
 import Pagination from '@/components/courses/Pagination';
@@ -14,7 +14,7 @@ import type { Teacher } from '@/types/teacher';
 /**
  * Teacher directory (client island): search by name / position / bio, paginated grid of arched
  * portraits (two columns on phones). The query lives in the URL (?q=&page=). Placeholder portraits
- * (missing / stock / mock images) render as sketches (coverSrc).
+ * (missing / stock / mock images) render as sketches (CoverImage + lib/media).
  */
 interface TeachersClientPageProps {
   teachers: Teacher[];
@@ -141,7 +141,7 @@ export default function TeachersClientPage({ teachers, locale }: TeachersClientP
           <Reveal as="ul" stagger className="mt-10 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
             {visible.map((teacher) => (
               <li key={teacher.id}>
-                <TeacherTile teacher={teacher} />
+                <TeacherCard teacher={teacher} />
               </li>
             ))}
           </Reveal>

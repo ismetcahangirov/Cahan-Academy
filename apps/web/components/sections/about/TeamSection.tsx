@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { apiFetch } from '@/lib/api';
 import CoverImage from '@/components/cards/CoverImage';
+import { sketchFor } from '@/lib/media';
 import { EdelweissGlyph, ScriptTitle } from '@/components/ornament';
 import { Button, EmptyState, Reveal } from '@/components/ui';
 
@@ -58,7 +59,7 @@ export default async function TeamSection() {
                   <CoverImage
                     src={m.image}
                     alt={m.name}
-                    sketch="notebook"
+                    sketch={sketchFor(m.position, m.name)}
                     rounded="arch"
                     sizes="(min-width: 1024px) 18rem, (min-width: 640px) 40vw, 45vw"
                     className="aspect-[4/5] w-full max-w-[14rem]"

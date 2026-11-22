@@ -3,6 +3,7 @@ import { ArrowRight, Calendar, Clock } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import type { BlogPost } from '@/lib/api';
 import CoverImage from '@/components/cards/CoverImage';
+import { sketchFor } from '@/lib/media';
 import { BookmarkRibbon, EdelweissGlyph } from '@/components/ornament';
 
 /**
@@ -24,7 +25,7 @@ export default function FeaturedPost({ post }: { post: BlogPost }) {
       <CoverImage
         src={post.image}
         alt=""
-        sketch="inkwell"
+        sketch={sketchFor(post.slug, post.title)}
         priority
         sizes="(min-width: 1024px) 38rem, (min-width: 768px) 55vw, 100vw"
         className="aspect-[16/10] md:aspect-auto md:min-h-[20rem]"

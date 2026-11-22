@@ -23,9 +23,9 @@ import {
   WaveEdge,
 } from '@/components/ornament';
 import Breadcrumbs from '@/components/courses/Breadcrumbs';
-import CourseTile from '@/components/courses/CourseTile';
+import CourseCard from '@/components/cards/CourseCard';
 import StickyEnroll from '@/components/courses/StickyEnroll';
-import { coverSrc, sketchFor } from '@/components/courses/media';
+import { isRealImage, sketchFor } from '@/lib/media';
 import { alternatesFor, metaDescription } from '@/components/courses/seo';
 import { parseSyllabus, toRoman } from '@/components/courses/syllabus';
 
@@ -103,7 +103,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
   const teacherSlug = teacher ? teachers.find((x) => x.name === teacher.name)?.slug : undefined;
   const sameCategory = all.filter((c) => c.slug !== course.slug && c.category?.slug === course.category?.slug);
   const related = (sameCategory.length ? sameCategory : all.filter((c) => c.slug !== course.slug && c.isPopular)).slice(0, 3);
-  const image = coverSrc(course.image);
+  const image = isRealImage(course.image) ? course.image : null;
   const sketch = sketchFor(course.category?.slug, course.category?.name, course.title);
   const priceNumber = course.price?.replace(',', '.').match(/\d+(\.\d+)?/)?.[0];
   const highlights = [1, 2, 3, 4, 5, 6].map((n) => tp(`highlight_${n}`));
@@ -315,7 +315,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                 {tp('teacher_title')}
               </p>
               <CoverImage
-                src={coverSrc(teacher.image)}
+                src={teacher.image}
                 alt=""
                 sketch={sketchFor(teacher.position, teacher.name)}
                 rounded="arch"
@@ -385,7 +385,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
           <Reveal as="ul" stagger className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {related.map((c) => (
               <li key={c.id}>
-                <CourseTile course={c} />
+                <CourseCard course={c} />
               </li>
             ))}
           </Reveal>

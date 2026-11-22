@@ -6,7 +6,8 @@ import { Link } from '@/i18n/routing';
 import { getBlogPost, getBlogPosts } from '@/lib/api';
 import { SITE_URL, absoluteUrl, cn } from '@/lib/utils';
 import BlogCard from '@/components/cards/BlogCard';
-import CoverImage, { isRealImage } from '@/components/cards/CoverImage';
+import CoverImage from '@/components/cards/CoverImage';
+import { isRealImage, sketchFor } from '@/lib/media';
 import { OrnamentDivider, OrnateFrame, ScriptTitle, WaxSeal } from '@/components/ornament';
 import { Button, Reveal } from '@/components/ui';
 import JsonLd from '@/components/seo/JsonLd';
@@ -174,7 +175,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             <CoverImage
               src={post.image}
               alt={post.title}
-              sketch="inkwell"
+              sketch={sketchFor(post.slug, post.title)}
               priority
               sizes="(min-width: 1024px) 54rem, 100vw"
               className={cn(isRealImage(post.image) ? 'aspect-[16/9]' : 'aspect-[16/7]')}

@@ -11,8 +11,8 @@ import { Button, Card, EmptyState } from '@/components/ui';
 import Reveal from '@/components/ui/Reveal';
 import { EdelweissGlyph, LaceCorner, OrnamentDivider, OrnateFrame, ScriptTitle, WaveEdge } from '@/components/ornament';
 import Breadcrumbs from '@/components/courses/Breadcrumbs';
-import CourseTile from '@/components/courses/CourseTile';
-import { coverSrc, sketchFor } from '@/components/courses/media';
+import CourseCard from '@/components/cards/CourseCard';
+import { isRealImage, sketchFor } from '@/lib/media';
 import { alternatesFor, metaDescription } from '@/components/courses/seo';
 
 // ISR: static HTML, regenerated in the background at most this often (same window as the
@@ -61,7 +61,7 @@ export default async function TeacherDetailPage({ params }: PageProps) {
     getTranslations({ locale, namespace: 'nav' }),
   ]);
 
-  const image = coverSrc(teacher.image);
+  const image = isRealImage(teacher.image) ? teacher.image : null;
   const courses = teacher.courses ?? [];
   // the hero shows the bio clamped; a long bio is repeated in full in "About"
   const longBio = (teacher.bio?.length ?? 0) > 360;
@@ -174,7 +174,7 @@ export default async function TeacherDetailPage({ params }: PageProps) {
           <Reveal as="ul" stagger className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {courses.map((course, i) => (
               <li key={course.id}>
-                <CourseTile course={course} featured={courses.length > 1 && i === 0 && course.isPopular} />
+                <CourseCard course={course} featured={courses.length > 1 && i === 0 && course.isPopular} />
               </li>
             ))}
           </Reveal>

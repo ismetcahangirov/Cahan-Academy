@@ -1,25 +1,17 @@
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { isRealImage } from '@/lib/media';
 import SketchIllustration, { type SketchName } from '../ornament/SketchIllustration';
 
 /**
  * CoverImage — a user-uploaded photo inside the hairline photo mat (exempt from the colour audit via
- * data-user-image), or — when the image is missing or a stock/placeholder URL — a palette-toned sketch
- * on parchment. Sized by its parent (`aspect-*` on className), so there is no layout shift.
+ * data-user-image), or — when the image is missing, a stock/placeholder URL or a mock-API image
+ * (`isRealImage`, lib/media) — a palette-toned sketch on parchment. Sized by its parent (`aspect-*` on
+ * className), so there is no layout shift. Pass a subject-aware sketch (`sketchFor`) so lists vary.
  *
- * <CoverImage src={course.image} alt={course.title} sketch="books" className="aspect-[16/10]" />
+ * <CoverImage src={course.image} alt="" sketch={sketchFor(course.category?.slug, course.title)} className="aspect-[16/10]" />
  */
-const PLACEHOLDER_HOSTS = /(^|\.)(unsplash\.com|example\.com|placehold\.co|via\.placeholder\.com|picsum\.photos)$/i;
-
-export function isRealImage(src?: string | null): src is string {
-  if (!src) return false;
-  try {
-    const u = new URL(src, 'http://local');
-    return !PLACEHOLDER_HOSTS.test(u.hostname);
-  } catch {
-    return false;
-  }
-}
+export { isRealImage };
 
 export default function CoverImage({
   src,

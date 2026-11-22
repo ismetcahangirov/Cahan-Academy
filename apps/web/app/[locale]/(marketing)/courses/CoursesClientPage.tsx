@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Feather, Search, X } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import CourseTile from '@/components/courses/CourseTile';
+import CourseCard from '@/components/cards/CourseCard';
 import { Button, EmptyState, Input } from '@/components/ui';
 import Reveal from '@/components/ui/Reveal';
 import FilterChip from '@/components/courses/FilterChip';
@@ -305,7 +305,7 @@ export default function CoursesClientPage({ initialCourses, initialCategories, l
           <Reveal as="ul" stagger className="mt-10 grid gap-6 sm:mt-12 md:grid-cols-2 lg:grid-cols-3">
             {visible.map((course, i) => (
               <li key={course.id}>
-                <CourseTile course={course} featured={course.id === featuredId} priority={current === 1 && i === 0} />
+                <CourseCard course={course} featured={course.id === featuredId} priority={current === 1 && i === 0} />
               </li>
             ))}
           </Reveal>
