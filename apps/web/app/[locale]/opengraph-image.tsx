@@ -1,4 +1,8 @@
 import { ImageResponse } from 'next/og';
+import { SITE_URL } from '@/lib/utils';
+
+// Brand colours only (#5C000E, white, black and their mixes). The domain shown is the canonical one.
+const SITE_HOST = new URL(SITE_URL).host;
 
 export const runtime = 'edge';
 
@@ -26,7 +30,7 @@ export default async function Image({ params }: { params: { locale: string } }) 
     (
       <div
         style={{
-          background: '#800020', // Bordo
+          background: '#5C000E', // Bordo
           width: '100%',
           height: '100%',
           display: 'flex',
@@ -46,7 +50,7 @@ export default async function Image({ params }: { params: { locale: string } }) 
             left: '40px',
             right: '40px',
             bottom: '40px',
-            border: '4px solid #C9A84C', // Qızılı
+            border: '4px solid #EBE0E2', // Qızılı
             borderRadius: '20px',
             opacity: 0.5,
           }}
@@ -58,8 +62,8 @@ export default async function Image({ params }: { params: { locale: string } }) 
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: '#C9A84C',
-            color: '#800020',
+            background: '#EBE0E2',
+            color: '#5C000E',
             width: '100px',
             height: '100px',
             borderRadius: '20px',
@@ -87,7 +91,7 @@ export default async function Image({ params }: { params: { locale: string } }) 
         <p
           style={{
             fontSize: '32px',
-            color: '#C9A84C',
+            color: '#EBE0E2',
             margin: '20px 0 0 0',
             textAlign: 'center',
             fontWeight: 'normal',
@@ -108,7 +112,7 @@ export default async function Image({ params }: { params: { locale: string } }) 
             fontSize: '24px',
           }}
         >
-          <span>cahanacademy.az</span>
+          <span>{SITE_HOST}</span>
         </div>
       </div>
     ),

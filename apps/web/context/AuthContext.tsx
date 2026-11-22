@@ -1,8 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import adminApi, { setAccessToken } from '../lib/adminApi';
 import { useRouter, useParams } from 'next/navigation';
+import { setAdminMarker, clearAdminMarker } from './sessionMarker';
 
 interface User {
   id: string;
@@ -15,7 +16,7 @@ interface AuthContextType {
   user: User | null;
   accessToken: string | null;
   isLoading: boolean;
-  login: (accessToken: string, user: User, refreshToken?: string) => void;
+  login: (accessToken: string, user: User) => void;
   logout: () => void;
   refreshSession: () => Promise<boolean>;
   updateUser: (user: User) => void;
@@ -35,24 +36,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setToken(token);
     setAccessToken(token);
     setUser(userData);
+    setAdminMarker();
   };
 
   const updateUser = (userData: User) => {
     setUser(userData);
   };
 
+  // Kept in a ref so the mount-only effect below always sees the current locale/router.
+  const localeRef = useRef(locale);
+  localeRef.current = locale;
+  const routerRef = useRef(router);
+  routerRef.current = router;
+
+  const clearSession = useCallback(() => {
+    setToken(null);
+    setAccessToken(null);
+    setUser(null);
+    clearAdminMarker();
+  }, []);
+
   const logout = async () => {
     try {
       await adminApi.post('/auth/logout');
+    } catch {
+      // Even if the API is unreachable, the local session is dropped.
     } finally {
-      setToken(null);
-      setAccessToken(null);
-      setUser(null);
+      clearSession();
       router.push(`/${locale}/login`);
     }
   };
 
-  const refreshSession = async () => {
+  const refreshSession = useCallback(async () => {
     try {
       const { data } = await adminApi.post('/auth/refresh');
 
@@ -62,13 +77,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (data.data.user) {
           setUser(data.data.user);
         }
+        setAdminMarker();
         return true;
       }
+      clearAdminMarker();
       return false;
-    } catch (error) {
+    } catch {
+      // No valid refresh cookie (expired, revoked by a password change, or blocked as a
+      // third-party cookie): drop the marker so the middleware stops letting /dashboard through.
+      clearAdminMarker();
       return false;
     }
-  };
+  }, []);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -79,15 +99,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     initAuth();
 
     const handleLogoutEvent = () => {
-      setToken(null);
-      setAccessToken(null);
-      setUser(null);
-      router.push(`/${locale}/login`);
+      clearSession();
+      routerRef.current.push(`/${localeRef.current}/login`);
     };
 
     window.addEventListener('auth-logout', handleLogoutEvent);
     return () => window.removeEventListener('auth-logout', handleLogoutEvent);
-  }, []);
+  }, [refreshSession, clearSession]);
 
   return (
     <AuthContext.Provider value={{ user, accessToken, isLoading, login, logout, refreshSession, updateUser }}>
