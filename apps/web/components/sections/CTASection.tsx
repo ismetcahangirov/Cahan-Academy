@@ -3,7 +3,6 @@ import { ArrowRight, PhoneCall } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import OrnateFrame from '../ornament/OrnateFrame';
 import ScriptTitle from '../ornament/ScriptTitle';
-import SketchIllustration from '../ornament/SketchIllustration';
 import WaxSeal from '../ornament/WaxSeal';
 import { DrapedRibbon } from '../ornament/Ribbons';
 import Button from '../ui/Button';
@@ -24,7 +23,6 @@ export default function CTASection() {
         {/* phones: smaller and tucked inside the card edge (the section clips overflow at the viewport) */}
         <DrapedRibbon className="absolute -right-1 -top-6 z-[3] w-32 sm:-right-10 sm:-top-10 sm:w-64" />
         <OrnateFrame paper className="relative overflow-hidden px-6 pb-12 pt-14 text-center sm:px-14">
-          <SketchIllustration name="lamp" className="absolute -bottom-4 -left-6 hidden w-36 md:block" />
           <WaxSeal size={64} className="mx-auto" />
           <ScriptTitle
             id="cta-title"
