@@ -10,22 +10,29 @@ import {
   deleteTeacher,
 } from '../repositories/teacher.repository.js';
 import { TeacherSchema } from '../schemas/form.schema.js';
+import { param } from '../utils/sanitize.js';
+
+/**
+ * Drizzle returns camelCase columns (bioAz, titleEn, nameRu...). The old code looked up
+ * snake_case keys (`bio_en`), which never exist, so en/ru always fell back to Azerbaijani.
+ */
+const localeSuffix = (value: unknown): 'Az' | 'En' | 'Ru' => {
+  const l = String(value ?? 'az').toLowerCase();
+  return l === 'en' ? 'En' : l === 'ru' ? 'Ru' : 'Az';
+};
 
 // GET /api/teachers?locale=az
 export const listTeachers = asyncHandler(async (req: Request, res: Response) => {
-  const locale = (req.query.locale as string) ?? 'az';
+  const suffix = localeSuffix(req.query.locale);
   const teachers = await getAllTeachers();
-
-  const bioKey = `bio_${locale}` as const;
-  const positionKey = `position_${locale}` as const;
 
   const shaped = teachers.map((t: any) => ({
     id: t.id,
     name: t.name,
     slug: t.slug,
     image: t.image,
-    bio: t[bioKey] ?? t.bioAz,
-    position: t[positionKey] ?? t.positionAz,
+    bio: t[`bio${suffix}`] || t.bioAz,
+    position: t[`position${suffix}`] || t.positionAz,
   }));
 
   return apiResponse.success(res, { data: shaped });
@@ -33,19 +40,13 @@ export const listTeachers = asyncHandler(async (req: Request, res: Response) => 
 
 // GET /api/teachers/:slug?locale=az
 export const getTeacher = asyncHandler(async (req: Request, res: Response) => {
-  const slug = req.params.slug as string;
-  const locale = (req.query.locale as string) ?? 'az';
+  const slug = param(req, 'slug');
+  const suffix = localeSuffix(req.query.locale);
 
   const teacher = await getTeacherBySlug(slug);
   if (!teacher) {
     return apiResponse.error(res, { message: 'Müəllim tapılmadı', status: 404 });
   }
-
-  const bioKey = `bio_${locale}` as const;
-  const positionKey = `position_${locale}` as const;
-
-  const titleKey = `title_${locale}` as const;
-  const descriptionKey = `description_${locale}` as const;
 
   const t: any = teacher;
   return apiResponse.success(res, {
@@ -54,31 +55,30 @@ export const getTeacher = asyncHandler(async (req: Request, res: Response) => {
       name: t.name,
       slug: t.slug,
       image: t.image,
-      bio: t[bioKey] ?? t.bioAz,
-      position: t[positionKey] ?? t.positionAz,
+      bio: t[`bio${suffix}`] || t.bioAz,
+      position: t[`position${suffix}`] || t.positionAz,
       courses: t.courses.map((item: any) => {
         const c = item.course;
         const cat = item.category;
-        const catNameKey = `name${locale.charAt(0).toUpperCase()}${locale.slice(1)}` as any;
 
         return {
           id: c.id,
           slug: c.slug,
-          title: c[titleKey] ?? c.titleAz,
-          description: c[descriptionKey] ?? c.descriptionAz,
+          title: c[`title${suffix}`] || c.titleAz,
+          description: c[`description${suffix}`] || c.descriptionAz,
           image: c.image,
           price: c.price,
           duration: c.duration,
           level: c.level,
           rating: c.rating,
-          isPopular: c.isPopular,
+          isPopular: c.isPopular === 'true' || c.isPopular === true,
           category: cat ? {
             id: cat.id,
-            name: cat[catNameKey] ?? cat.nameAz,
+            name: cat[`name${suffix}`] || cat.nameAz,
             slug: cat.slug,
           } : {
             id: 'default',
-            name: 'Genel',
+            name: 'General',
             slug: 'general'
           },
         };
@@ -102,7 +102,7 @@ export const createTeacherAdmin = asyncHandler(async (req: Request, res: Respons
 
 // PUT /api/teachers/admin/:id
 export const updateTeacherAdmin = asyncHandler(async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const id = param(req, 'id');
   const validated = TeacherSchema.parse(req.body);
   const existing = await getTeacherById(id);
   if (!existing) {
@@ -114,7 +114,7 @@ export const updateTeacherAdmin = asyncHandler(async (req: Request, res: Respons
 
 // DELETE /api/teachers/admin/:id
 export const deleteTeacherAdmin = asyncHandler(async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const id = param(req, 'id');
   const existing = await getTeacherById(id);
   if (!existing) {
     return apiResponse.error(res, { message: 'Müəllim tapılmadı', status: 404 });

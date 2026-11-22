@@ -1,4 +1,8 @@
 import { ImageResponse } from 'next/og';
+import { SITE_URL } from '@/lib/utils';
+
+// Brand colours only (#5C000E, white, black and their mixes). The domain shown is the canonical one.
+const SITE_HOST = new URL(SITE_URL).host;
 import { getBlogPost } from '@/lib/api';
 
 export const runtime = 'edge';
@@ -16,7 +20,7 @@ export default async function Image({ params }: { params: { locale: string; slug
 
   if (!post) {
     return new ImageResponse(
-      <div style={{ background: '#800020', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 48 }}>
+      <div style={{ background: '#5C000E', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 48 }}>
         Cahan Academy Blog
       </div>
     );
@@ -26,7 +30,7 @@ export default async function Image({ params }: { params: { locale: string; slug
     (
       <div
         style={{
-          background: '#800020',
+          background: '#5C000E',
           width: '100%',
           height: '100%',
           display: 'flex',
@@ -42,7 +46,7 @@ export default async function Image({ params }: { params: { locale: string; slug
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%)' }} />
 
         <div style={{ display: 'flex', flexDirection: 'column', zIndex: 10 }}>
-          <div style={{ background: '#C9A84C', color: '#800020', padding: '8px 16px', borderRadius: '8px', fontSize: '20px', fontWeight: 'bold', alignSelf: 'flex-start', marginBottom: '24px' }}>
+          <div style={{ background: '#EBE0E2', color: '#5C000E', padding: '8px 16px', borderRadius: '8px', fontSize: '20px', fontWeight: 'bold', alignSelf: 'flex-start', marginBottom: '24px' }}>
             BLOQ MƏQALƏSİ
           </div>
           
@@ -51,12 +55,12 @@ export default async function Image({ params }: { params: { locale: string; slug
           </h1>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-             <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#C9A84C', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#800020', fontSize: '24px', fontWeight: 'bold' }}>
+             <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#EBE0E2', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C000E', fontSize: '24px', fontWeight: 'bold' }}>
                {post.author?.name?.charAt(0) || 'C'}
              </div>
              <div style={{ display: 'flex', flexDirection: 'column' }}>
                <span style={{ fontSize: '20px', fontWeight: 'bold' }}>{post.author?.name || 'Cahan Academy'}</span>
-               <span style={{ fontSize: '16px', opacity: 0.8 }}>cahanacademy.az</span>
+               <span style={{ fontSize: '16px', opacity: 0.8 }}>{SITE_HOST}</span>
              </div>
           </div>
         </div>
@@ -70,8 +74,8 @@ export default async function Image({ params }: { params: { locale: string; slug
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              background: '#C9A84C',
-              color: '#800020',
+              background: '#EBE0E2',
+              color: '#5C000E',
               width: '80px',
               height: '80px',
               borderRadius: '20px',

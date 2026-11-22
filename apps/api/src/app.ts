@@ -3,13 +3,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { globalErrorHandler } from './middleware/error.middleware.js';
+import { globalErrorHandler, notFoundHandler } from './middleware/error.middleware.js';
 import { env } from './config/env.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 import courseRoutes from './routes/course.routes.js';
 import categoryRoutes from './routes/category.routes.js';
 import teacherRoutes from './routes/teacher.routes.js';
@@ -26,15 +21,21 @@ import { getHealth } from './controllers/health.controller.js';
 
 const app = express();
 
+// Vercel terminates TLS and sets X-Forwarded-For (one proxy hop). Without this, req.ip is the
+// proxy address, so every visitor shared one rate-limit bucket (3 leads/hour for the whole site).
+app.set('trust proxy', 1);
+app.disable('x-powered-by');
+
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 app.use(cors({
+  // Localhost is only trusted outside production (with credentials: true, a page served from a
+  // visitor's localhost could otherwise call the production API with their admin cookie).
   origin: [
-    'http://localhost:3000',
+    ...(env.NODE_ENV === 'production' ? [] : ['http://localhost:3000']),
     'https://cahan-academy.vercel.app',
-    'https://cahan-academy-git-feature-m16-legal-ismetcahangirovs-projects.vercel.app', // Test üçün PR linki
-    env.CLIENT_URL
+    env.CLIENT_URL,
   ].filter(Boolean),
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
@@ -42,11 +43,9 @@ app.use(cors({
 }));
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Static files (uploads)
-app.use('/uploads', express.static(path.join(__dirname, '..', 'public', 'uploads')));
+// Blog posts carry the largest bodies (3 locales of HTML); everything else is tiny.
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: false, limit: '100kb' }));
 
 // Health Check
 app.get('/api/health', getHealth);
@@ -66,6 +65,7 @@ app.use('/api/team', teamMemberRoutes);
 app.use('/api/upload', uploadRoutes);
 
 // Error Handling
+app.use(notFoundHandler);
 app.use(globalErrorHandler);
 
 export default app;
