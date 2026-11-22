@@ -27,7 +27,8 @@ export default function Table({
   return (
     <div className={className}>
       {divider && <OrnamentDivider className="mb-4" />}
-      <div className="table-wrap custom-scrollbar">
+      {/* the frame scrolls on narrow screens: keyboard users must be able to focus it to scroll (WCAG 2.1.1) */}
+      <div className="table-wrap custom-scrollbar" tabIndex={0} role="region" aria-label={caption}>
         <table className={cn('table-ornate', tableClassName)}>
           {caption && <caption className="sr-only">{caption}</caption>}
           {children}

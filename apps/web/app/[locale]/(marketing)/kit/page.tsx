@@ -125,7 +125,7 @@ export default async function KitPage({ params }: { params: Promise<{ locale: st
             <p className="text-[1.0625rem] leading-relaxed text-ink">
               Gövdə mətni: Peşəkar müəllimlər, praktiki dərslər. Ə ə Ğ ğ I ı İ i Ş ş Ç ç Ö ö Ü ü. Кириллица: Привет, мир.
             </p>
-            <p className="text-ink-muted">İkinci dərəcəli mətn (ink-muted), <span className="text-ink-subtle">üçüncü (ink-subtle)</span>.</p>
+            <p className="text-ink-muted">İkinci dərəcəli mətn (ink-muted). <code>ink-subtle</code> yalnız placeholder, disabled və ikonlar üçündür (mətn üçün AA deyil).</p>
             <p className="num text-[1.4rem]">1 234 567 · 12.50 ₼ · 09:30</p>
             <p className="time-italic text-ink-muted">22 noyabr 2026 · 6 dəq oxu</p>
             <p>
