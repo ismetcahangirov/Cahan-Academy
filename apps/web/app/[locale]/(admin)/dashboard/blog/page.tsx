@@ -7,7 +7,7 @@ import adminApi from '@/lib/adminApi';
 import { Button, StatusPill } from '@/components/ui';
 import BlogModal from '@/components/admin/BlogModal';
 import { DataView, PageHead, RowAction, Thumb } from '@/components/admin/AdminUI';
-import { useAdminFeedback } from '@/components/admin/feedback';
+import { useFeedback } from '@/components/ui/Feedback';
 import { useAdminList } from '@/components/admin/useAdminList';
 import { apiMessage, asBool, assertOk, fmtDate } from '@/components/admin/utils';
 
@@ -19,7 +19,7 @@ interface Row {
 export default function BlogAdminPage() {
   const t = useTranslations('admin');
   const locale = useLocale();
-  const { confirm, ok, fail } = useAdminFeedback();
+  const { confirm, ok, fail } = useFeedback();
   const { items, setItems, loading, error, reload } = useAdminList<Row>('/blog/admin/list');
   const [modalOpen, setModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Record<string, unknown> | null>(null);

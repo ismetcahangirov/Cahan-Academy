@@ -99,7 +99,7 @@ export default function LanguageSwitcher({ variant = 'menu', className }: { vari
                 {l.code === locale ? (
                   <Check size={15} strokeWidth={1.8} aria-hidden="true" />
                 ) : (
-                  <span className="sc text-[0.78rem] text-ink-subtle" aria-hidden="true">
+                  <span className="sc text-[0.78rem] text-ink-muted" aria-hidden="true">
                     {l.label}
                   </span>
                 )}

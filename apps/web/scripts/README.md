@@ -100,6 +100,26 @@ node scripts/color-lint.mjs --write-pending           # pending file = every fil
 - Pending files are summarised and do not fail the run. A violation in any other file exits 1. It warns about pending entries that are now clean or missing; remove those lines.
 - Escape hatch: `color-lint-ignore` on the line, with a reason.
 
+## a11y-scan.mjs
+
+```bash
+node scripts/a11y-scan.mjs --plan scripts/qa-plan.json --out C:/dev/landing-ornate/shots/x/a11y [--only courses] [--themes light]
+```
+
+- Runs axe-core (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `best-practice`) on every target after its actions, so open
+  modals, menus and drawers are scanned too. `serious` and `critical` fail the run; `moderate`/`minor` are listed.
+- Also: Tab through 30 stops (every stop shows a ring and is visible), focus stays inside an open `aria-modal` dialog,
+  and with `prefers-reduced-motion: reduce` nothing loops or runs longer than 200 ms (spinners excepted).
+- Output: `<out>/a11y.json`, `<out>/a11y.txt`. axe-core is a devDependency of `@academy/web`.
+
+## qa-plan.json
+
+The shared sweep used by the final QA: every marketing route in az/en/ru, the 404 page, every admin page, and the
+interactive states (mobile menu, language menu, form validation, empty results, FAQ open, newsletter error, admin
+create/edit modals, confirm dialog, toast, drawer). Use it with `--plan` in screenshots, color-audit and a11y-scan.
+Run against `next start` with `BULK=40 node scripts/mock-api.mjs` for realistic list lengths. The `toast` target
+deletes a FAQ in the mock (`POST /api/__mock/reset` restores it).
+
 ## perf-probe.mjs
 
 ```bash

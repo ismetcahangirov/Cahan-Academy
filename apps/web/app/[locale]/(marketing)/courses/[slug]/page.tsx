@@ -22,12 +22,16 @@ import {
   TimelineItem,
   WaveEdge,
 } from '@/components/ornament';
-import Breadcrumbs from '@/components/courses/Breadcrumbs';
-import CourseTile from '@/components/courses/CourseTile';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import CourseCard from '@/components/cards/CourseCard';
 import StickyEnroll from '@/components/courses/StickyEnroll';
-import { coverSrc, sketchFor } from '@/components/courses/media';
-import { alternatesFor, metaDescription } from '@/components/courses/seo';
+import { isRealImage, sketchFor } from '@/lib/media';
+import { alternatesFor, metaDescription } from '@/lib/seo';
 import { parseSyllabus, toRoman } from '@/components/courses/syllabus';
+
+// ISR: static HTML, regenerated in the background at most this often (same window as the
+// fetches it renders: course, 1 h). Explicit, so a page whose build-time fetch failed still revalidates.
+export const revalidate = 3600;
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -86,7 +90,8 @@ export default async function CourseDetailPage({ params }: PageProps) {
     getTranslations({ locale, namespace: 'common' }),
     getTranslations({ locale, namespace: 'teachers' }),
     getCourses(locale),
-    course.teacher?.name ? getTeachers(locale) : Promise.resolve([]),
+    // only an API without teacher.slug needs the list (name match below)
+    course.teacher?.name && !course.teacher.slug ? getTeachers(locale) : Promise.resolve([]),
   ]);
 
   const levelLabel =
@@ -95,11 +100,11 @@ export default async function CourseDetailPage({ params }: PageProps) {
     ] ?? course.level;
   const syllabus = parseSyllabus(course.syllabus);
   const teacher = course.teacher?.name ? course.teacher : null;
-  // the course endpoint has no teacher slug: link the profile when the name matches a listed teacher
-  const teacherSlug = teacher ? teachers.find((x) => x.name === teacher.name)?.slug : undefined;
+  // the API sends teacher.slug; an older API did not — then link the profile when the name matches
+  const teacherSlug = teacher ? (teacher.slug ?? teachers.find((x) => x.name === teacher.name)?.slug) : undefined;
   const sameCategory = all.filter((c) => c.slug !== course.slug && c.category?.slug === course.category?.slug);
   const related = (sameCategory.length ? sameCategory : all.filter((c) => c.slug !== course.slug && c.isPopular)).slice(0, 3);
-  const image = coverSrc(course.image);
+  const image = isRealImage(course.image) ? course.image : null;
   const sketch = sketchFor(course.category?.slug, course.category?.name, course.title);
   const priceNumber = course.price?.replace(',', '.').match(/\d+(\.\d+)?/)?.[0];
   const highlights = [1, 2, 3, 4, 5, 6].map((n) => tp(`highlight_${n}`));
@@ -127,8 +132,8 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
       {/* ── Hero: wine band, framed cover with the bookmark ribbon ─────────────────────────────── */}
       <section className="theme-wine hero-wine relative isolate overflow-hidden">
-        <LaceCorner corner="tl" priority className="absolute left-0 top-0 w-20 sm:w-32 lg:w-44" />
-        <LaceCorner corner="tr" priority className="absolute right-0 top-0 hidden w-32 sm:block lg:w-44" />
+        <LaceCorner corner="tl" priority onWine className="absolute left-0 top-0 w-20 sm:w-32 lg:w-44" />
+        <LaceCorner corner="tr" priority onWine className="absolute right-0 top-0 hidden w-32 sm:block lg:w-44" />
 
         <div className="relative mx-auto max-w-7xl px-4 pb-24 pt-8 sm:px-6 sm:pb-28 sm:pt-10 lg:px-8">
           <Breadcrumbs
@@ -167,7 +172,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                   [tp('meta_level'), levelLabel],
                 ].map(([label, value]) => (
                   <div key={label} className="min-w-0 px-2 text-center first:pl-0 last:pr-0 sm:px-4">
-                    <dt className="sc text-[0.72rem] text-ink-subtle sm:text-[0.8rem]">{label}</dt>
+                    <dt className="sc text-[0.72rem] text-ink-muted sm:text-[0.8rem]">{label}</dt>
                     <dd className="num mt-1 break-words text-[1.02rem] font-semibold leading-snug text-ink sm:text-[1.2rem]">{value}</dd>
                   </div>
                 ))}
@@ -311,7 +316,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                 {tp('teacher_title')}
               </p>
               <CoverImage
-                src={coverSrc(teacher.image)}
+                src={teacher.image}
                 alt=""
                 sketch={sketchFor(teacher.position, teacher.name)}
                 rounded="arch"
@@ -381,7 +386,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
           <Reveal as="ul" stagger className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {related.map((c) => (
               <li key={c.id}>
-                <CourseTile course={c} />
+                <CourseCard course={c} />
               </li>
             ))}
           </Reveal>

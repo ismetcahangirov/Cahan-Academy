@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import PageBand from '@/components/about/PageBand';
-import { pageAlternates } from '@/components/legal/seo';
+import PageBand from '@/components/layout/PageBand';
+import { alternatesFor, ogImages } from '@/lib/seo';
 import HistorySection from '@/components/sections/about/HistorySection';
 import MissionSection from '@/components/sections/about/MissionSection';
 import ValuesSection from '@/components/sections/about/ValuesSection';
@@ -11,6 +11,10 @@ import TestimonialsSection from '@/components/sections/TestimonialsSection';
 import CTASection from '@/components/sections/CTASection';
 import JsonLd from '@/components/seo/JsonLd';
 import { SITE_URL, absoluteUrl } from '@/lib/utils';
+
+// ISR: static HTML, regenerated in the background at most this often (same window as the
+// fetches it renders: team list, 1 d). Explicit, so a page whose build-time fetch failed still revalidates.
+export const revalidate = 86400;
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -23,12 +27,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: t('about_title'),
     description: t('about_description'),
-    alternates: pageAlternates(locale, '/about'),
+    alternates: alternatesFor(locale, '/about'),
     openGraph: {
       title: t('about_title'),
       description: t('about_description'),
       type: 'website',
       locale,
+      images: ogImages(locale),
     },
   };
 }
@@ -61,7 +66,7 @@ export default async function AboutPage({ params }: Props) {
         }}
       />
 
-      <PageBand id="about-title" seal eyebrow={t('badge')} title={t('hero_title')} lead={t('hero_subtitle')} />
+      <PageBand id="about-title" trail={{ locale, items: [{ path: '/about' }] }} seal eyebrow={t('badge')} title={t('hero_title')} lead={t('hero_subtitle')} />
       <HistorySection />
       <MissionSection>
         <StatsSection bare />

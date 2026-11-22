@@ -5,8 +5,8 @@ import { Link } from '@/i18n/routing';
 import { getFaqs, type Faq } from '@/lib/api';
 import FAQAccordion from '@/components/ui/FAQAccordion';
 import { Button } from '@/components/ui';
-import PageBand from '@/components/about/PageBand';
-import { pageAlternates } from '@/components/legal/seo';
+import PageBand from '@/components/layout/PageBand';
+import { alternatesFor, ogImages } from '@/lib/seo';
 import { OrnateFrame, ScriptTitle, SketchIllustration } from '@/components/ornament';
 import JsonLd from '@/components/seo/JsonLd';
 
@@ -23,8 +23,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: t('meta_title'),
     description: t('meta_description'),
-    alternates: pageAlternates(locale, '/faq'),
-    openGraph: { title: t('meta_title'), description: t('meta_description'), type: 'website', locale },
+    alternates: alternatesFor(locale, '/faq'),
+    openGraph: { title: t('meta_title'), description: t('meta_description'), type: 'website', locale, images: ogImages(locale) },
   };
 }
 
@@ -66,11 +66,11 @@ export default async function FAQPage({ params }: Props) {
         }}
       />
 
-      <PageBand id="faq-title" eyebrow={t('badge')} title={t('title')} lead={t('description')} />
+      <PageBand id="faq-title" trail={{ locale, items: [{ path: '/faq' }] }} eyebrow={t('badge')} title={t('title')} lead={t('description')} />
 
       <div className="mx-auto grid max-w-6xl items-start gap-10 px-4 pb-24 pt-12 sm:px-6 sm:pt-16 lg:grid-cols-[minmax(0,1fr)_19rem] lg:gap-12 lg:px-8">
         <div className="min-w-0">
-          <FAQAccordion items={items} locale={locale} />
+          <FAQAccordion items={items} locale={locale} headingLevel="h2" />
         </div>
 
         <OrnateFrame

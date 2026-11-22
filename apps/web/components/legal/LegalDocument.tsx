@@ -2,7 +2,7 @@ import { Fragment, type ReactNode } from 'react';
 import { getTranslations } from 'next-intl/server';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import PageBand from '@/components/about/PageBand';
+import PageBand from '@/components/layout/PageBand';
 import { EdelweissGlyph, OrnamentDivider } from '@/components/ornament';
 import { Button } from '@/components/ui';
 import JsonLd from '@/components/seo/JsonLd';
@@ -92,7 +92,7 @@ export default async function LegalDocument({ kind, locale }: { kind: keyof type
         }}
       />
 
-      <PageBand id="legal-title" eyebrow={t('eyebrow')} title={title} lead={t(doc.lead)}>
+      <PageBand id="legal-title" trail={{ locale, items: [{ name: title, path: doc.path }] }} eyebrow={t('eyebrow')} title={title} lead={t(doc.lead)}>
         <p className="time-italic mt-5 text-center text-[1.02rem] text-ink-muted">
           {t('last_updated')}: <time dateTime={LAST_UPDATED}>{updated}</time>
         </p>

@@ -3,11 +3,12 @@ import { ArrowRight, Calendar, Clock } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import type { BlogPost } from '@/types/blog';
 import { cn } from '@/lib/utils';
+import { sketchFor } from '@/lib/media';
 import Card from '../ui/Card';
 import CoverImage from './CoverImage';
 
 /**
- * BlogCard — framed cover (photo or inkwell sketch), date · reading time in italic, serif title,
+ * BlogCard — framed cover (photo, or a sketch chosen from the post's subject), date · reading time in italic, serif title,
  * excerpt, author in small caps, "read more". Whole card = one link (stretched).
  * Shared component (server or client). `index` kept for compatibility.
  */
@@ -31,7 +32,7 @@ export default function BlogCard({ post, className }: BlogCardProps) {
       <CoverImage
         src={post.image}
         alt=""
-        sketch="inkwell"
+        sketch={sketchFor(post.slug, post.title)}
         className="aspect-[16/10]"
         imgClassName="transition-transform duration-500 group-hover:scale-[1.03]"
       />

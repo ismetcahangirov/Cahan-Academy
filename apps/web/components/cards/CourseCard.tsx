@@ -1,29 +1,50 @@
 import { useTranslations } from 'next-intl';
 import { ArrowRight, Clock, Star, Users } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import type { Course } from '@/types/course';
 import { cn } from '@/lib/utils';
+import { sketchFor } from '@/lib/media';
 import Card from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import CoverImage from './CoverImage';
 
 /**
- * CourseCard — framed cover (photo or sketch placeholder), category + level badges, serif title,
- * meta (duration · students · rating), price and a details link. The whole card is one link target
+ * CourseCard — framed cover (photo, or a sketch chosen from the course's category when the image is
+ * missing / stock / mock: CoverImage + sketchFor), category + popular badges, level in small caps, serif
+ * title, meta (duration · students · rating), price and a details cue. The whole card is one link target
  * (stretched link), so keyboard users get a single stop. `featured` = ornate frame + bookmark ribbon
- * (ONE per view). Shared component: works in server and client trees. `index` kept for compatibility.
+ * (ONE per view). Shared: home preview, catalogue, course and teacher detail. Server or client trees.
+ *
+ * <CourseCard course={c} featured={i === 0} priority={i === 0} headingLevel="h2" />
  */
-interface CourseCardProps {
-  course: Course;
-  index?: number;
-  featured?: boolean;
-  priority?: boolean;
-  className?: string;
+export interface CourseCardData {
+  slug: string;
+  title: string;
+  description?: string | null;
+  price?: string | null;
+  duration?: string | null;
+  level?: string | null;
+  image?: string | null;
+  isPopular?: boolean;
+  rating?: string | null;
+  studentsCount?: string | null;
+  category?: { name?: string; slug?: string } | null;
 }
 
-export default function CourseCard({ course, featured = false, priority = false, className }: CourseCardProps) {
+export default function CourseCard({
+  course,
+  featured = false,
+  priority = false,
+  headingLevel = 'h3',
+  className,
+}: {
+  course: CourseCardData;
+  featured?: boolean;
+  priority?: boolean;
+  headingLevel?: 'h2' | 'h3';
+  className?: string;
+}) {
   const t = useTranslations('courses');
-
+  const H = headingLevel;
   const level =
     course.level === 'beginner'
       ? t('level_beginner')
@@ -34,22 +55,17 @@ export default function CourseCard({ course, featured = false, priority = false,
           : t('level_all');
 
   return (
-    <Card
-      as="article"
-      variant={featured ? 'featured' : 'plain'}
-      hover
-      className={cn('group flex h-full flex-col p-3', className)}
-    >
+    <Card as="article" variant={featured ? 'featured' : 'plain'} hover className={cn('group flex h-full flex-col p-3', className)}>
       <div className="relative">
         <CoverImage
           src={course.image}
           alt=""
-          sketch="books"
+          sketch={sketchFor(course.category?.slug, course.category?.name, course.title)}
           priority={priority}
           className="aspect-[16/10]"
           imgClassName="transition-transform duration-500 group-hover:scale-[1.03]"
         />
-        <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
+        <div className="absolute left-3 top-3 flex max-w-[calc(100%-3rem)] flex-wrap gap-1.5">
           {course.category?.name && <Badge tone="solid">{course.category.name}</Badge>}
           {course.isPopular && <Badge tone="accent">{t('filter_popular')}</Badge>}
         </div>
@@ -57,14 +73,14 @@ export default function CourseCard({ course, featured = false, priority = false,
 
       <div className="flex flex-1 flex-col px-3 pb-3 pt-4">
         <p className="sc text-[0.8rem] text-ink-muted">{level}</p>
-        <h3 className="mt-1 text-[1.3rem] font-semibold leading-snug text-ink">
+        <H className="mt-1 text-[1.3rem] font-semibold leading-snug text-ink">
           <Link
             href={`/courses/${course.slug}`}
             className="outline-none after:absolute after:inset-0 after:rounded-[var(--radius-lg)] after:content-[''] focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-[var(--focus)]"
           >
             {course.title}
           </Link>
-        </h3>
+        </H>
         {course.description && (
           <p className="mt-2 line-clamp-2 text-[1rem] leading-relaxed text-ink-muted">{course.description}</p>
         )}

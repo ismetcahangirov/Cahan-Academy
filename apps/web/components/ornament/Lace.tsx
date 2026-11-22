@@ -50,11 +50,14 @@ export function LaceCorner({
   corner = 'tl',
   className = 'w-40',
   priority = false,
+  onWine = false,
   style,
 }: {
   corner?: keyof typeof CORNER_TRANSFORM;
   className?: string;
   priority?: boolean;
+  /** on a .theme-wine panel: ship only the dark variant (see ThemedImg) */
+  onWine?: boolean;
   style?: CSSProperties;
 }) {
   return (
@@ -63,6 +66,7 @@ export function LaceCorner({
       width={360}
       height={357}
       priority={priority}
+      onWine={onWine}
       className={cn('aspect-[360/357]', className)}
       style={{ transform: CORNER_TRANSFORM[corner], ...style }}
     />

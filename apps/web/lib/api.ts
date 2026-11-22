@@ -129,7 +129,8 @@ export const getTeacher = (slug: string, locale?: string) =>
     });
 
 // ─── Blog ────────────────────────────────────────────────────────────────────
-export const getBlogPosts = (params?: { locale?: string; limit?: number; excludeSlug?: string }) => {
+/** `revalidate` (s) overrides the 60 s default, e.g. the hourly sitemap (a lower fetch value wins over the route's). */
+export const getBlogPosts = (params?: { locale?: string; limit?: number; excludeSlug?: string; revalidate?: number }) => {
   const query = new URLSearchParams();
   if (params?.locale) query.append('locale', params.locale);
   if (params?.limit) query.append('limit', params.limit.toString());
@@ -137,7 +138,7 @@ export const getBlogPosts = (params?: { locale?: string; limit?: number; exclude
 
   return apiFetch<{ data: BlogPost[] }>(`/blog?${query.toString()}`, {
     tags: ['blog'],
-    revalidate: 60,
+    revalidate: params?.revalidate ?? 60,
   })
     .then((res) => res.data)
     .catch(() => [] as BlogPost[]);
@@ -154,6 +155,29 @@ export const getBlogPost = (slug: string, locale: string = 'az') =>
       if (isNotFound(error)) return null;
       throw error;
     });
+
+// ─── Lists that must tell "failed" from "empty" ─────────────────────────────
+/**
+ * For pages that say which one happened ("could not load" vs "nothing yet"), unlike getX() above which
+ * turn any failure into []. `failed` is also logged on the server.
+ */
+async function loadList<T>(endpoint: string, opts: { tags: string[]; revalidate: number }, label: string) {
+  try {
+    const res = await apiFetch<{ data?: T[] }>(endpoint, opts);
+    return { items: Array.isArray(res.data) ? res.data : [], failed: false };
+  } catch (error) {
+    console.error(`[api] ${label} fetch failed:`, error instanceof Error ? error.message : error);
+    return { items: [] as T[], failed: true };
+  }
+}
+
+/** /blog list page. */
+export const loadBlogPosts = (locale: string) =>
+  loadList<BlogPost>(`/blog?locale=${seg(locale)}`, { tags: ['blog'], revalidate: 60 }, 'blog list');
+
+/** About page team (GET /api/team). */
+export const getTeam = (locale: string) =>
+  loadList<TeamMember>(`/team?locale=${seg(locale)}`, { tags: ['team'], revalidate: 86400 }, 'team');
 
 // ─── Forms ────────────────────────────────────────────────────────────────────
 // These throw ApiError with the API's message (validation text, "too many requests", ...),
@@ -193,7 +217,8 @@ export interface CourseSummary {
   rating: string | null;
   studentsCount: string | null;
   category: { name?: string; slug?: string };
-  teacher: { name?: string; image?: string | null; position?: string };
+  /** `slug` since the API returns it (older API: absent → match by name). */
+  teacher: { name?: string; slug?: string | null; image?: string | null; position?: string };
 }
 export interface Teacher {
   id: string;
@@ -234,6 +259,12 @@ export interface BlogPost {
     id: string;
     name: string;
   } | null;
+}
+export interface TeamMember {
+  id: string;
+  name: string;
+  position: string | null;
+  image: string | null;
 }
 export interface ContactFormData { name: string; email: string; subject: string; message: string; }
 export interface EnrollFormData  { name: string; email: string; phone: string; course: string; }

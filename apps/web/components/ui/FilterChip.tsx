@@ -41,7 +41,7 @@ export default function FilterChip({
       {icon}
       <span className="max-w-[16rem] truncate">{children}</span>
       {typeof count === 'number' && (
-        <span className={cn('num font-serif text-[0.85rem] font-normal normal-case tracking-normal', pressed ? 'text-accent-fg' : 'text-ink-subtle')}>
+        <span className={cn('num font-serif text-[0.85rem] font-normal normal-case tracking-normal', pressed ? 'text-accent-fg' : 'text-ink-muted')}>
           {count}
         </span>
       )}

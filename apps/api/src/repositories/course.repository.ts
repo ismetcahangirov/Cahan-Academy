@@ -27,6 +27,7 @@ export interface CourseRow {
   category_ru?: string;
   category_slug?: string;
   teacher_name?: string;
+  teacher_slug?: string;
   teacher_image?: string;
   teacher_position_az?: string;
   teacher_position_en?: string;
@@ -73,6 +74,7 @@ function mapToCourseRow(record: any): CourseRow {
     category_slug: cat?.slug,
     
     teacher_name: t?.name,
+    teacher_slug: t?.slug,
     teacher_image: t?.image,
     teacher_position_az: t?.positionAz,
     teacher_position_en: t?.positionEn,

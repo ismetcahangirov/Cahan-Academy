@@ -29,7 +29,8 @@ import { EdelweissGlyph, LaceEdge, OrnamentDivider } from '@/components/ornament
 import LanguageSwitcher from '@/components/layout/LanguageSwitcher';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import { Button, Spinner } from '@/components/ui';
-import { AdminFeedbackProvider } from './feedback';
+import { FeedbackProvider } from '@/components/ui/Feedback';
+import { apiMessage } from './utils';
 
 /**
  * AdminShell — the CMS frame: wine sidebar (lockup, nav with an edelweiss marker on the active item,
@@ -92,15 +93,17 @@ export default function AdminShell({ children }: { children: ReactNode }) {
       }
       if (e.key !== 'Tab') return;
       const items = Array.from(asideRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []).filter(
-        (el) => el.offsetParent !== null
+        (el) => el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden'
       );
       if (!items.length) return;
       const first = items[0];
       const last = items[items.length - 1];
-      if (e.shiftKey && document.activeElement === first) {
+      // wrap at both ends, and pull focus back in if it is anywhere outside the drawer
+      const idx = items.indexOf(document.activeElement as HTMLElement);
+      if (e.shiftKey && idx <= 0) {
         e.preventDefault();
         last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
+      } else if (!e.shiftKey && (idx === -1 || idx === items.length - 1)) {
         e.preventDefault();
         first.focus();
       }
@@ -129,7 +132,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const current = NAV.find((n) => isActive(pathname, n.href));
 
   return (
-    <AdminFeedbackProvider>
+    <FeedbackProvider errorMessage={(e) => apiMessage(e, t('common.delete_error'))}>
       <a href="#admin-main" className="btn btn-primary btn-sm sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-3 focus:z-[80]">
         {tc('skip_to_content')}
       </a>
@@ -255,6 +258,6 @@ export default function AdminShell({ children }: { children: ReactNode }) {
           {children}
         </main>
       </div>
-    </AdminFeedbackProvider>
+    </FeedbackProvider>
   );
 }

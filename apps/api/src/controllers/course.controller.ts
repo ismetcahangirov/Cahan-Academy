@@ -51,6 +51,8 @@ export const listCourses = asyncHandler(async (req: Request, res: Response) => {
     },
     teacher: {
       name:     c.teacher_name,
+      // lets the web link the teacher profile without matching names
+      slug:     c.teacher_slug ?? null,
       image:    c.teacher_image,
       position: c[positionKey] ?? c.teacher_position_az,
     },
@@ -101,6 +103,8 @@ export const getCourse = asyncHandler(async (req: Request, res: Response) => {
       },
       teacher: {
         name:     c.teacher_name,
+        // lets the web link the teacher profile without matching names
+        slug:     c.teacher_slug ?? null,
         image:    c.teacher_image,
         bio:      c[bioKey] ?? c.teacher_bio_az,
         position: c[positionKey] ?? c.teacher_position_az,

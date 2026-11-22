@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og';
 import { SITE_URL } from '@/lib/utils';
 
 /**
- * Open Graph card for course / teacher pages (1200×630). Colour law: only tones on white → #5C000E →
+ * Open Graph card for every page (home, course, teacher, blog post; 1200×630). Colour law: only tones on white → #5C000E →
  * black (deep wine gradient, #E2D1D4 / #C6A6AB light tones, white text), no shadows, no emoji.
  * A double hairline frame with small corner diamonds echoes the ornate frames of the site.
  */

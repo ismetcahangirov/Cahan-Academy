@@ -340,7 +340,7 @@ function courseRow(c) {
     is_popular: c.isPopular, rating: c.rating, students_count: c.studentsCount,
     syllabus_az: c.syllabusAz, syllabus_en: c.syllabusEn, syllabus_ru: c.syllabusRu, created_at: c.createdAt,
     category_az: cat?.nameAz, category_en: cat?.nameEn, category_ru: cat?.nameRu, category_slug: cat?.slug,
-    teacher_name: t?.name, teacher_image: t?.image,
+    teacher_name: t?.name, teacher_slug: t?.slug, teacher_image: t?.image,
     teacher_position_az: t?.positionAz, teacher_position_en: t?.positionEn, teacher_position_ru: t?.positionRu,
     teacher_bio_az: t?.bioAz, teacher_bio_en: t?.bioEn, teacher_bio_ru: t?.bioRu,
   };
@@ -356,8 +356,8 @@ function coursePublic(c, locale, detail = false) {
   if (detail) out.syllabus = snake(r, 'syllabus', locale);
   out.category = { name: snake(r, 'category', locale), slug: r.category_slug };
   out.teacher = detail
-    ? { name: r.teacher_name, image: r.teacher_image, bio: snake(r, 'teacher_bio', locale), position: snake(r, 'teacher_position', locale) }
-    : { name: r.teacher_name, image: r.teacher_image, position: snake(r, 'teacher_position', locale) };
+    ? { name: r.teacher_name, slug: r.teacher_slug ?? null, image: r.teacher_image, bio: snake(r, 'teacher_bio', locale), position: snake(r, 'teacher_position', locale) }
+    : { name: r.teacher_name, slug: r.teacher_slug ?? null, image: r.teacher_image, position: snake(r, 'teacher_position', locale) };
   return out;
 }
 const coursesSorted = () =>

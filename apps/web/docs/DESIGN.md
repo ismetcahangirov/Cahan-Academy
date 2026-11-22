@@ -61,7 +61,7 @@ theme). Tailwind utilities exist for the semantic ones:
 | `--field` | `bg-field` | `#FFFFFF` | `#170004` | inputs |
 | `--ink` | `text-ink` | `#170004` | `#FFFFFF` | body text |
 | `--ink-muted` | `text-ink-muted` | `#86424D` | `#C19EA3` | secondary text (AA) |
-| `--ink-subtle` | `text-ink-subtle` | `#A5737A` | `#A06B73` | placeholder, disabled, tertiary |
+| `--ink-subtle` | `text-ink-subtle` | `#A5737A` | `#A06B73` | placeholder, disabled, decorative icons — **not for readable text** (3.9:1, below AA) |
 | `--accent` | `bg-accent` | `#5C000E` | `#5C000E` | primary fills (**white inside `.theme-wine`**) |
 | `--accent-hover` / `-fg` | | `#4A000B` / `#FFF` | `#742632` / `#FFF` | |
 | `--accent-text` | `text-accent-text` | `#5C000E` | `#E2D1D4` | links, active labels, icons |
@@ -132,7 +132,10 @@ from `components/brand/brandPaths.ts` — regenerate after changing either); nev
 component (it inlines ~40 KB of path data per use). `draw` on `OrnamentDivider`/`CornerFlourish` renders inline
 paths for the one-shot stroke animation — use it only on a single hero divider. Long pages: put `cv-auto`
 (`content-visibility: auto`) on every section below the first screen (not on sections whose ornaments overflow
-their box — it clips like `overflow: hidden`). No full-bleed raster backgrounds on the first screen (LCP).
+their box — it clips like `overflow: hidden`). No full-bleed raster backgrounds on the first screen (LCP): first-screen
+wine bands use `.hero-wine` (gradient only), never `.band-wine` (it carries the parchment raster). Eager (`priority`)
+lace / ribbon / seal on a `.theme-wine` panel take `onWine`: only the dark variant exists there, and an eager
+`display:none` image is still downloaded (the home hero saved ~170 KB).
 
 Mobile: ornaments shrink, not multiply (lace corners `w-20–w-32`, hide side sketches below `xl`).
 To make an ornament fainter use a lighter token (`text-ornament-soft`), never `opacity-*` on rasters.
@@ -165,8 +168,17 @@ buttonClass({ variant: 'outline', size: 'sm' })                       // classes
 <Table caption={t('caption')}><thead>…</thead><tbody>…</tbody></Table>
 ```
 
-Cards for data: `CourseCard` (`featured`, `priority`), `TeacherCard` (arched portrait frame), `BlogCard` — whole card is
-one stretched link. `CoverImage` frames any user photo and swaps placeholders for sketches.
+Cards for data: `CourseCard` (`featured`, `priority`, `headingLevel`), `TeacherCard` (arched portrait frame), `BlogCard` —
+whole card is one stretched link; the same cards serve home, catalogue and detail pages (no local copies).
+`CoverImage` frames any user photo; **the one no-image rule** is `isRealImage()` in `lib/media.ts` (missing, stock /
+placeholder hosts and mock-API `/mock-image/` URLs are not photos) and the fallback is a subject-aware sketch,
+`sketchFor(category, title…)` — never a striped or empty box.
+
+Also shared (import from their own files, not the `@/components/ui` barrel, so client code stays out of other
+bundles): `ui/Breadcrumbs` (visible trail + BreadcrumbList JSON-LD), `ui/FilterChip`, `ui/Pagination`,
+`ui/Feedback` (`<FeedbackProvider>` + `useFeedback()`: in-app confirm dialog and palette toasts). SEO helpers live in
+`lib/seo.ts`: `alternatesFor(locale, path)` (canonical + hreflang), `ogImages(locale)` (site OG card — a page that sets
+`openGraph` must list it, the parent's file-based image is not merged), `metaDescription()`.
 
 Shell (`components/layout`): `Header` (sticky, lockup, SC nav with edelweiss separators, `LanguageSwitcher`,
 `ThemeToggle`, CTA), `MobileMenu` (dialog drawer: focus trap, Escape, focus return, scroll lock), `Footer` (wine band
@@ -176,9 +188,12 @@ Stats/Testimonials/CTA are reusable on other pages.
 
 ## 6. Page recipes
 
-**Marketing list page** (courses, teachers, blog): a `theme-wine band-wine` head band (`relative overflow-hidden`,
-`LaceCorner` tl/tr, centred `ScriptTitle size="page"` with eyebrow + lead, `WaveEdge fill="var(--page-base)"` at the
-bottom) → filter row (`Input icon={Search}` + `Select`/pill buttons, wraps on mobile) → grid of cards in
+**Head band (every list / content page)**: `<PageBand id trail eyebrow title lead seal? waveFill?>` from
+`components/layout/PageBand` — the one wine band (`.hero-wine`, lace tl/tr, breadcrumbs from `trail` (Home is added;
+names default to the nav label of the path), centred `ScriptTitle size="page"` with the eyebrow between edelweiss
+glyphs, wave into the page, optional wax seal). No page builds its own band.
+
+**Marketing list page** (courses, teachers, blog): `PageBand` → filter row (`Input icon={Search}` + `Select`/pill buttons, wraps on mobile) → grid of cards in
 `<Reveal as="ul" stagger>` (each card inside an `<li>`; first card may be `featured`) → `EmptyState` inside a
 `card-paper` when nothing matches → pagination with ghost buttons + `.num`.
 
@@ -221,12 +236,21 @@ Tokens: `--dur-1` 150ms (hover/press), `--dur-2` 250ms (menus, modal), `--dur-3`
 **`Reveal` can never blank the page.** Markup is rendered visible (SSR, no JS, crawlers, print). After hydration
 `RevealObserver` (mounted once in the locale layout) hides only elements that are still *below the viewport*
 (`.is-pending`) and reveals them with IntersectionObserver; nothing on screen at load is ever hidden. Do not use
-framer-motion `whileInView`/`initial={{opacity:0}}` for content (that was the blank-section bug). Do not put
+JS-driven `whileInView`/`initial={{opacity:0}}` reveals for content (that was the blank-section bug). Do not put
 `card-hover` on a direct child of a `stagger` list — wrap it in `<li>`.
 
 Rules: animate only `transform`/`opacity`; no animated layout properties, `filter`, `box-shadow`, `backdrop-filter`
-(avoid backdrop-filter entirely); `will-change` only while animating; staggers capped at 7 items; no framer-motion in
-new code (it is still a dependency for pages not migrated yet).
+(avoid backdrop-filter entirely); `will-change` only while animating; staggers capped at 7 items. framer-motion is
+no longer a dependency — don't add it back.
+
+### Rendering (static / ISR — keep it that way)
+Marketing pages are prerendered and revalidated (`Cache-Control: s-maxage=…`); the admin group is `force-dynamic`.
+One `headers()`/`cookies()` read anywhere in a marketing tree turns every route into per-request rendering
+(`private, no-store`). Rules: call `setRequestLocale(locale)` in every layout and page; boundaries (`not-found`,
+`error`, `loading`) get no `params`, so they are **client** components using `useLocale`/`useTranslations` — never
+server `getLocale()`/`getTranslations()` without a locale; data pages export `revalidate` (literal) matching their
+fetches; no `loading.tsx` above a `[slug]` route (it streams a 200 before `notFound()` → soft 404). Check with
+`next build` (route table: ● with a Revalidate column) and `curl -I` (`x-nextjs-cache: HIT`).
 
 ## 8. Mobile (390px is the reference width)
 
@@ -261,6 +285,10 @@ node scripts/screenshots.mjs --base http://localhost:<port> --routes "/,/courses
 node scripts/color-audit.mjs --base http://localhost:<port> --routes "/courses,admin:/dashboard/courses" --out C:/dev/landing-ornate/shots/<agent>/audit
 # colour lint (static, also in CI): remove your files from scripts/color-lint-pending.txt, then
 node scripts/color-lint.mjs
+# accessibility: axe-core (WCAG A/AA, serious/critical fail) + focus ring / focus trap / reduced motion
+node scripts/a11y-scan.mjs --base http://localhost:<port> --plan scripts/qa-plan.json --out C:/dev/landing-ornate/shots/<agent>/a11y
+#   scripts/qa-plan.json = the shared sweep: every marketing route az/en/ru, 404s, every admin page + modals,
+#   confirm, toast, drawer, menus — usable by screenshots / color-audit / a11y-scan (--plan, --only <regex>)
 # perf (production server): 4x CPU throttle, mobile
 node scripts/perf-probe.mjs --base http://localhost:<port> --routes "/" --out C:/dev/landing-ornate/shots/<agent>/perf
 python scripts/font-coverage.py                                        # only if fonts change

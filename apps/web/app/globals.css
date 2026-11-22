@@ -163,6 +163,7 @@
   --ornament: #5C000E;
   --ornament-soft: #C6A6AB;
   --ornament-strong: #3C0009; /* s 1.35 */
+  --chart-bar: #5C000E;      /* data bars (admin dashboard): solid wine on light surfaces */
 
   --shadow-sm: 0 1px 2px rgba(92, 0, 14, 0.06), 0 1px 1px rgba(92, 0, 14, 0.04);
   --shadow-md: 0 10px 28px -14px rgba(92, 0, 14, 0.28), 0 2px 6px -2px rgba(92, 0, 14, 0.08);
@@ -218,6 +219,7 @@
   --ornament: #B68C93;      /* s .45 rose */
   --ornament-soft: #742632; /* s .85 */
   --ornament-strong: #E2D1D4;
+  --chart-bar: #A5737A;      /* s .55: a mid rose on dark surfaces (#E2D1D4 read as pale blocks), 4.9:1 */
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
   --shadow-md: 0 12px 30px -14px rgba(0, 0, 0, 0.85), 0 2px 6px -2px rgba(0, 0, 0, 0.5);
@@ -524,10 +526,22 @@ html::-webkit-scrollbar-thumb:hover,
 .btn:active:not(:disabled) {
   transform: scale(0.97);
 }
+/* Disabled = tint tokens, never `opacity` (half-transparent wine over a dark surface leaves the tone line).
+ * A busy button (aria-busy, `loading`) keeps its own look: only the spinner says it is working. */
 .btn:disabled,
 .btn[aria-disabled="true"] {
   cursor: not-allowed;
-  opacity: 0.5;
+}
+.btn:disabled:not([aria-busy="true"]),
+.btn[aria-disabled="true"]:not([aria-busy="true"]) {
+  color: var(--ink-subtle);
+  border-color: var(--line);
+  background-color: transparent;
+  box-shadow: none;
+}
+.btn-primary:disabled:not([aria-busy="true"]),
+.btn-primary[aria-disabled="true"]:not([aria-busy="true"]) {
+  background-color: var(--surface-3);
 }
 .btn svg {
   flex-shrink: 0;
@@ -859,6 +873,10 @@ select.field {
 }
 
 /* ------------------------------------------------------------------ table (admin data pages) */
+.table-wrap:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
 .table-wrap {
   width: 100%;
   overflow-x: auto;
@@ -1144,7 +1162,12 @@ select.field {
   transition: opacity var(--dur-3) var(--ease-silk), visibility 0s;
 }
 
-/* long-form text (blog posts, legal pages) — the typography plugin, retoned to the palette */
+} /* @layer components */
+
+@layer utilities {
+/* long-form text (blog posts, legal pages) — the typography plugin, retoned to the palette.
+ * In the utilities layer AFTER the plugin's `.prose` (same specificity, later wins); in the components
+ * layer it lost to `.prose` and the plugin's grey defaults reached the text. */
 .prose-ornate {
   --tw-prose-body: var(--ink);
   --tw-prose-headings: var(--ink);
@@ -1166,14 +1189,31 @@ select.field {
   --tw-prose-td-borders: var(--line-hair);
   font-size: 1.125rem;
 }
+}
 
-} /* @layer components */
+/* Copy rendered in all three languages (app/[locale]/not-found.tsx): <html lang> shows one. */
+.i18n-az,
+.i18n-en,
+.i18n-ru {
+  display: none;
+}
+html[lang="az"] .i18n-az,
+html[lang="en"] .i18n-en,
+html[lang="ru"] .i18n-ru {
+  display: revert;
+}
 
 /* motion safety nets (outside layers so they win) */
 @media (prefers-reduced-motion: reduce) {
   .orn-sway,
   .skeleton::after {
     animation: none;
+  }
+  /* react-hot-toast animates its icons (one loops); toasts appear and leave without motion */
+  .toast-ornate,
+  .toast-ornate * {
+    animation: none !important;
+    transition: none !important;
   }
   .spin {
     animation-duration: 2.4s;

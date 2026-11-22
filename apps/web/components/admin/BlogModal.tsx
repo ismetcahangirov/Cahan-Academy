@@ -10,7 +10,7 @@ import adminApi from '@/lib/adminApi';
 import { Button, FormField, Input, Modal, Select, Textarea } from '@/components/ui';
 import ImageUpload from './ImageUpload';
 import { LangTabs, type Lang } from './AdminUI';
-import { useAdminFeedback } from './feedback';
+import { useFeedback } from '@/components/ui/Feedback';
 import { apiMessage, slugify } from './utils';
 
 interface Props {
@@ -27,7 +27,7 @@ const EXCERPT = { az: 'excerptAz', en: 'excerptEn', ru: 'excerptRu' } as const;
 /** Blog post create / edit: title, excerpt, content (HTML) in az / en / ru + slug, cover, reading time, status. */
 export default function BlogModal({ isOpen, onClose, onSuccess, postToEdit }: Props) {
   const t = useTranslations('admin');
-  const { ok } = useAdminFeedback();
+  const { ok } = useFeedback();
   const [tab, setTab] = useState<Lang>('az');
   const [serverError, setServerError] = useState('');
 

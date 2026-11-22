@@ -10,10 +10,14 @@ import CoverImage from '@/components/cards/CoverImage';
 import { Button, Card, EmptyState } from '@/components/ui';
 import Reveal from '@/components/ui/Reveal';
 import { EdelweissGlyph, LaceCorner, OrnamentDivider, OrnateFrame, ScriptTitle, WaveEdge } from '@/components/ornament';
-import Breadcrumbs from '@/components/courses/Breadcrumbs';
-import CourseTile from '@/components/courses/CourseTile';
-import { coverSrc, sketchFor } from '@/components/courses/media';
-import { alternatesFor, metaDescription } from '@/components/courses/seo';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import CourseCard from '@/components/cards/CourseCard';
+import { isRealImage, sketchFor } from '@/lib/media';
+import { alternatesFor, metaDescription } from '@/lib/seo';
+
+// ISR: static HTML, regenerated in the background at most this often (same window as the
+// fetches it renders: teacher, 1 d). Explicit, so a page whose build-time fetch failed still revalidates.
+export const revalidate = 86400;
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -57,7 +61,7 @@ export default async function TeacherDetailPage({ params }: PageProps) {
     getTranslations({ locale, namespace: 'nav' }),
   ]);
 
-  const image = coverSrc(teacher.image);
+  const image = isRealImage(teacher.image) ? teacher.image : null;
   const courses = teacher.courses ?? [];
   // the hero shows the bio clamped; a long bio is repeated in full in "About"
   const longBio = (teacher.bio?.length ?? 0) > 360;
@@ -79,8 +83,8 @@ export default async function TeacherDetailPage({ params }: PageProps) {
 
       {/* ── Hero: wine band, framed arched portrait ─────────────────────────────────────────────── */}
       <section className="theme-wine hero-wine relative isolate overflow-hidden">
-        <LaceCorner corner="tl" priority className="absolute left-0 top-0 w-20 sm:w-32 lg:w-44" />
-        <LaceCorner corner="tr" priority className="absolute right-0 top-0 hidden w-32 sm:block lg:w-44" />
+        <LaceCorner corner="tl" priority onWine className="absolute left-0 top-0 w-20 sm:w-32 lg:w-44" />
+        <LaceCorner corner="tr" priority onWine className="absolute right-0 top-0 hidden w-32 sm:block lg:w-44" />
 
         <div className="relative mx-auto max-w-6xl px-4 pb-24 pt-8 sm:px-6 sm:pb-28 sm:pt-10 lg:px-8">
           <Breadcrumbs
@@ -170,7 +174,7 @@ export default async function TeacherDetailPage({ params }: PageProps) {
           <Reveal as="ul" stagger className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {courses.map((course, i) => (
               <li key={course.id}>
-                <CourseTile course={course} featured={courses.length > 1 && i === 0 && course.isPopular} />
+                <CourseCard course={course} featured={courses.length > 1 && i === 0 && course.isPopular} />
               </li>
             ))}
           </Reveal>

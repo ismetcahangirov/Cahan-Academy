@@ -33,7 +33,7 @@ export default function Pagination({
   onChange: (page: number) => void;
   className?: string;
 }) {
-  const t = useTranslations('coursesPage');
+  const t = useTranslations('common');
   if (total <= 1) return null;
 
   return (

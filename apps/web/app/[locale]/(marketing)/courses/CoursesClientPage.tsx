@@ -4,11 +4,11 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Feather, Search, X } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import CourseTile from '@/components/courses/CourseTile';
+import CourseCard from '@/components/cards/CourseCard';
 import { Button, EmptyState, Input } from '@/components/ui';
 import Reveal from '@/components/ui/Reveal';
-import FilterChip from '@/components/courses/FilterChip';
-import Pagination from '@/components/courses/Pagination';
+import FilterChip from '@/components/ui/FilterChip';
+import Pagination from '@/components/ui/Pagination';
 import { matches } from '@/components/courses/search';
 import type { Course, CourseLevel } from '@/types/course';
 
@@ -223,7 +223,7 @@ export default function CoursesClientPage({ initialCourses, initialCategories, l
         </div>
 
         <div className="mt-5 grid gap-x-6 gap-y-3 border-t border-line-hair pt-5 lg:grid-cols-[7.5rem_1fr] lg:items-start lg:gap-y-4">
-          <p id="filter-category" className="sc text-[0.8rem] text-ink-subtle lg:pt-3">
+          <p id="filter-category" className="sc text-[0.8rem] text-ink-muted lg:pt-3">
             {tp('filter_category')}
           </p>
           <div role="group" aria-labelledby="filter-category" className={chipRow}>
@@ -263,7 +263,7 @@ export default function CoursesClientPage({ initialCourses, initialCategories, l
             )}
           </div>
 
-          <p id="filter-level" className="sc mt-2 text-[0.8rem] text-ink-subtle lg:mt-0 lg:pt-3">
+          <p id="filter-level" className="sc mt-2 text-[0.8rem] text-ink-muted lg:mt-0 lg:pt-3">
             {tp('filter_level')}
           </p>
           <div className={chipRow}>
@@ -305,7 +305,7 @@ export default function CoursesClientPage({ initialCourses, initialCategories, l
           <Reveal as="ul" stagger className="mt-10 grid gap-6 sm:mt-12 md:grid-cols-2 lg:grid-cols-3">
             {visible.map((course, i) => (
               <li key={course.id}>
-                <CourseTile course={course} featured={course.id === featuredId} priority={current === 1 && i === 0} />
+                <CourseCard course={course} featured={course.id === featuredId} priority={current === 1 && i === 0} />
               </li>
             ))}
           </Reveal>

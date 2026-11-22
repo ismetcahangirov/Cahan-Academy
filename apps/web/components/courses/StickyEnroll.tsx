@@ -70,7 +70,7 @@ export default function StickyEnroll({
     >
       <div className="mx-auto flex max-w-xl items-center justify-between gap-3">
         <div className="min-w-0">
-          <p className="sc text-[0.72rem] text-ink-subtle">{priceLabel}</p>
+          <p className="sc text-[0.72rem] text-ink-muted">{priceLabel}</p>
           <p className="num truncate text-[1.15rem] font-semibold text-accent-text">{price}</p>
         </div>
         <a href={href} tabIndex={show ? undefined : -1} className={buttonClass({ size: 'md' })}>

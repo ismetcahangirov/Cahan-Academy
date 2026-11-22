@@ -19,9 +19,12 @@ interface FAQItem {
 interface FAQAccordionProps {
   items: FAQItem[];
   locale: string;
+  /** level of the question headings: 'h2' right under the page h1 (FAQ page), 'h3' inside a titled section */
+  headingLevel?: 'h2' | 'h3';
 }
 
-export default function FAQAccordion({ items, locale }: FAQAccordionProps) {
+export default function FAQAccordion({ items, locale, headingLevel = 'h3' }: FAQAccordionProps) {
+  const H = headingLevel;
   const [openId, setOpenId] = useState<string | null>(items[0]?.id || null);
   const base = useId();
 
@@ -39,7 +42,7 @@ export default function FAQAccordion({ items, locale }: FAQAccordionProps) {
             key={item.id}
             className={cn('card transition-[border-color] duration-200', isOpen ? 'border-line-strong' : 'hover:border-line-strong')}
           >
-            <h3>
+            <H>
               <button
                 id={btnId}
                 type="button"
@@ -59,7 +62,7 @@ export default function FAQAccordion({ items, locale }: FAQAccordionProps) {
                   className={cn('shrink-0 text-accent-text transition-transform duration-300', isOpen && 'rotate-45')}
                 />
               </button>
-            </h3>
+            </H>
             <div id={panelId} role="region" aria-labelledby={btnId} hidden={!isOpen}>
               <div className="orn-reveal whitespace-pre-wrap px-5 pb-5 pl-12 text-[1.05rem] leading-relaxed text-ink-muted">
                 {answer}

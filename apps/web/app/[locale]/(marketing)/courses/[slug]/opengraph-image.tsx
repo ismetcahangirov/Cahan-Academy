@@ -1,5 +1,5 @@
 import { apiFetch } from '@/lib/api';
-import { OG_SIZE, ogCard } from '@/components/courses/ogCard';
+import { OG_SIZE, ogCard } from '@/components/seo/ogCard';
 
 export const runtime = 'edge';
 export const size = OG_SIZE;

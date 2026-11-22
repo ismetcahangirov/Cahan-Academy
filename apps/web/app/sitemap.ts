@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { getCourses, getTeachers, getBlogPosts } from '@/lib/api';
 import { absoluteUrl, LOCALES } from '@/lib/utils';
 
-// Rebuilt at most once an hour (the blog fetch alone would otherwise force a 10 s revalidate).
+// Rebuilt at most once an hour (the blog fetch below asks for the same window; its 60 s default would win).
 export const revalidate = 3600;
 
 type Entry = MetadataRoute.Sitemap[number];
@@ -32,7 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [courses, teachers, posts] = await Promise.all([
     getCourses().catch(() => []),
     getTeachers().catch(() => []),
-    getBlogPosts({ limit: 100 }).catch(() => []),
+    getBlogPosts({ limit: 100, revalidate: 3600 }).catch(() => []),
   ]);
 
   const courseRoutes = courses.flatMap((course) =>

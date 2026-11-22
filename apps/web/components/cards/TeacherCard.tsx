@@ -1,37 +1,42 @@
 import { useTranslations } from 'next-intl';
 import { ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import type { Teacher } from '@/types/teacher';
 import { cn } from '@/lib/utils';
+import { sketchFor } from '@/lib/media';
 import CornerFlourish from '../ornament/CornerFlourish';
 import { EdelweissGlyph } from '../ornament/Edelweiss';
 import CoverImage from './CoverImage';
 
 /**
- * TeacherCard — portrait in an arched, hairline-matted frame with corner flourishes, name in serif
- * (data never goes into the script font), position in small caps, profile link. Whole card = one link.
- * Shared component (server or client). `locale` kept for compatibility with existing callers.
+ * TeacherCard — portrait in an arched, hairline-matted frame with corner flourishes (a missing /
+ * placeholder / mock portrait becomes a sketch chosen from the teacher's subject), name in serif
+ * (data never goes into the script font), position in small caps, profile cue. Whole card = one link.
+ * Shared: home preview, teacher directory. Server or client trees.
  */
-interface TeacherCardProps {
-  teacher: Pick<Teacher, 'name' | 'slug' | 'image' | 'position'>;
+export default function TeacherCard({
+  teacher,
+  className,
+}: {
+  teacher: { name: string; slug: string; image?: string | null; position?: string | null };
+  /** @deprecated kept for older callers; the locale comes from the provider. */
   locale?: string;
   className?: string;
-}
-
-export default function TeacherCard({ teacher, className }: TeacherCardProps) {
+}) {
   const t = useTranslations('teachers');
 
   return (
-    <article className={cn('card-ornate card-hover group relative flex h-full flex-col items-center p-3 pb-5 text-center sm:p-5 sm:pb-6', className)}>
+    <article
+      className={cn('card-ornate card-hover group relative flex h-full flex-col items-center p-3 pb-5 text-center sm:p-5 sm:pb-6', className)}
+    >
       <CornerFlourish corner="bl" className="absolute bottom-2.5 left-2.5 hidden h-6 w-6 sm:block" />
       <CornerFlourish corner="br" className="absolute bottom-2.5 right-2.5 hidden h-6 w-6 sm:block" />
 
       <CoverImage
         src={teacher.image}
         alt=""
-        sketch="notebook"
+        sketch={sketchFor(teacher.position, teacher.slug)}
         rounded="arch"
-        sizes="(min-width: 1024px) 22vw, (min-width: 640px) 40vw, 80vw"
+        sizes="(min-width: 1024px) 22vw, (min-width: 640px) 40vw, 45vw"
         className="aspect-[4/5] w-full max-w-[15rem]"
       />
 
@@ -44,8 +49,8 @@ export default function TeacherCard({ teacher, className }: TeacherCardProps) {
           {teacher.name}
         </Link>
       </h3>
-      {teacher.position && <p className="sc mt-1 text-[0.82rem] text-ink-muted">{teacher.position}</p>}
-      <span className="sc mt-4 inline-flex items-center gap-1.5 text-[0.85rem] text-accent-text" aria-hidden="true">
+      {teacher.position && <p className="sc mt-1 text-[0.78rem] text-ink-muted sm:text-[0.82rem]">{teacher.position}</p>}
+      <span className="sc mt-auto inline-flex items-center gap-1.5 pt-4 text-[0.85rem] text-accent-text" aria-hidden="true">
         {t('view_profile')}
         <ArrowRight size={15} strokeWidth={1.6} className="transition-transform group-hover:translate-x-0.5" />
       </span>

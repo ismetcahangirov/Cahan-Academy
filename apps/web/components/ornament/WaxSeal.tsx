@@ -15,11 +15,14 @@ export default function WaxSeal({
   className,
   title,
   priority = false,
+  onWine = false,
 }: {
   size?: number;
   className?: string;
   title?: string;
   priority?: boolean;
+  /** on a .theme-wine panel: ship only the dark variant (see ThemedImg) */
+  onWine?: boolean;
 }) {
   return (
     <div
@@ -34,6 +37,7 @@ export default function WaxSeal({
         width={311}
         height={320}
         priority={priority}
+        onWine={onWine}
         className="absolute inset-0"
         imgClassName="!h-full object-contain"
       />

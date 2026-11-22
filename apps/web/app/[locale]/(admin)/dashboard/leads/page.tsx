@@ -7,7 +7,7 @@ import adminApi from '@/lib/adminApi';
 import { Button, Select, StatusPill } from '@/components/ui';
 import type { StatusName } from '@/components/ui/Badge';
 import { DataView, PageHead, Toolbar } from '@/components/admin/AdminUI';
-import { useAdminFeedback } from '@/components/admin/feedback';
+import { useFeedback } from '@/components/ui/Feedback';
 import { useAdminList } from '@/components/admin/useAdminList';
 import { apiMessage, assertOk, fmtDate } from '@/components/admin/utils';
 
@@ -27,7 +27,7 @@ const PILL: Record<string, StatusName> = { new: 'pending', contacted: 'partial',
 export default function LeadsPage() {
   const t = useTranslations('admin');
   const locale = useLocale();
-  const { ok, fail } = useAdminFeedback();
+  const { ok, fail } = useFeedback();
   const { items, setItems, loading, error, reload } = useAdminList<Lead>('/leads');
   const [q, setQ] = useState('');
   const [exporting, setExporting] = useState(false);

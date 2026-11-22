@@ -9,7 +9,12 @@ import TeachersPreview from '@/components/sections/TeachersPreview';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
 import CTASection from '@/components/sections/CTASection';
 import JsonLd from '@/components/seo/JsonLd';
-import { SITE_URL, absoluteUrl, localizedPath } from '@/lib/utils';
+import { SITE_URL, absoluteUrl } from '@/lib/utils';
+import { alternatesFor, ogImages } from '@/lib/seo';
+
+// ISR: static HTML, regenerated in the background at most this often (same window as the
+// fetches it renders: courses 1 h, teachers 1 d). Explicit, so a page whose build-time fetch failed still revalidates.
+export const revalidate = 3600;
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -23,20 +28,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: t('home_title'),
     description: t('home_description'),
-    alternates: {
-      canonical: localizedPath(locale),
-      languages: {
-        az: localizedPath('az'),
-        en: localizedPath('en'),
-        ru: localizedPath('ru'),
-        'x-default': localizedPath('az'),
-      },
-    },
+    alternates: alternatesFor(locale, ''),
     openGraph: {
       title: t('home_title'),
       description: t('home_description'),
       type: 'website',
       locale,
+      images: ogImages(locale),
     },
     twitter: {
       card: 'summary_large_image',

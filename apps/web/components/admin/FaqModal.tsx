@@ -9,7 +9,7 @@ import { AlertCircle, Save } from 'lucide-react';
 import adminApi from '@/lib/adminApi';
 import { Button, Checkbox, FormField, Input, Modal, Textarea } from '@/components/ui';
 import { LangTabs, type Lang } from './AdminUI';
-import { useAdminFeedback } from './feedback';
+import { useFeedback } from '@/components/ui/Feedback';
 import { apiMessage } from './utils';
 
 interface Props {
@@ -22,7 +22,7 @@ interface Props {
 /** FAQ create / edit: question + answer in az / en / ru, order, visibility. */
 export default function FaqModal({ isOpen, onClose, onSuccess, faqToEdit }: Props) {
   const t = useTranslations('admin');
-  const { ok } = useAdminFeedback();
+  const { ok } = useFeedback();
   const [tab, setTab] = useState<Lang>('az');
   const [serverError, setServerError] = useState('');
 

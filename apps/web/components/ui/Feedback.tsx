@@ -4,14 +4,17 @@ import { createContext, useCallback, useContext, useMemo, useRef, useState, type
 import { Toaster, toast, type DefaultToastOptions } from 'react-hot-toast';
 import { AlertCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { Button, Modal } from '@/components/ui';
-import { apiMessage } from './utils';
+import Button from './Button';
+import Modal from './Modal';
 
 /**
- * Admin feedback layer: palette-styled toasts + an in-app confirm dialog (replaces window.alert /
- * window.confirm, finding A-44). Mounted once by <AdminShell>.
+ * Feedback layer: palette-styled toasts + an in-app confirm dialog (replaces window.alert /
+ * window.confirm, finding A-44). Mount <FeedbackProvider> once around the tree that needs it (the admin
+ * shell does; a marketing page can too). `errorMessage` turns a failed onConfirm into the text shown
+ * inside the dialog (default: the error's own message, else common.error).
  *
- *   const { confirm, ok, fail } = useAdminFeedback();
+ *   <FeedbackProvider errorMessage={(e) => apiMessage(e, t('common.delete_error'))}>…</FeedbackProvider>
+ *   const { confirm, ok, fail } = useFeedback();
  *   confirm({
  *     title: t('confirm.delete_title'),               // short script phrase
  *     entity: course.title,                           // serif line (the thing being deleted)
@@ -68,14 +71,24 @@ interface Ctx {
 
 const FeedbackContext = createContext<Ctx | null>(null);
 
-export function useAdminFeedback(): Ctx {
+export function useFeedback(): Ctx {
   const ctx = useContext(FeedbackContext);
-  if (!ctx) throw new Error('useAdminFeedback must be used inside <AdminFeedbackProvider>');
+  if (!ctx) throw new Error('useFeedback must be used inside <FeedbackProvider>');
   return ctx;
 }
 
-export function AdminFeedbackProvider({ children }: { children: ReactNode }) {
-  const t = useTranslations('admin');
+function ownMessage(e: unknown): string | undefined {
+  const m = (e as { message?: unknown } | null)?.message;
+  return typeof m === 'string' && m.trim() ? m : undefined;
+}
+
+export function FeedbackProvider({
+  children,
+  errorMessage,
+}: {
+  children: ReactNode;
+  errorMessage?: (error: unknown) => string;
+}) {
   const tc = useTranslations('common');
   const [opts, setOpts] = useState<ConfirmOptions | null>(null);
   const [busy, setBusy] = useState(false);
@@ -106,7 +119,7 @@ export function AdminFeedbackProvider({ children }: { children: ReactNode }) {
       setOpts(null);
     } catch (e) {
       busyRef.current = false;
-      setError(apiMessage(e, t('common.delete_error')));
+      setError(errorMessage ? errorMessage(e) : (ownMessage(e) ?? tc('error')));
     } finally {
       setBusy(false);
     }

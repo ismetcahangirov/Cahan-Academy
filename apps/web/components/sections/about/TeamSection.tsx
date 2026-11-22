@@ -1,8 +1,9 @@
 import { getLocale, getTranslations } from 'next-intl/server';
 import { ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import { apiFetch } from '@/lib/api';
+import { getTeam } from '@/lib/api';
 import CoverImage from '@/components/cards/CoverImage';
+import { sketchFor } from '@/lib/media';
 import { EdelweissGlyph, ScriptTitle } from '@/components/ornament';
 import { Button, EmptyState, Reveal } from '@/components/ui';
 
@@ -11,30 +12,10 @@ import { Button, EmptyState, Reveal } from '@/components/ui';
  * notebook sketch), name in serif, role in small caps. The endpoint is flaky in production (500), so a
  * failure and an empty list both degrade to a framed empty state that points to the teachers page.
  */
-interface TeamMember {
-  id: string;
-  name: string;
-  position: string | null;
-  image: string | null;
-}
-
-async function loadTeam(locale: string): Promise<{ members: TeamMember[]; failed: boolean }> {
-  try {
-    const res = await apiFetch<{ data?: TeamMember[] }>(`/team?locale=${encodeURIComponent(locale)}`, {
-      tags: ['team'],
-      revalidate: 86400,
-    });
-    return { members: Array.isArray(res.data) ? res.data : [], failed: false };
-  } catch (error) {
-    console.error('[about] team fetch failed:', error instanceof Error ? error.message : error);
-    return { members: [], failed: true };
-  }
-}
-
 export default async function TeamSection() {
   const t = await getTranslations('about');
   const locale = await getLocale();
-  const { members, failed } = await loadTeam(locale);
+  const { items: members, failed } = await getTeam(locale);
 
   return (
     <section aria-labelledby="team-title" className="cv-auto pb-24 pt-8 sm:pb-28">
@@ -58,7 +39,7 @@ export default async function TeamSection() {
                   <CoverImage
                     src={m.image}
                     alt={m.name}
-                    sketch="notebook"
+                    sketch={sketchFor(m.position, m.name)}
                     rounded="arch"
                     sizes="(min-width: 1024px) 18rem, (min-width: 640px) 40vw, 45vw"
                     className="aspect-[4/5] w-full max-w-[14rem]"

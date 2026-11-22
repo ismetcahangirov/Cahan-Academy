@@ -10,13 +10,13 @@ import adminApi from '@/lib/adminApi';
 import { useAuth } from '@/context/AuthContext';
 import { Button, FormField, Input, Card, CardHeader } from '@/components/ui';
 import { ScriptTitle } from '@/components/ornament';
-import { useAdminFeedback } from '@/components/admin/feedback';
+import { useFeedback } from '@/components/ui/Feedback';
 import { apiMessage, assertOk } from '@/components/admin/utils';
 
 export default function SettingsPage() {
   const t = useTranslations('admin');
   const { user, updateUser, logout } = useAuth();
-  const { ok } = useAdminFeedback();
+  const { ok } = useFeedback();
   const [profileError, setProfileError] = useState('');
   const [pwError, setPwError] = useState('');
 
@@ -90,7 +90,7 @@ export default function SettingsPage() {
       <ScriptTitle className="mb-6" title={t('settings.title')} subtitle={t('settings.subtitle')} />
       <div className="grid gap-6 lg:grid-cols-2">
         <Card variant="paper" className="p-5 sm:p-6">
-          <CardHeader title={t('settings.profile_title')} subtitle={t('settings.profile_subtitle')} actions={<UserIcon size={20} strokeWidth={1.6} aria-hidden="true" className="text-ornament" />} />
+          <CardHeader as="h2" title={t('settings.profile_title')} subtitle={t('settings.profile_subtitle')} actions={<UserIcon size={20} strokeWidth={1.6} aria-hidden="true" className="text-ornament" />} />
           <form noValidate onSubmit={profile.handleSubmit(saveProfile)} className="mt-5 space-y-4">
             <FormField label={t('common.name')} error={profile.formState.errors.name?.message} required>
               <Input autoComplete="name" {...profile.register('name')} />
@@ -106,7 +106,7 @@ export default function SettingsPage() {
         </Card>
 
         <Card variant="paper" className="p-5 sm:p-6">
-          <CardHeader title={t('settings.security_title')} subtitle={t('settings.security_subtitle')} actions={<KeyRound size={20} strokeWidth={1.6} aria-hidden="true" className="text-ornament" />} />
+          <CardHeader as="h2" title={t('settings.security_title')} subtitle={t('settings.security_subtitle')} actions={<KeyRound size={20} strokeWidth={1.6} aria-hidden="true" className="text-ornament" />} />
           <form noValidate onSubmit={pw.handleSubmit(savePassword)} className="mt-5 space-y-4">
             <FormField label={t('settings.old_password')} error={pw.formState.errors.oldPassword?.message} required>
               <Input type="password" autoComplete="current-password" {...pw.register('oldPassword')} />

@@ -9,7 +9,7 @@ import { AlertCircle, Save } from 'lucide-react';
 import adminApi from '@/lib/adminApi';
 import { Button, FormField, Input, Modal } from '@/components/ui';
 import { LangTabs, type Lang } from './AdminUI';
-import { useAdminFeedback } from './feedback';
+import { useFeedback } from '@/components/ui/Feedback';
 import { apiMessage, slugify } from './utils';
 
 interface Props {
@@ -22,7 +22,7 @@ interface Props {
 /** Category create / edit: name in az / en / ru + slug (auto from the az name for new items). */
 export default function CategoryModal({ isOpen, onClose, onSuccess, categoryToEdit }: Props) {
   const t = useTranslations('admin');
-  const { ok } = useAdminFeedback();
+  const { ok } = useFeedback();
   const [tab, setTab] = useState<Lang>('az');
   const [serverError, setServerError] = useState('');
 

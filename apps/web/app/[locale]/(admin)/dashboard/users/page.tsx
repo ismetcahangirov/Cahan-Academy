@@ -10,7 +10,7 @@ import adminApi from '@/lib/adminApi';
 import { useAuth } from '@/context/AuthContext';
 import { Button, Card, Checkbox, FormField, Input, Modal, StatusPill } from '@/components/ui';
 import { DataView, PageHead, RowAction } from '@/components/admin/AdminUI';
-import { useAdminFeedback } from '@/components/admin/feedback';
+import { useFeedback } from '@/components/ui/Feedback';
 import { useAdminList } from '@/components/admin/useAdminList';
 import { apiMessage, assertOk, fmtDate } from '@/components/admin/utils';
 
@@ -26,7 +26,7 @@ export default function UsersPage() {
   const t = useTranslations('admin');
   const locale = useLocale();
   const { user } = useAuth();
-  const { confirm, ok } = useAdminFeedback();
+  const { confirm, ok } = useFeedback();
   const { items, setItems, loading, error, reload } = useAdminList<AdminUser>('/admin/users');
   const [modalOpen, setModalOpen] = useState(false);
   const [serverError, setServerError] = useState('');
