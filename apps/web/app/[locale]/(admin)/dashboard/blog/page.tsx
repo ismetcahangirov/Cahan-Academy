@@ -1,213 +1,131 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
+import { Eye, EyeOff, FileText, Pencil, Plus, Trash2 } from 'lucide-react';
 import adminApi from '@/lib/adminApi';
-import { FileText, Plus, Edit, Trash2, ExternalLink, RefreshCcw, Eye, EyeOff } from 'lucide-react';
+import { Button, StatusPill } from '@/components/ui';
 import BlogModal from '@/components/admin/BlogModal';
+import { DataView, PageHead, RowAction, Thumb } from '@/components/admin/AdminUI';
+import { useAdminFeedback } from '@/components/admin/feedback';
+import { useAdminList } from '@/components/admin/useAdminList';
+import { apiMessage, asBool, assertOk, fmtDate } from '@/components/admin/utils';
 
-interface BlogPost {
-  post: {
-    id: string;
-    slug: string;
-    titleAz: string;
-    isPublished: string;
-    createdAt: string;
-  };
-  author: {
-    name: string;
-  } | null;
+interface Row {
+  post: { id: string; slug: string; titleAz: string; isPublished: string | boolean; createdAt: string; image?: string | null };
+  author: { name: string } | null;
 }
 
 export default function BlogAdminPage() {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [postToEdit, setPostToEdit] = useState<any | null>(null);
+  const t = useTranslations('admin');
+  const locale = useLocale();
+  const { confirm, ok, fail } = useAdminFeedback();
+  const { items, setItems, loading, error, reload } = useAdminList<Row>('/blog/admin/list');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<Record<string, unknown> | null>(null);
 
-  const fetchPosts = async () => {
-    setIsLoading(true);
+  const openNew = () => {
+    setEditTarget(null);
+    setModalOpen(true);
+  };
+
+  const openEdit = async (row: Row) => {
     try {
-      const { data } = await adminApi.get('/blog/admin/list');
-      if (data.success) {
-        setPosts(data.data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch posts:', error);
-    } finally {
-      setIsLoading(false);
+      const { data } = await adminApi.get(`/blog/admin/${row.post.slug}`);
+      assertOk(data);
+      setEditTarget(data.data);
+      setModalOpen(true);
+    } catch (e) {
+      fail(apiMessage(e, t('blog.load_one_error')));
     }
   };
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  const handleDelete = async (id: string) => {
-    if (!confirm('Bu məqaləni silmək istədiyinizə əminsiniz?')) return;
-    
+  const togglePublish = async (row: Row) => {
+    const next = asBool(row.post.isPublished) ? 'false' : 'true';
     try {
-      const { data } = await adminApi.delete(`/blog/${id}`);
-      if (data.success) {
-        setPosts(posts.filter(p => p.post.id !== id));
-      }
-    } catch (error) {
-      alert('Silmə xətası');
+      const { data } = await adminApi.put(`/blog/${row.post.id}`, { isPublished: next });
+      assertOk(data);
+      setItems((prev) => prev.map((r) => (r.post.id === row.post.id ? { ...r, post: { ...r.post, isPublished: next } } : r)));
+      ok(t('common.saved'));
+    } catch (e) {
+      fail(apiMessage(e, t('common.status_error')));
     }
   };
 
-  const togglePublish = async (id: string, currentStatus: string) => {
-    try {
-      const newStatus = currentStatus === 'true' ? 'false' : 'true';
-      const { data } = await adminApi.put(`/blog/${id}`, { isPublished: newStatus });
-      if (data.success) {
-        setPosts(posts.map(p => p.post.id === id ? { ...p, post: { ...p.post, isPublished: newStatus } } : p));
-      }
-    } catch (error) {
-      alert('Status dəyişmə xətası');
-    }
-  };
+  const askDelete = (row: Row) =>
+    confirm({
+      title: t('confirm.delete_title'),
+      entity: row.post.titleAz,
+      message: t('confirm.delete_body'),
+      confirmLabel: t('confirm.delete_action'),
+      onConfirm: async () => {
+        const { data } = await adminApi.delete(`/blog/${row.post.id}`);
+        assertOk(data);
+        setItems((prev) => prev.filter((r) => r.post.id !== row.post.id));
+        ok(t('common.deleted'));
+      },
+    });
 
-  const handleEdit = async (slug: string) => {
-    try {
-      // Fetch full post details before opening modal
-      const { data } = await adminApi.get(`/blog/admin/${slug}`);
-      if (data.success) {
-        setPostToEdit(data.data);
-        setIsModalOpen(true);
-      }
-    } catch (error) {
-      console.error('Failed to fetch post details:', error);
-      alert('Məqalə detallarını yükləmək mümkün olmadı');
-    }
-  };
-
-  const handleModalSuccess = () => {
-    fetchPosts();
-  };
+  const newBtn = (
+    <Button icon={Plus} onClick={openNew}>
+      {t('blog.new')}
+    </Button>
+  );
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Bloq İdarəetməsi</h1>
-          <p className="text-slate-400 text-sm">Məqalələrin yaradılması və redaktəsi</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={fetchPosts}
-            className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors"
-          >
-            <RefreshCcw size={18} />
-          </button>
-          <button
-            onClick={() => {
-              setPostToEdit(null);
-              setIsModalOpen(true);
-            }}
-            className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-lg font-medium transition-colors"
-          >
-            <Plus size={18} />
-            Yeni Məqalə
-          </button>
-        </div>
-      </div>
-
-      <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-800/50 text-slate-400 text-xs uppercase tracking-wider">
-                <th className="px-6 py-3 font-medium">Məqalə</th>
-                <th className="px-6 py-3 font-medium">Müəllif</th>
-                <th className="px-6 py-3 font-medium">Tarix</th>
-                <th className="px-6 py-3 font-medium">Status</th>
-                <th className="px-6 py-3 font-medium text-right">Əməliyyatlar</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800">
-              {isLoading ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-slate-500">
-                    Yüklənir...
-                  </td>
-                </tr>
-              ) : posts.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-slate-500">
-                    Məqalə tapılmadı.
-                  </td>
-                </tr>
+    <div>
+      <PageHead title={t('blog.title')} subtitle={t('blog.subtitle', { count: items.length })} onRefresh={reload} loading={loading} actions={newBtn} />
+      <DataView
+        caption={t('blog.title')}
+        items={items}
+        rowKey={(r) => r.post.id}
+        loading={loading}
+        error={error}
+        onRetry={reload}
+        empty={{ sketch: 'inkwell', title: t('blog.empty_title'), description: t('blog.empty_desc'), action: newBtn }}
+        columns={[
+          {
+            key: 'title',
+            header: t('blog.col_post'),
+            cell: (r) => (
+              <span className="flex items-center gap-3">
+                <Thumb src={r.post.image} alt="" icon={FileText} />
+                <span className="min-w-0">
+                  <span className="block font-semibold">{r.post.titleAz}</span>
+                  <span className="block text-[0.92rem] font-normal text-ink-muted">/{r.post.slug}</span>
+                </span>
+              </span>
+            ),
+          },
+          { key: 'author', header: t('blog.col_author'), cell: (r) => r.author?.name || '—', wide: true },
+          { key: 'date', header: t('common.date'), cell: (r) => <span className="time-italic">{fmtDate(r.post.createdAt, locale)}</span> },
+          {
+            key: 'status',
+            header: t('common.status'),
+            cell: (r) =>
+              asBool(r.post.isPublished) ? (
+                <StatusPill status="success">{t('blog.published')}</StatusPill>
               ) : (
-                posts.map((item) => (
-                  <tr key={item.post.id} className="hover:bg-slate-800/30 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-amber-500">
-                          <FileText size={20} />
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-white font-medium text-sm">{item.post.titleAz}</span>
-                          <span className="text-slate-500 text-xs flex items-center gap-1">
-                            /{item.post.slug}
-                            <ExternalLink size={10} />
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-slate-400">
-                      {item.author?.name || 'Naməlum'}
-                    </td>
-                    <td className="px-6 py-4 text-xs text-slate-500">
-                      {new Date(item.post.createdAt).toLocaleDateString('az-AZ')}
-                    </td>
-                    <td className="px-6 py-4">
-                      <button
-                        onClick={() => togglePublish(item.post.id, item.post.isPublished)}
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors ${
-                          item.post.isPublished === 'true' 
-                            ? 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20' 
-                            : 'bg-slate-500/10 text-slate-500 hover:bg-slate-500/20'
-                        }`}
-                      >
-                        {item.post.isPublished === 'true' ? (
-                          <><Eye size={12} /> Dərc edilib</>
-                        ) : (
-                          <><EyeOff size={12} /> Qaralama</>
-                        )}
-                      </button>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => handleEdit(item.post.slug)}
-                          className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
-                          title="Redaktə et"
-                        >
-                          <Edit size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(item.post.id)}
-                          className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
-                          title="Sil"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <BlogModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSuccess={handleModalSuccess}
-        postToEdit={postToEdit}
+                <StatusPill status="pending">{t('blog.draft')}</StatusPill>
+              ),
+          },
+        ]}
+        actions={(r) => {
+          const pub = asBool(r.post.isPublished);
+          return (
+            <>
+              <RowAction
+                icon={pub ? EyeOff : Eye}
+                label={`${pub ? t('blog.unpublish') : t('blog.publish')}: ${r.post.titleAz}`}
+                onClick={() => togglePublish(r)}
+              />
+              <RowAction icon={Pencil} label={`${t('common.edit')}: ${r.post.titleAz}`} onClick={() => openEdit(r)} />
+              <RowAction icon={Trash2} label={`${t('common.delete')}: ${r.post.titleAz}`} onClick={() => askDelete(r)} />
+            </>
+          );
+        }}
       />
+      <BlogModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSuccess={reload} postToEdit={editTarget} />
     </div>
   );
 }

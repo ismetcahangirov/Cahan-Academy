@@ -1,10 +1,18 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/context/AuthContext';
+import { useEffect, useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { useLocale, useTranslations } from 'next-intl';
+import { AlertCircle, Shield, ShieldAlert, Trash2, UserPlus } from 'lucide-react';
 import adminApi from '@/lib/adminApi';
-import { Shield, ShieldAlert, Trash2, UserPlus, X } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { useAuth } from '@/context/AuthContext';
+import { Button, Card, Checkbox, FormField, Input, Modal, StatusPill } from '@/components/ui';
+import { DataView, PageHead, RowAction } from '@/components/admin/AdminUI';
+import { useAdminFeedback } from '@/components/admin/feedback';
+import { useAdminList } from '@/components/admin/useAdminList';
+import { apiMessage, assertOk, fmtDate } from '@/components/admin/utils';
 
 interface AdminUser {
   id: string;
@@ -15,243 +23,167 @@ interface AdminUser {
 }
 
 export default function UsersPage() {
+  const t = useTranslations('admin');
+  const locale = useLocale();
   const { user } = useAuth();
-  const [admins, setAdmins] = useState<AdminUser[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { confirm, ok } = useAdminFeedback();
+  const { items, setItems, loading, error, reload } = useAdminList<AdminUser>('/admin/users');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [serverError, setServerError] = useState('');
+  const isSuper = !!user?.isSuperAdmin;
 
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    isSuperAdmin: false
-  });
-
-  const fetchAdmins = async () => {
-    try {
-      const { data } = await adminApi.get('/admin/users');
-      if (data.success) {
-        setAdmins(data.data);
-      }
-    } catch (error) {
-      toast.error('Adminləri yükləmək mümkün olmadı');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const schema = useMemo(
+    () =>
+      z.object({
+        name: z.string().trim().min(2, t('users.err_name')),
+        email: z.string().trim().min(1, t('login.err_email_required')).email(t('login.err_email_invalid')),
+        password: z.string().min(6, t('users.err_password')),
+        isSuperAdmin: z.boolean(),
+      }),
+    [t]
+  );
+  type Values = z.infer<typeof schema>;
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { name: '', email: '', password: '', isSuperAdmin: false } });
 
   useEffect(() => {
-    fetchAdmins();
-  }, []);
+    if (modalOpen) {
+      reset({ name: '', email: '', password: '', isSuperAdmin: false });
+      setServerError('');
+    }
+  }, [modalOpen, reset]);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Bu admini silmək istədiyinizə əminsiniz?')) return;
+  const onSubmit = async (v: Values) => {
+    setServerError('');
     try {
-      const { data } = await adminApi.delete(`/admin/users/${id}`);
-      if (data.success) {
-        toast.success(data.message);
-        setAdmins(prev => prev.filter(a => a.id !== id));
-      }
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Admini silmək mümkün olmadı');
+      const { data } = await adminApi.post('/admin/users', v);
+      assertOk(data);
+      ok(data.message || t('common.created'));
+      setModalOpen(false);
+      void reload();
+    } catch (e) {
+      setServerError(apiMessage(e, t('users.create_error')));
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    try {
-      const { data } = await adminApi.post('/admin/users', formData);
-      if (data.success) {
-        toast.success(data.message);
-        setIsModalOpen(false);
-        setFormData({ name: '', email: '', password: '', isSuperAdmin: false });
-        fetchAdmins();
-      }
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Admin yaratmaq mümkün olmadı');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
-      </div>
-    );
-  }
+  const askDelete = (a: AdminUser) =>
+    confirm({
+      title: t('confirm.delete_title'),
+      entity: `${a.name} · ${a.email}`,
+      message: t('users.delete_body'),
+      confirmLabel: t('confirm.delete_action'),
+      onConfirm: async () => {
+        const { data } = await adminApi.delete(`/admin/users/${a.id}`);
+        assertOk(data);
+        setItems((prev) => prev.filter((x) => x.id !== a.id));
+        ok(t('common.deleted'));
+      },
+    });
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-white">İstifadəçilər</h1>
-          <p className="text-slate-400 mt-1">Sistem idarəçilərini buradan idarə edin.</p>
-        </div>
-        {user?.isSuperAdmin && (
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-slate-900 rounded-lg font-medium hover:bg-amber-400 transition-colors"
-          >
-            <UserPlus size={18} />
-            Yeni Admin
-          </button>
-        )}
-      </div>
+    <div>
+      <PageHead
+        title={t('users.title')}
+        subtitle={t('users.subtitle', { count: items.length })}
+        onRefresh={reload}
+        loading={loading}
+        actions={
+          isSuper && (
+            <Button icon={UserPlus} onClick={() => setModalOpen(true)}>
+              {t('users.new')}
+            </Button>
+          )
+        }
+      />
 
-      {!user?.isSuperAdmin && (
-        <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 flex items-start gap-3">
-          <ShieldAlert className="text-blue-500 shrink-0 mt-0.5" size={20} />
+      {user && !isSuper && (
+        <Card className="mb-4 flex items-start gap-3 p-4">
+          <ShieldAlert size={20} strokeWidth={1.6} aria-hidden="true" className="mt-0.5 shrink-0 text-accent-text" />
           <div>
-            <h3 className="text-blue-500 font-medium">Məlumat</h3>
-            <p className="text-blue-400/80 text-sm mt-1">
-              Siz yalnız izləyici (adi admin) hüquqlarına sahibsiniz. Yeni istifadəçi yaratmaq və ya mövcud istifadəçiləri silmək üçün Super Admin hüququ tələb olunur.
+            <h2 className="font-semibold">{t('users.viewer_title')}</h2>
+            <p className="text-ink-muted">{t('users.viewer_text')}</p>
+          </div>
+        </Card>
+      )}
+
+      <DataView
+        caption={t('users.title')}
+        items={items}
+        rowKey={(a) => a.id}
+        loading={loading}
+        error={error}
+        onRetry={reload}
+        empty={{ sketch: 'cap', title: t('users.empty_title'), description: t('users.empty_desc') }}
+        columns={[
+          { key: 'name', header: t('common.name'), cell: (a) => <span className="font-semibold">{a.name}</span> },
+          { key: 'email', header: t('common.email'), cell: (a) => <span className="break-all">{a.email}</span> },
+          {
+            key: 'role',
+            header: t('users.col_role'),
+            cell: (a) =>
+              a.isSuperAdmin ? (
+                <StatusPill status="success" icon={Shield}>
+                  {t('users.super_admin')}
+                </StatusPill>
+              ) : (
+                <StatusPill status="neutral" icon={Shield}>
+                  {t('users.admin')}
+                </StatusPill>
+              ),
+          },
+          { key: 'date', header: t('users.col_created'), cell: (a) => <span className="time-italic">{fmtDate(a.createdAt, locale)}</span> },
+        ]}
+        actions={
+          isSuper
+            ? (a) =>
+                a.id === user?.id ? (
+                  <span className="sc px-2 text-[0.8rem] tracking-[0.1em] text-ink-muted">{t('users.you')}</span>
+                ) : (
+                  <RowAction icon={Trash2} label={`${t('common.delete')}: ${a.name}`} onClick={() => askDelete(a)} />
+                )
+            : undefined
+        }
+      />
+
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        size="sm"
+        title={t('users.modal_new')}
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setModalOpen(false)} disabled={isSubmitting}>
+              {t('common.cancel')}
+            </Button>
+            <Button type="submit" form="user-form" loading={isSubmitting}>
+              {isSubmitting ? t('users.creating') : t('common.create')}
+            </Button>
+          </>
+        }
+      >
+        <form id="user-form" noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <FormField label={t('common.name')} error={errors.name?.message} required>
+            <Input autoComplete="off" {...register('name')} />
+          </FormField>
+          <FormField label={t('common.email')} error={errors.email?.message} required>
+            <Input type="email" autoComplete="off" {...register('email')} />
+          </FormField>
+          <FormField label={t('common.password')} hint={t('users.password_hint')} error={errors.password?.message} required>
+            <Input type="password" autoComplete="new-password" {...register('password')} />
+          </FormField>
+          <Checkbox label={t('users.grant_super')} {...register('isSuperAdmin')} />
+          {serverError && (
+            <p role="alert" className="field-error">
+              <AlertCircle aria-hidden="true" strokeWidth={2} />
+              {serverError}
             </p>
-          </div>
-        </div>
-      )}
-
-      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead className="bg-slate-950/50 text-slate-400 text-sm">
-              <tr>
-                <th className="px-6 py-4 font-medium">Ad</th>
-                <th className="px-6 py-4 font-medium">Email</th>
-                <th className="px-6 py-4 font-medium">Rol</th>
-                <th className="px-6 py-4 font-medium">Yaradılma Tarixi</th>
-                {user?.isSuperAdmin && <th className="px-6 py-4 font-medium text-right">Əməliyyatlar</th>}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800/50">
-              {admins.map((admin) => (
-                <tr key={admin.id} className="hover:bg-slate-800/30 transition-colors">
-                  <td className="px-6 py-4 text-white">{admin.name}</td>
-                  <td className="px-6 py-4 text-slate-300">{admin.email}</td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
-                      admin.isSuperAdmin 
-                        ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' 
-                        : 'bg-slate-800 text-slate-300 border border-slate-700'
-                    }`}>
-                      <Shield size={12} />
-                      {admin.isSuperAdmin ? 'Super Admin' : 'Admin'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-slate-400 text-sm">
-                    {new Date(admin.createdAt).toLocaleDateString('az-AZ')}
-                  </td>
-                  {user?.isSuperAdmin && (
-                    <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() => handleDelete(admin.id)}
-                        disabled={admin.id === user.id}
-                        className={`p-2 rounded-lg transition-colors ${
-                          admin.id === user.id 
-                            ? 'text-slate-600 cursor-not-allowed' 
-                            : 'text-red-400 hover:bg-red-500/10 hover:text-red-300'
-                        }`}
-                        title={admin.id === user.id ? 'Öz hesabınızı silə bilməzsiniz' : 'Sil'}
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Create Admin Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-800 rounded-xl w-full max-w-md shadow-2xl">
-            <div className="flex items-center justify-between p-6 border-b border-slate-800">
-              <h2 className="text-xl font-semibold text-white">Yeni Admin Yarat</h2>
-              <button 
-                onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-white transition-colors"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">Ad</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
-                  placeholder="Adminin adı"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">Email</label>
-                <input
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
-                  placeholder="admin@misal.com"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">Şifrə</label>
-                <input
-                  type="password"
-                  required
-                  minLength={6}
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
-                  placeholder="Ən azı 6 simvol"
-                />
-              </div>
-
-              <div className="flex items-center gap-3 pt-2">
-                <input
-                  type="checkbox"
-                  id="isSuperAdmin"
-                  checked={formData.isSuperAdmin}
-                  onChange={(e) => setFormData({ ...formData, isSuperAdmin: e.target.checked })}
-                  className="w-4 h-4 rounded border-slate-700 bg-slate-950 text-amber-500 focus:ring-amber-500 focus:ring-offset-slate-900"
-                />
-                <label htmlFor="isSuperAdmin" className="text-sm text-slate-300 select-none cursor-pointer">
-                  Super Admin hüququ ver
-                </label>
-              </div>
-
-              <div className="pt-4 flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-4 py-2.5 bg-slate-800 text-white rounded-lg font-medium hover:bg-slate-700 transition-colors"
-                >
-                  Ləğv et
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex-1 px-4 py-2.5 bg-amber-500 text-slate-900 rounded-lg font-medium hover:bg-amber-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? 'Yaradılır...' : 'Yarat'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+          )}
+        </form>
+      </Modal>
     </div>
   );
 }

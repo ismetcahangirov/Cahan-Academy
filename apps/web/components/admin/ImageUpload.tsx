@@ -1,37 +1,58 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
-import { Image as ImageIcon, Upload, Link2, X, Loader2 } from 'lucide-react';
+import { useRef, useState, type ChangeEvent } from 'react';
+import { AlertCircle, Image as ImageIcon, Link2, Upload, X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import adminApi from '@/lib/adminApi';
 import { getCloudinaryScript } from '@/lib/cloudinary';
+import { Button, Input } from '@/components/ui';
+import { cn } from '@/lib/utils';
 
-interface ImageUploadProps {
+/**
+ * ImageUpload — image by URL or Cloudinary upload, with a framed preview. Palette-only chrome; the Cloudinary
+ * widget (an iframe) gets a palette theme. Errors are shown inline (no alert()).
+ * Pass `id` + `describedBy` from <FormField>'s render prop so the URL input is tied to the label.
+ *
+ * <FormField label={t('common.image')}>{(id) => <ImageUpload id={id} value={v} onChange={set} />}</FormField>
+ */
+interface Props {
   value: string;
   onChange: (url: string) => void;
+  id?: string;
 }
 
-export default function ImageUpload({ value, onChange }: ImageUploadProps) {
+const WIDGET_PALETTE = {
+  window: '#FFFFFF',
+  windowBorder: '#C6A6AB',
+  tabIcon: '#5C000E',
+  menuIcons: '#5C000E',
+  textDark: '#170004',
+  textLight: '#FFFFFF',
+  link: '#5C000E',
+  action: '#5C000E',
+  inProgress: '#5C000E',
+  complete: '#5C000E',
+  error: '#5C000E',
+  sourceBg: '#F5F0F1',
+};
+
+export default function ImageUpload({ value, onChange, id }: Props) {
+  const t = useTranslations('admin');
   const [mode, setMode] = useState<'url' | 'upload'>('url');
   const [isUploading, setIsUploading] = useState(false);
-  const [preview, setPreview] = useState<string>(value || '');
+  const [error, setError] = useState('');
   const widgetRef = useRef<ReturnType<typeof window.cloudinary.createUploadWidget> | null>(null);
 
-  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const url = e.target.value;
-    onChange(url);
-    setPreview(url);
-  };
+  const apiBase = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api';
+  const preview = value ? (value.startsWith('/') ? apiBase + value : value) : '';
 
   const handleCloudinaryUpload = async () => {
     setIsUploading(true);
+    setError('');
     try {
       await getCloudinaryScript();
-
-      if (widgetRef.current) {
-        widgetRef.current.destroy();
-        widgetRef.current = null;
-      }
-
+      widgetRef.current?.destroy();
+      widgetRef.current = null;
       const widget = window.cloudinary.createUploadWidget(
         {
           cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'cahan-academy',
@@ -39,11 +60,10 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
           uploadSignature: async (callback: (sig: string) => void, paramsToSign: Record<string, unknown>) => {
             try {
               const { data } = await adminApi.post('/upload/signature', paramsToSign);
-              if (data.success) {
-                callback(data.data.signature);
-              }
+              if (data.success) callback(data.data.signature);
             } catch {
-              // signature failed
+              setError(t('image.upload_error'));
+              setIsUploading(false);
             }
           },
           folder: 'cahan-academy',
@@ -51,128 +71,81 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
           multiple: false,
           maxFileSize: 10000000,
           clientAllowedFormats: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'],
-          styles: {
-            palette: {
-              window: '#1E293B',
-              windowBorder: '#334155',
-              tabIcon: '#F59E0B',
-              menuIcons: '#94A3B8',
-              textDark: '#F8FAFC',
-              textLight: '#CBD5E1',
-              link: '#F59E0B',
-              action: '#F59E0B',
-              inProgress: '#F59E0B',
-              complete: '#10B981',
-              error: '#EF4444',
-              sourceBg: '#0F172A',
-            },
-          },
+          styles: { palette: WIDGET_PALETTE },
         },
-        (error: unknown, result: { event: string; info?: { secure_url: string } }) => {
-          if (result.event === 'success' && result.info) {
-            const url = result.info.secure_url;
-            onChange(url);
-            setPreview(url);
+        (err: unknown, result: { event: string; info?: { secure_url: string } }) => {
+          if (result?.event === 'success' && result.info) {
+            onChange(result.info.secure_url);
             setIsUploading(false);
           }
-          if (error || result.event === 'abort') {
-            setIsUploading(false);
-          }
+          if (err || result?.event === 'abort' || result?.event === 'close') setIsUploading(false);
         }
       );
-
       widget.open();
       widgetRef.current = widget;
     } catch {
-      alert('Fayl yükləmək mümkün olmadı.');
+      setError(t('image.upload_error'));
       setIsUploading(false);
     }
   };
 
   const clearImage = () => {
     onChange('');
-    setPreview('');
-    if (widgetRef.current) {
-      widgetRef.current.destroy();
-      widgetRef.current = null;
-    }
+    widgetRef.current?.destroy();
+    widgetRef.current = null;
   };
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api';
-  const resolvedPreview =
-    preview && (preview.startsWith('blob:') || preview.startsWith('http') || preview.startsWith('/'))
-      ? preview.startsWith('/')
-        ? apiBase + preview
-        : preview
-      : preview;
+  const tabClass = (active: boolean) => cn('btn btn-sm', active ? 'btn-primary' : 'btn-ghost');
 
   return (
     <div className="space-y-3">
-      <div className="flex p-1 bg-slate-800 rounded-xl w-fit">
-        <button
-          type="button"
-          onClick={() => setMode('url')}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-            mode === 'url' ? 'bg-amber-500 text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <Link2 size={16} /> URL
+      <div role="group" aria-label={t('image.source')} className="inline-flex gap-1 rounded-full border border-line bg-surface-2 p-1">
+        <button type="button" aria-pressed={mode === 'url'} onClick={() => setMode('url')} className={tabClass(mode === 'url')}>
+          <Link2 size={15} strokeWidth={1.6} aria-hidden="true" /> {t('image.by_url')}
         </button>
-        <button
-          type="button"
-          onClick={() => setMode('upload')}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-            mode === 'upload' ? 'bg-amber-500 text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <Upload size={16} /> Fayl Yüklə
+        <button type="button" aria-pressed={mode === 'upload'} onClick={() => setMode('upload')} className={tabClass(mode === 'upload')}>
+          <Upload size={15} strokeWidth={1.6} aria-hidden="true" /> {t('image.upload')}
         </button>
       </div>
 
       {mode === 'url' ? (
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
-            <ImageIcon size={18} />
-          </div>
-          <input
-            type="text"
-            value={value || ''}
-            onChange={handleUrlChange}
-            className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-colors"
-            placeholder="https://..."
-          />
-        </div>
+        <Input
+          id={id}
+          type="url"
+          icon={ImageIcon}
+          value={value || ''}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
+          placeholder="https://"
+          aria-label={t('common.image')}
+        />
       ) : (
-        <div>
-          <button
-            type="button"
-            onClick={handleCloudinaryUpload}
-            disabled={isUploading}
-            className="flex items-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-xl text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isUploading ? (
-              <>
-                <Loader2 size={16} className="animate-spin" /> Yüklənir...
-              </>
-            ) : (
-              <>
-                <Upload size={16} /> Şəkil Yüklə
-              </>
-            )}
-          </button>
-        </div>
+        <Button variant="outline" icon={Upload} onClick={handleCloudinaryUpload} loading={isUploading}>
+          {isUploading ? t('image.uploading') : t('image.choose')}
+        </Button>
       )}
 
-      {resolvedPreview && (
-        <div className="relative w-32 h-20 rounded-xl overflow-hidden bg-slate-800 border border-slate-700 group">
-          <img src={resolvedPreview} alt="Preview" className="w-full h-full object-cover" />
-          <button
-            type="button"
+      {error && (
+        <p role="alert" className="field-error">
+          <AlertCircle aria-hidden="true" strokeWidth={2} />
+          {error}
+        </p>
+      )}
+
+      {preview && (
+        <div className="photo-frame relative inline-block max-w-full">
+          {/* user photo: exempt from the colour audit; plain <img> so any host works */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={preview} alt={t('image.preview')} data-user-image className="max-h-40 w-auto max-w-full rounded-[var(--radius-sm)] object-cover" />
+          <Button
+            variant="outline"
+            size="sm"
+            iconOnly
+            icon={X}
             onClick={clearImage}
-            className="absolute top-1 right-1 p-0.5 bg-red-500/80 hover:bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            <X size={14} />
-          </button>
+            aria-label={t('image.remove')}
+            title={t('image.remove')}
+            className="!absolute right-1.5 top-1.5 !bg-surface"
+          />
         </div>
       )}
     </div>

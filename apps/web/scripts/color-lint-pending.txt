@@ -1,24 +1,4 @@
 # Files still to be migrated to the ornate colour law (scripts/color-lint.mjs skips failing on them).
 # When you migrate a file, DELETE its line here in the same PR. Paths are relative to apps/web.
-app/[locale]/(admin)/dashboard/blog/page.tsx
-app/[locale]/(admin)/dashboard/categories/page.tsx
-app/[locale]/(admin)/dashboard/contacts/page.tsx
-app/[locale]/(admin)/dashboard/courses/page.tsx
-app/[locale]/(admin)/dashboard/faq/page.tsx
-app/[locale]/(admin)/dashboard/layout.tsx
-app/[locale]/(admin)/dashboard/leads/page.tsx
-app/[locale]/(admin)/dashboard/newsletter/page.tsx
-app/[locale]/(admin)/dashboard/page.tsx
-app/[locale]/(admin)/dashboard/settings/page.tsx
-app/[locale]/(admin)/dashboard/teachers/page.tsx
-app/[locale]/(admin)/dashboard/team/page.tsx
-app/[locale]/(admin)/dashboard/users/page.tsx
-app/[locale]/(admin)/login/page.tsx
 app/[locale]/opengraph-image.tsx
-components/admin/BlogModal.tsx
-components/admin/CategoryModal.tsx
-components/admin/CourseModal.tsx
-components/admin/ImageUpload.tsx
-components/admin/TeacherModal.tsx
-components/admin/TeamMemberModal.tsx
 components/forms/NewsletterForm.tsx
