@@ -43,7 +43,7 @@ export default async function Image({ params }: { params: { locale: string; slug
         }}
       >
         {/* Background Overlay for text readability */}
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #1E0005 0%, rgba(92,0,14,0) 60%)' }} />
 
         <div style={{ display: 'flex', flexDirection: 'column', zIndex: 10 }}>
           <div style={{ background: '#EBE0E2', color: '#5C000E', padding: '8px 16px', borderRadius: '8px', fontSize: '20px', fontWeight: 'bold', alignSelf: 'flex-start', marginBottom: '24px' }}>

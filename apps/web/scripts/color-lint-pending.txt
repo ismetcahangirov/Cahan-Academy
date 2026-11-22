@@ -14,14 +14,6 @@ app/[locale]/(admin)/dashboard/teachers/page.tsx
 app/[locale]/(admin)/dashboard/team/page.tsx
 app/[locale]/(admin)/dashboard/users/page.tsx
 app/[locale]/(admin)/login/page.tsx
-app/[locale]/(marketing)/about/page.tsx
-app/[locale]/(marketing)/blog/BlogClientPage.tsx
-app/[locale]/(marketing)/blog/[slug]/opengraph-image.tsx
-app/[locale]/(marketing)/blog/[slug]/page.tsx
-app/[locale]/(marketing)/contact/page.tsx
-app/[locale]/(marketing)/faq/page.tsx
-app/[locale]/(marketing)/privacy-policy/page.tsx
-app/[locale]/(marketing)/terms/page.tsx
 app/[locale]/opengraph-image.tsx
 components/admin/BlogModal.tsx
 components/admin/CategoryModal.tsx
@@ -29,9 +21,4 @@ components/admin/CourseModal.tsx
 components/admin/ImageUpload.tsx
 components/admin/TeacherModal.tsx
 components/admin/TeamMemberModal.tsx
-components/forms/ContactForm.tsx
 components/forms/NewsletterForm.tsx
-components/sections/about/HistorySection.tsx
-components/sections/about/MissionSection.tsx
-components/sections/about/TeamSection.tsx
-components/sections/about/ValuesSection.tsx

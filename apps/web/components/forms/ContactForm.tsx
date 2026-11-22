@@ -1,178 +1,128 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Send, User, Mail, MessageSquare, Info, CheckCircle2, AlertCircle } from 'lucide-react';
+import { z } from 'zod';
+import { AlertCircle, Mail, PenLine, RotateCcw, Send, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { submitContactForm } from '@/lib/api';
+import { ApiError, submitContactForm } from '@/lib/api';
+import { Button, FormField, Input, Textarea } from '@/components/ui';
+import { OrnamentDivider, WaxSeal } from '@/components/ornament';
 
-const contactSchema = z.object({
-  name: z.string().min(2, 'Ad ən azı 2 simvol olmalıdır'),
-  email: z.string().email('Düzgün email daxil edin'),
-  subject: z.string().min(3, 'Mövzu ən azı 3 simvol olmalıdır'),
-  message: z.string().min(10, 'Mesaj ən azı 10 simvol olmalıdır'),
-});
-
-type ContactFormValues = z.infer<typeof contactSchema>;
-
+/**
+ * ContactForm — `noValidate` + zod (messages from `contact.err_*`), inline errors under each field,
+ * the API's own message in an icon + sentence banner when the request fails, and a sealed "thank you"
+ * when it succeeds (focus moves to it). Limits mirror apps/api ContactSchema.
+ */
 export default function ContactForm() {
   const t = useTranslations('contact');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [sent, setSent] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const doneRef = useRef<HTMLHeadingElement>(null);
+
+  const schema = useMemo(
+    () =>
+      z.object({
+        name: z.string().trim().min(2, t('err_name')).max(255, t('err_too_long')),
+        email: z.string().trim().min(1, t('err_email')).email(t('err_email')).max(255, t('err_too_long')),
+        subject: z.string().trim().min(3, t('err_subject')).max(500, t('err_too_long')),
+        message: z.string().trim().min(10, t('err_message')).max(5000, t('err_too_long')),
+      }),
+    [t]
+  );
+  type Values = z.infer<typeof schema>;
 
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
-  } = useForm<ContactFormValues>({
-    resolver: zodResolver(contactSchema),
+    formState: { errors, isSubmitting },
+  } = useForm<Values>({
+    resolver: zodResolver(schema),
+    mode: 'onTouched',
+    defaultValues: { name: '', email: '', subject: '', message: '' },
   });
 
-  const onSubmit = async (data: ContactFormValues) => {
-    setStatus('loading');
-    setErrorMessage('');
+  useEffect(() => {
+    if (sent) doneRef.current?.focus();
+  }, [sent]);
+
+  const onSubmit = async (data: Values) => {
+    setApiError(null);
     try {
       await submitContactForm(data);
-      setStatus('success');
       reset();
-      setTimeout(() => setStatus('idle'), 5000);
-    } catch (error: any) {
-      setStatus('error');
-      setErrorMessage(error.message || t('error'));
+      setSent(true);
+    } catch (error) {
+      // 4xx carries a readable, localised API message (validation, rate limit); anything else is generic.
+      const readable = error instanceof ApiError && error.status >= 400 && error.status < 500 && error.message;
+      setApiError(readable || t('error'));
     }
   };
 
-  if (status === 'success') {
+  if (sent) {
     return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="flex flex-col items-center justify-center py-12 text-center"
-      >
-        <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center mb-6">
-          <CheckCircle2 size={40} className="text-green-500" />
-        </div>
-        <h3 className="text-2xl font-bold mb-3">{t('success')}</h3>
-        <p className="text-muted-foreground max-w-xs">
-          Mesajınız bizə çatdı. Ən qısa zamanda sizinlə əlaqə saxlayacağıq.
-        </p>
-        <button
-          onClick={() => setStatus('idle')}
-          className="mt-8 text-primary font-bold hover:underline"
+      <div role="status" className="orn-pop flex flex-col items-center px-2 py-8 text-center sm:py-12">
+        <WaxSeal size={84} />
+        <h3
+          ref={doneRef}
+          tabIndex={-1}
+          className="script-title mt-5 text-[2.4rem] outline-none sm:text-[2.8rem]"
         >
-          Yeni mesaj göndər
-        </button>
-      </motion.div>
+          {t('success_title')}
+        </h3>
+        <OrnamentDivider className="mt-2" />
+        <p className="mt-4 max-w-md text-[1.12rem] leading-relaxed text-ink">{t('success')}</p>
+        <Button variant="outline" icon={RotateCcw} motif={false} className="mt-8" onClick={() => setSent(false)}>
+          {t('send_another')}
+        </Button>
+      </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="grid sm:grid-cols-2 gap-6">
-        {/* Name */}
-        <div className="space-y-2">
-          <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-            <User size={14} />
-            {t('name')}
-          </label>
-          <input
-            {...register('name')}
-            className={`w-full px-5 py-4 rounded-2xl bg-background border ${
-              errors.name ? 'border-red-500/50' : 'border-border'
-            } focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all`}
-            placeholder="Məs: Əli Əliyev"
-          />
-          {errors.name && (
-            <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
-          )}
-        </div>
-
-        {/* Email */}
-        <div className="space-y-2">
-          <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-            <Mail size={14} />
-            {t('email')}
-          </label>
-          <input
+    <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-5" aria-describedby="contact-form-hint">
+      <p id="contact-form-hint" className="sr-only">
+        {t('form_hint')}
+      </p>
+      <div className="grid gap-5 md:grid-cols-2">
+        <FormField label={t('name')} error={errors.name?.message} required>
+          <Input icon={User} autoComplete="name" placeholder={t('ph_name')} {...register('name')} />
+        </FormField>
+        <FormField label={t('email')} error={errors.email?.message} required>
+          <Input
+            icon={Mail}
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            placeholder={t('ph_email')}
             {...register('email')}
-            className={`w-full px-5 py-4 rounded-2xl bg-background border ${
-              errors.email ? 'border-red-500/50' : 'border-border'
-            } focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all`}
-            placeholder="ali@example.com"
           />
-          {errors.email && (
-            <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
-          )}
+        </FormField>
+      </div>
+      <FormField label={t('subject')} error={errors.subject?.message} required>
+        <Input icon={PenLine} placeholder={t('ph_subject')} {...register('subject')} />
+      </FormField>
+      <FormField label={t('message')} error={errors.message?.message} required>
+        <Textarea rows={6} className="resize-y" placeholder={t('ph_message')} {...register('message')} />
+      </FormField>
+
+      {apiError && (
+        <div
+          role="alert"
+          className="flex items-start gap-3 rounded-[var(--radius-md)] border-[1.5px] border-accent-text bg-accent-soft px-4 py-3"
+        >
+          <AlertCircle size={20} strokeWidth={2} className="mt-0.5 shrink-0 text-accent-text" aria-hidden="true" />
+          <p className="text-[1.02rem] leading-snug text-ink">
+            <strong className="font-semibold">{t('error_title')}.</strong> {apiError}
+          </p>
         </div>
-      </div>
+      )}
 
-      {/* Subject */}
-      <div className="space-y-2">
-        <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-          <Info size={14} />
-          {t('subject')}
-        </label>
-        <input
-          {...register('subject')}
-          className={`w-full px-5 py-4 rounded-2xl bg-background border ${
-            errors.subject ? 'border-red-500/50' : 'border-border'
-          } focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all`}
-          placeholder="Müraciətinizin mövzusu"
-        />
-        {errors.subject && (
-          <p className="text-red-500 text-xs mt-1">{errors.subject.message}</p>
-        )}
-      </div>
-
-      {/* Message */}
-      <div className="space-y-2">
-        <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-          <MessageSquare size={14} />
-          {t('message')}
-        </label>
-        <textarea
-          {...register('message')}
-          rows={5}
-          className={`w-full px-5 py-4 rounded-2xl bg-background border ${
-            errors.message ? 'border-red-500/50' : 'border-border'
-          } focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all resize-none`}
-          placeholder="Mesajınızı buraya yazın..."
-        />
-        {errors.message && (
-          <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>
-        )}
-      </div>
-
-      <AnimatePresence>
-        {status === 'error' && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center gap-3 text-red-500 text-sm"
-          >
-            <AlertCircle size={18} />
-            {errorMessage}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <button
-        type="submit"
-        disabled={status === 'loading'}
-        className="w-full py-5 rounded-2xl bg-primary text-white font-bold text-lg hover:bg-primary/90 active:scale-[0.98] transition-all disabled:opacity-70 flex items-center justify-center gap-3 shadow-xl shadow-primary/20"
-      >
-        {status === 'loading' ? (
-          <span className="w-6 h-6 rounded-full border-3 border-white/30 border-t-white animate-spin" />
-        ) : (
-          <Send size={20} />
-        )}
+      <Button type="submit" size="lg" block loading={isSubmitting} icon={Send}>
         {t('send')}
-      </button>
+      </Button>
     </form>
   );
 }
