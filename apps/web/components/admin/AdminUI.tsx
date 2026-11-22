@@ -4,6 +4,7 @@ import { useId, useRef, type KeyboardEvent, type ReactNode } from 'react';
 import { AlertCircle, RefreshCcw, Search, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
+import { isRealImage } from '@/lib/media';
 import { Button, Card, EmptyState, Input, Skeleton, Table } from '@/components/ui';
 import { ScriptTitle, type SketchName } from '@/components/ornament';
 
@@ -240,9 +241,10 @@ export function DataView<T>({
               <div className="min-w-0 text-[1.1rem] font-semibold">{columns[0].cell(item)}</div>
               <dl className="mt-3 space-y-2">
                 {columns.slice(1).map((c) => (
-                  <div key={c.key} className="flex items-baseline justify-between gap-4">
-                    <dt className="sc shrink-0 text-[0.8rem] tracking-[0.1em] text-ink-muted">{c.header}</dt>
-                    <dd className="min-w-0 break-words text-right">{c.cell(item)}</dd>
+                  // wraps the value under its label when both do not fit (no mid-word breaks at 390px)
+                  <div key={c.key} className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+                    <dt className="sc text-[0.8rem] tracking-[0.1em] text-ink-muted">{c.header}</dt>
+                    <dd className="ml-auto min-w-0 text-right [overflow-wrap:break-word]">{c.cell(item)}</dd>
                   </div>
                 ))}
               </dl>
@@ -273,10 +275,11 @@ export function RowAction({
 }
 
 /** Avatar / thumb for list rows: user photo in a small round frame, else a palette icon. */
+/** Row thumbnail: a real uploaded photo, else the entity icon (missing / stock / mock images: lib/media). */
 export function Thumb({ src, alt, icon: Icon }: { src?: string | null; alt: string; icon: LucideIcon }) {
   return (
     <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-line bg-accent-soft text-accent-text">
-      {src ? (
+      {isRealImage(src) ? (
         // user photo: exempt from the colour audit, plain <img> so any host works
         // eslint-disable-next-line @next/next/no-img-element
         <img src={src} alt={alt} data-user-image className="h-full w-full object-cover" loading="lazy" />
