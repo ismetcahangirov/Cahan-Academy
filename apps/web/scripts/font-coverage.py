@@ -7,7 +7,7 @@ Usage (from apps/web):
 Faces are grouped by family: `x-latin.woff2` + `x-cyrillic.woff2` form one face (unicode-range split in
 lib/fonts.ts; the latin subset must hold every Azerbaijani letter, the cyrillic subset every Russian one),
 a file without a suffix must hold everything. A weight suffix (`-300`, `-light`, `-regular`, `-bold`…) is
-dropped from the family name, so `cahan-display-{light,regular,bold}.woff2` report as one family. Also checks the uppercase forms used by the small-caps styles
+dropped from the family name, so e.g. `cahan-display-regular.woff2` reports as `cahan-display`. Also checks the uppercase forms used by the small-caps styles
 (.sc is text-transform: uppercase; with <html lang="az"> "i" -> "İ"). Exit code 1 when anything is missing.
 Adapted from the dashboard's client/scripts/font-coverage.py (which reads @fontsource CSS).
 Requires: pip install fonttools brotli
