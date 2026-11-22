@@ -195,7 +195,7 @@ export default function DashboardPage() {
                     <XAxis type="number" tick={AXIS} tickLine={false} axisLine={false} allowDecimals={false} />
                     <YAxis type="category" dataKey="name" tick={AXIS} tickLine={false} axisLine={{ stroke: 'var(--line)' }} width={104} />
                     <Tooltip {...TOOLTIP} />
-                    <Bar dataKey="value" fill="var(--accent-text)" radius={[0, 4, 4, 0]} maxBarSize={28} isAnimationActive={false} />
+                    <Bar dataKey="value" fill="var(--chart-bar)" radius={[0, 4, 4, 0]} maxBarSize={28} isAnimationActive={false} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

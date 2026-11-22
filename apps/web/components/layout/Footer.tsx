@@ -87,8 +87,10 @@ export default function Footer({ waveFill = 'var(--page-base)' }: { waveFill?: s
               </ul>
             </div>
 
-            <div className="grid grid-cols-2 gap-8 md:col-span-1 lg:col-span-2">
-              <nav aria-labelledby="footer-links">
+            {/* links | legal on one row; contact gets a full row on phones/tablets (the email must not break
+                mid-word at 390px) and sits under legal from lg, where the column is wide enough */}
+            <div className="grid grid-cols-2 gap-x-8 gap-y-10 md:col-span-1 lg:col-span-2">
+              <nav aria-labelledby="footer-links" className="lg:row-span-2">
                 <h2 id="footer-links" className="sc mb-4 text-[0.85rem] text-ink-muted">
                   {tf('links_title')}
                 </h2>
@@ -102,45 +104,44 @@ export default function Footer({ waveFill = 'var(--page-base)' }: { waveFill?: s
                   ))}
                 </ul>
               </nav>
-              <div className="space-y-8">
-                <nav aria-labelledby="footer-legal">
-                  <h2 id="footer-legal" className="sc mb-4 text-[0.85rem] text-ink-muted">
-                    {tf('legal_title')}
-                  </h2>
-                  <ul className="space-y-2.5">
-                    <li>
-                      <Link href="/privacy-policy" className="text-[1.05rem] text-ink hover:underline">
-                        {tf('privacy')}
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/terms" className="text-[1.05rem] text-ink hover:underline">
-                        {tf('terms')}
-                      </Link>
-                    </li>
-                  </ul>
-                </nav>
-                <div>
-                  <h2 className="sc mb-4 text-[0.85rem] text-ink-muted">{tf('contact_title')}</h2>
-                  <ul className="space-y-3 text-[1rem]">
-                    <li className="flex items-start gap-2.5 text-ink">
-                      <MapPin size={16} strokeWidth={1.6} className="mt-1 shrink-0 text-ornament" aria-hidden="true" />
-                      {tf('address')}
-                    </li>
-                    <li className="flex items-center gap-2.5">
-                      <Phone size={16} strokeWidth={1.6} className="shrink-0 text-ornament" aria-hidden="true" />
-                      <a href="tel:+994501234567" className="num text-ink hover:underline">
-                        +994 50 123 45 67
-                      </a>
-                    </li>
-                    <li className="flex items-center gap-2.5">
-                      <Mail size={16} strokeWidth={1.6} className="shrink-0 text-ornament" aria-hidden="true" />
-                      <a href="mailto:info@cahanacademy.az" className="break-all text-ink hover:underline">
-                        info@cahanacademy.az
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+              <nav aria-labelledby="footer-legal">
+                <h2 id="footer-legal" className="sc mb-4 text-[0.85rem] text-ink-muted">
+                  {tf('legal_title')}
+                </h2>
+                <ul className="space-y-2.5">
+                  <li>
+                    <Link href="/privacy-policy" className="text-[1.05rem] text-ink hover:underline">
+                      {tf('privacy')}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/terms" className="text-[1.05rem] text-ink hover:underline">
+                      {tf('terms')}
+                    </Link>
+                  </li>
+                </ul>
+              </nav>
+              <div className="col-span-2 lg:col-span-1 lg:col-start-2">
+                <h2 className="sc mb-4 text-[0.85rem] text-ink-muted">{tf('contact_title')}</h2>
+                <ul className="space-y-3 text-[1rem]">
+                  <li className="flex items-start gap-2.5 text-ink">
+                    <MapPin size={16} strokeWidth={1.6} className="mt-1 shrink-0 text-ornament" aria-hidden="true" />
+                    {tf('address')}
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Phone size={16} strokeWidth={1.6} className="shrink-0 text-ornament" aria-hidden="true" />
+                    <a href="tel:+994501234567" className="num whitespace-nowrap text-ink hover:underline">
+                      +994 50 123 45 67
+                    </a>
+                  </li>
+                  <li className="flex min-w-0 items-center gap-2.5">
+                    <Mail size={16} strokeWidth={1.6} className="shrink-0 text-ornament" aria-hidden="true" />
+                    {/* never split the address mid-word; only an extremely narrow column may wrap it */}
+                    <a href="mailto:info@cahanacademy.az" className="min-w-0 text-ink [overflow-wrap:anywhere] hover:underline sm:whitespace-nowrap">
+                      info@cahanacademy.az
+                    </a>
+                  </li>
+                </ul>
               </div>
             </div>
 
