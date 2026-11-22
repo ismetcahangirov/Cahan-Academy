@@ -1,5 +1,5 @@
 import { db } from '../config/db.js';
-import { posts, adminUsers } from '../config/schema.js';
+import { posts, adminUsers, type NewPost } from '../config/schema.js';
 import { eq, ne, and, desc } from 'drizzle-orm';
 
 interface GetAllPostsOptions {
@@ -37,7 +37,12 @@ export const getAllPosts = async (options?: GetAllPostsOptions) => {
     .limit(limit || 100);
 };
 
-export const getPostBySlug = async (slug: string) => {
+export const getPostBySlug = async (slug: string, options?: { publishedOnly?: boolean }) => {
+  const { publishedOnly = true } = options || {};
+  const where = publishedOnly
+    ? and(eq(posts.slug, slug), eq(posts.isPublished, 'true'))
+    : eq(posts.slug, slug);
+
   const result = await db
     .select({
       post: posts,
@@ -48,17 +53,17 @@ export const getPostBySlug = async (slug: string) => {
     })
     .from(posts)
     .leftJoin(adminUsers, eq(posts.authorId, adminUsers.id))
-    .where(eq(posts.slug, slug))
+    .where(where)
     .limit(1);
 
   return result.length > 0 ? result[0] : null;
 };
-export const createPost = async (data: any) => {
+export const createPost = async (data: NewPost) => {
   const result = await db.insert(posts).values(data).returning();
   return result[0];
 };
 
-export const updatePost = async (id: string, data: any) => {
+export const updatePost = async (id: string, data: Partial<NewPost>) => {
   const result = await db.update(posts)
     .set({ ...data, updatedAt: new Date() })
     .where(eq(posts.id, id))
