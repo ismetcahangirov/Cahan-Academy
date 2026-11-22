@@ -22,9 +22,9 @@ export default function TeacherCard({ teacher, className }: TeacherCardProps) {
   const t = useTranslations('teachers');
 
   return (
-    <article className={cn('card-ornate card-hover group relative flex h-full flex-col items-center p-5 pb-6 text-center', className)}>
-      <CornerFlourish corner="bl" className="absolute bottom-2.5 left-2.5 h-6 w-6" />
-      <CornerFlourish corner="br" className="absolute bottom-2.5 right-2.5 h-6 w-6" />
+    <article className={cn('card-ornate card-hover group relative flex h-full flex-col items-center p-3 pb-5 text-center sm:p-5 sm:pb-6', className)}>
+      <CornerFlourish corner="bl" className="absolute bottom-2.5 left-2.5 hidden h-6 w-6 sm:block" />
+      <CornerFlourish corner="br" className="absolute bottom-2.5 right-2.5 hidden h-6 w-6 sm:block" />
 
       <CoverImage
         src={teacher.image}
@@ -36,7 +36,7 @@ export default function TeacherCard({ teacher, className }: TeacherCardProps) {
       />
 
       <EdelweissGlyph className="mt-4 h-4 w-4" />
-      <h3 className="mt-2 text-[1.3rem] font-semibold leading-snug text-ink">
+      <h3 className="mt-2 text-[1.1rem] font-semibold leading-snug text-ink sm:text-[1.3rem]">
         <Link
           href={`/teachers/${teacher.slug}`}
           className="outline-none after:absolute after:inset-0 after:rounded-[var(--radius-lg)] after:content-[''] focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-[var(--focus)]"

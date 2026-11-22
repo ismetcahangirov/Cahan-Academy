@@ -60,8 +60,8 @@ export default function Footer({ waveFill = 'var(--page-base)' }: { waveFill?: s
     <footer className="relative mt-auto">
       <div className="theme-wine band-wine relative overflow-hidden pb-8 pt-24 sm:pt-28">
         <WaveEdge invert fill={waveFill} className="absolute inset-x-0 -top-px" />
-        <LaceCorner corner="bl" className="absolute bottom-0 left-0 w-28 sm:w-40" />
-        <LaceCorner corner="br" className="absolute bottom-0 right-0 w-28 sm:w-40" />
+        <LaceCorner corner="bl" className="absolute bottom-0 left-0 w-20 sm:w-36" />
+        <LaceCorner corner="br" className="absolute bottom-0 right-0 w-20 sm:w-36" />
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.4fr]">
@@ -152,7 +152,7 @@ export default function Footer({ waveFill = 'var(--page-base)' }: { waveFill?: s
           </div>
 
           <OrnamentDivider draw={false} className="mt-12" />
-          <div className="mt-6 flex flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-left">
+          <div className="mt-6 flex flex-col items-center gap-2 px-16 pb-6 text-center sm:px-40">
             <p className="text-[0.95rem] text-ink-muted">
               © <span className="num">{year}</span> Cahan Academy. {tf('rights')}
             </p>

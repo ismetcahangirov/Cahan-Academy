@@ -22,7 +22,7 @@ export default function FeaturesSection({ children }: { children?: React.ReactNo
   const t = useTranslations('home');
 
   return (
-    <section id="academy" aria-labelledby="features-title" className="paper relative overflow-hidden pb-24 pt-20 sm:pt-24">
+    <section id="academy" aria-labelledby="features-title" className="paper relative overflow-hidden pb-16 pt-20 sm:pt-24">
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {children}
 
@@ -51,9 +51,11 @@ export default function FeaturesSection({ children }: { children?: React.ReactNo
               </li>
             ))}
           </Reveal>
+          <div className="mt-10 flex justify-center">
+            <SketchIllustration name="cap" className="w-36 sm:w-44" />
+          </div>
         </div>
       </div>
-      <SketchIllustration name="cap" className="pointer-events-none absolute -bottom-2 -right-6 hidden w-56 md:block lg:w-64" />
     </section>
   );
 }

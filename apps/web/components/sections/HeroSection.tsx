@@ -32,9 +32,9 @@ export default function HeroSection() {
 
       <div className="relative mx-auto flex min-h-[min(46rem,calc(100svh-var(--header-h)))] max-w-4xl flex-col items-center justify-center px-5 pb-36 pt-28 text-center sm:px-8 sm:pt-32">
         <p className="sc orn-rise flex items-center gap-2 text-[0.82rem] text-ink-muted sm:text-[0.9rem]">
-          <EdelweissGlyph className="h-3.5 w-3.5 text-ornament" />
+          <EdelweissGlyph className="hidden h-3.5 w-3.5 text-ornament sm:block" />
           {t('badge')}
-          <EdelweissGlyph className="h-3.5 w-3.5 text-ornament" />
+          <EdelweissGlyph className="hidden h-3.5 w-3.5 text-ornament sm:block" />
         </p>
         <h1 id="hero-title" className="script-title orn-rise mt-5 text-[3.3rem] leading-[1.04] sm:text-[4.6rem] lg:text-[5.6rem]">
           {t('title')}
