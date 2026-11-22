@@ -83,6 +83,23 @@ neonctl branches create \
 
 ### 2.3 İlk Migration
 
+> **Current state (2026-11-22, senior audit).** Production migrations are run **manually** by the
+> owner, never by CI. `drizzle-kit migrate` does not work in this repo yet (there is no
+> `drizzle/meta/_journal.json`, and from a fresh `npm ci` drizzle-kit cannot resolve the
+> workspace-local drizzle-orm), so the source of truth is the idempotent script
+> `apps/api/scripts/migrate.ts` (`CREATE TABLE IF NOT EXISTS ...`):
+>
+> ```bash
+> cd apps/api
+> DATABASE_URL="<production url from Vercel/Neon>" npm run db:migrate:manual
+> ```
+>
+> The CI step "Run Migrations (Production)" was removed: it ran on every push to `main`, always
+> failed (see above) and would have needed the production `DATABASE_URL` as a CI secret.
+> Env var names: access tokens use `JWT_SECRET`, refresh tokens `JWT_REFRESH_SECRET` (both >= 32 chars,
+> different values). There is no `JWT_ACCESS_SECRET`.
+
+
 ```bash
 cd apps/api
 
@@ -173,7 +190,7 @@ PORT=10000
 DATABASE_URL=postgresql://user:pass@ep-xxx-pooler.neon.tech/academy_db?sslmode=require&pgbouncer=true
 
 # JWT (node -e "require('crypto').randomBytes(64).toString('hex')" ilə yarat)
-JWT_ACCESS_SECRET=<64_char_random_hex>
+JWT_SECRET=<64_char_random_hex>
 JWT_REFRESH_SECRET=<64_char_different_random_hex>
 
 # Email (Gmail App Password)
@@ -546,7 +563,7 @@ DATABASE_URL=postgresql://user:pass@ep-xxx.neon.tech/academy_db?sslmode=require
 DATABASE_URL_POOL=postgresql://user:pass@ep-xxx-pooler.neon.tech/academy_db?sslmode=require&pgbouncer=true
 
 # JWT
-JWT_ACCESS_SECRET=min_64_char_random_hex_string_for_access_tokens
+JWT_SECRET=min_64_char_random_hex_string_for_access_tokens
 JWT_REFRESH_SECRET=min_64_char_different_random_hex_for_refresh_tokens
 
 # SMTP (Gmail)
