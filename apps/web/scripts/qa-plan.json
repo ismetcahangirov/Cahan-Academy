@@ -129,7 +129,7 @@
       390
     ],
     "actions": [
-      "click=header button[aria-expanded]",
+      "click=header button[aria-expanded]:has(svg.lucide-menu)",
       "wait=600"
     ]
   },
@@ -381,7 +381,7 @@
       390
     ],
     "actions": [
-      "click=header button[aria-expanded]",
+      "click=header button[aria-expanded]:has(svg.lucide-menu)",
       "wait=600"
     ]
   },
