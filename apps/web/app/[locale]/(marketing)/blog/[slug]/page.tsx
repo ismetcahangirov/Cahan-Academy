@@ -1,15 +1,19 @@
-import { getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
+import { ArrowLeft, Calendar, ChevronRight, Clock } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import { 
-  Calendar, Clock, User, ArrowLeft, 
-  ChevronRight, Share2, BookOpen 
-} from 'lucide-react';
 import { getBlogPost, getBlogPosts } from '@/lib/api';
+import { SITE_URL, absoluteUrl, cn } from '@/lib/utils';
 import BlogCard from '@/components/cards/BlogCard';
+import CoverImage, { isRealImage } from '@/components/cards/CoverImage';
+import { OrnamentDivider, OrnateFrame, ScriptTitle, WaveEdge, WaxSeal } from '@/components/ornament';
+import { Button, Reveal } from '@/components/ui';
 import JsonLd from '@/components/seo/JsonLd';
+import ShareButton from '@/components/blog/ShareButton';
+import { toArticleHtml } from '@/components/blog/data';
+import { pageAlternates } from '@/components/legal/seo';
+import styles from '@/components/blog/article.module.css';
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -17,201 +21,202 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale, slug } = await params;
+  const t = await getTranslations({ locale, namespace: 'meta' });
   try {
     const post = await getBlogPost(slug, locale);
-    if (!post) return { title: 'Məqalə tapılmadı' };
-    
+    if (!post) return { title: t('blog_title') };
     return {
-      title: `${post.title} — Cahan Academy Blog`,
+      title: `${post.title} — Cahan Academy`,
       description: post.excerpt,
+      alternates: pageAlternates(locale, `/blog/${post.slug}`),
+      openGraph: {
+        title: post.title,
+        description: post.excerpt,
+        type: 'article',
+        locale,
+        publishedTime: post.createdAt,
+        modifiedTime: post.updatedAt ?? post.createdAt,
+      },
     };
-  } catch (error) {
-    return { title: 'Blog | Cahan Academy' };
+  } catch {
+    return { title: t('blog_title') };
   }
 }
 
 export async function generateStaticParams() {
-  try {
-    const posts = await getBlogPosts({ limit: 100 });
-    const locales = ['az', 'en', 'ru'];
-    
-    return locales.flatMap((locale) =>
-      posts.map((post) => ({
-        locale,
-        slug: post.slug,
-      }))
-    );
-  } catch (error) {
-    console.error('Error generating static params for blog:', error);
-    return [];
-  }
+  // getBlogPosts never throws (an unreachable API at build time → no pre-rendered posts, ISR fills in)
+  const posts = await getBlogPosts({ limit: 100 });
+  return ['az', 'en', 'ru'].flatMap((locale) => posts.map((post) => ({ locale, slug: post.slug })));
 }
 
+/*
+ * Article: breadcrumb → serif title (data, never script) with small-caps label and italic meta →
+ * cover in an ornate frame → long-form body (prose-ornate + article.module.css) → share / back →
+ * wax seal → related posts on a parchment band.
+ * A-23: getBlogPost returns null only on 404; any other failure throws to the error boundary, so an
+ * API blip during ISR keeps the last good page instead of caching a 404.
+ */
 export default async function BlogPostPage({ params }: PageProps) {
   const { locale, slug } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'blog' });
 
-  let post;
-  try {
-    post = await getBlogPost(slug, locale);
-  } catch (error) {
-    notFound();
-  }
-
+  const post = await getBlogPost(slug, locale);
   if (!post) notFound();
 
-  // Related posts
-  let relatedPosts: any[] = [];
-  try {
-    relatedPosts = await getBlogPosts({ locale, limit: 3, excludeSlug: slug });
-  } catch (error) {}
+  const related = (await getBlogPosts({ locale, limit: 3, excludeSlug: slug })).filter((p) => p.slug !== slug).slice(0, 3);
 
-  const formattedDate = new Date(post.createdAt).toLocaleDateString(locale === 'az' ? 'az-AZ' : locale === 'en' ? 'en-US' : 'ru-RU', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  });
-
-  // JSON-LD Schema
-  const articleJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: post.title,
-    description: post.excerpt,
-    image: post.image,
-    datePublished: post.createdAt,
-    dateModified: post.createdAt,
-    author: {
-      '@type': 'Person',
-      name: post.author?.name || 'Cahan Academy',
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Cahan Academy',
-      logo: {
-        '@type': 'ImageObject',
-        url: 'https://cahanacademy.az/logo.png',
-      },
-    },
-  };
-
-  const breadcrumbJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: t('home') || 'Ana Səhifə',
-        item: `https://cahanacademy.az/${locale}`,
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: t('page_title') || 'Blog',
-        item: `https://cahanacademy.az/${locale}/blog`,
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name: post.title,
-        item: `https://cahanacademy.az/${locale}/blog/${post.slug}`,
-      },
-    ],
-  };
+  const date = new Date(post.createdAt);
+  const formattedDate = Number.isNaN(date.getTime())
+    ? ''
+    : new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
+  const url = absoluteUrl(locale, `/blog/${post.slug}`);
+  const html = toArticleHtml(post.content);
+  const author = post.author?.name || 'Cahan Academy';
 
   return (
     <>
-      <JsonLd data={articleJsonLd} />
-      <JsonLd data={breadcrumbJsonLd} />
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'BlogPosting',
+          headline: post.title,
+          description: post.excerpt,
+          ...(isRealImage(post.image) ? { image: post.image } : {}),
+          datePublished: post.createdAt,
+          dateModified: post.updatedAt ?? post.createdAt,
+          inLanguage: locale,
+          url,
+          mainEntityOfPage: url,
+          author: post.author?.name
+            ? { '@type': 'Person', name: post.author.name }
+            : { '@type': 'Organization', name: 'Cahan Academy' },
+          publisher: {
+            '@type': 'Organization',
+            name: 'Cahan Academy',
+            logo: { '@type': 'ImageObject', url: `${SITE_URL}/icon-512.png` },
+          },
+        }}
+      />
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: t('home'), item: absoluteUrl(locale) },
+            { '@type': 'ListItem', position: 2, name: t('page_title'), item: absoluteUrl(locale, '/blog') },
+            { '@type': 'ListItem', position: 3, name: post.title, item: url },
+          ],
+        }}
+      />
 
-      <article className="pt-32 pb-24">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
-            <Link href="/" className="hover:text-primary transition-colors">{t('home') || 'Ana Səhifə'}</Link>
-            <ChevronRight size={14} />
-            <Link href="/blog" className="hover:text-primary transition-colors">{t('page_title') || 'Blog'}</Link>
-            <ChevronRight size={14} />
-            <span className="text-foreground font-medium truncate">{post.title}</span>
+      <article className="pb-20">
+        <header className="mx-auto max-w-4xl px-4 pt-8 sm:px-6 sm:pt-12 lg:px-8">
+          <nav aria-label={t('breadcrumb_label')}>
+            <ol className="sc flex min-w-0 items-center gap-1.5 text-[0.8rem] text-ink-muted">
+              <li className="shrink-0">
+                <Link href="/" className="hover:text-accent-text">
+                  {t('home')}
+                </Link>
+              </li>
+              <li className="inline-flex shrink-0 items-center gap-1.5">
+                <ChevronRight size={13} strokeWidth={1.6} className="text-ornament-soft" aria-hidden="true" />
+                <Link href="/blog" className="hover:text-accent-text">
+                  {t('page_title')}
+                </Link>
+              </li>
+              <li aria-current="page" className="hidden min-w-0 items-center gap-1.5 text-ink sm:inline-flex">
+                <ChevronRight size={13} strokeWidth={1.6} className="shrink-0 text-ornament-soft" aria-hidden="true" />
+                <span className="truncate">{post.title}</span>
+              </li>
+            </ol>
           </nav>
 
-          {/* Header */}
-          <header className="mb-12">
-            <h1 className="font-heading text-4xl sm:text-5xl font-extrabold tracking-tight mb-8 leading-tight">
+          <div className="mt-10 text-center sm:mt-12">
+            <p className="sc text-[0.85rem] text-accent-text">{t('article_label')}</p>
+            <h1 className="mx-auto mt-3 max-w-3xl text-balance text-[2.1rem] font-semibold leading-[1.15] text-ink sm:text-[2.8rem]">
               {post.title}
             </h1>
-
-            <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground pb-8 border-b border-border">
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                  <User size={20} />
-                </div>
-                <div>
-                  <div className="text-foreground font-bold">{post.author?.name || 'Cahan Academy'}</div>
-                  <div className="text-[12px]">{t('author_label') || 'Müəllif'}</div>
-                </div>
+            <OrnamentDivider className="mt-5" />
+            <dl className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[1rem] text-ink-muted">
+              <div>
+                <dt className="sr-only">{t('author_label')}</dt>
+                <dd className="sc text-[0.85rem] text-ink">{author}</dd>
               </div>
-              <div className="flex items-center gap-2">
-                <Calendar size={18} className="text-primary" />
-                <span>{formattedDate}</span>
-              </div>
-              {post.readingTime && (
-                <div className="flex items-center gap-2">
-                  <Clock size={18} className="text-primary" />
-                  <span>{post.readingTime}</span>
+              {formattedDate && (
+                <div className="time-italic inline-flex items-center gap-1.5">
+                  <dt>
+                    <Calendar size={15} strokeWidth={1.6} className="text-ornament" aria-hidden="true" />
+                    <span className="sr-only">{t('published_on')}</span>
+                  </dt>
+                  <dd>
+                    <time dateTime={post.createdAt}>{formattedDate}</time>
+                  </dd>
                 </div>
               )}
-              <button className="ml-auto flex items-center gap-2 text-primary font-bold hover:opacity-80 transition-opacity">
-                <Share2 size={18} />
-                {t('share') || 'Paylaş'}
-              </button>
-            </div>
-          </header>
-
-          {/* Cover Image */}
-          {post.image && (
-            <div className="relative aspect-video rounded-3xl overflow-hidden mb-12 shadow-2xl">
-              <Image
-                src={post.image}
-                alt={post.title}
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-          )}
-
-          {/* Content */}
-          <div 
-            className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-heading prose-headings:font-bold prose-p:leading-relaxed prose-a:text-primary mb-20 break-words whitespace-pre-wrap overflow-hidden"
-            dangerouslySetInnerHTML={{ __html: post.content || '' }}
-          />
-
-          {/* Footer Navigation */}
-          <div className="flex items-center justify-between py-10 border-y border-border mb-20">
-             <Link href="/blog" className="flex items-center gap-2 text-primary font-bold hover:-translate-x-1 transition-transform">
-                <ArrowLeft size={20} />
-                {t('back_to_blog') || 'Bütün məqalələrə qayıt'}
-             </Link>
+              {post.readingTime && (
+                <div className="time-italic inline-flex items-center gap-1.5">
+                  <dt>
+                    <Clock size={15} strokeWidth={1.6} className="text-ornament" aria-hidden="true" />
+                    <span className="sr-only">{t('reading_time')}</span>
+                  </dt>
+                  <dd>{post.readingTime}</dd>
+                </div>
+              )}
+            </dl>
           </div>
 
-          {/* Related Posts */}
-          {relatedPosts.length > 0 && (
-            <section>
-              <h2 className="font-heading text-3xl font-bold mb-10 flex items-center gap-3">
-                <BookOpen className="text-primary" size={28} />
-                {t('related_posts') || 'Oxşar məqalələr'}
-              </h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {relatedPosts.map((rp, i) => (
-                  <BlogCard key={rp.id} post={rp} index={i} />
-                ))}
-              </div>
-            </section>
+          <OrnateFrame corners="all" cornerSize="h-6 w-6 sm:h-8 sm:w-8" className="mt-10 p-2.5 sm:p-4">
+            <CoverImage
+              src={post.image}
+              alt={post.title}
+              sketch="inkwell"
+              priority
+              sizes="(min-width: 1024px) 54rem, 100vw"
+              className={cn(isRealImage(post.image) ? 'aspect-[16/9]' : 'aspect-[16/7]')}
+            />
+          </OrnateFrame>
+        </header>
+
+        <div className="mx-auto max-w-[44rem] px-4 pt-12 sm:px-6 sm:pt-14">
+          {post.excerpt && (
+            <p className="mb-8 text-[1.25rem] italic leading-relaxed text-ink-muted">{post.excerpt}</p>
           )}
+          {html && (
+            <div
+              className={cn('prose prose-ornate max-w-none', styles.body)}
+              dangerouslySetInnerHTML={{ __html: html }}
+            />
+          )}
+
+          <div className="mt-14 flex flex-col items-center gap-5">
+            <WaxSeal size={56} />
+            <div className="flex w-full flex-wrap items-center justify-between gap-3 border-t border-line pt-5">
+              <Button as={Link} href="/blog" variant="ghost" size="sm" icon={ArrowLeft}>
+                {t('back_to_blog')}
+              </Button>
+              <ShareButton title={post.title} label={t('share')} copiedLabel={t('link_copied')} />
+            </div>
+          </div>
         </div>
       </article>
+
+      {related.length > 0 && (
+        <section aria-labelledby="related-title" className="cv-auto paper relative pb-28 pt-24">
+          <WaveEdge invert fill="var(--page-base)" className="absolute inset-x-0 -top-px" />
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <ScriptTitle id="related-title" align="center" size="section" title={t('related_posts')} />
+            <Reveal as="ul" stagger className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {related.map((p) => (
+                <li key={p.id}>
+                  <BlogCard post={p} />
+                </li>
+              ))}
+            </Reveal>
+          </div>
+          <WaveEdge fill="var(--page-base)" className="absolute inset-x-0 -bottom-px" />
+        </section>
+      )}
     </>
   );
 }
