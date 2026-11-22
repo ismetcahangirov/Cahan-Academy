@@ -1,98 +1,167 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Search, Users, GraduationCap, Briefcase } from 'lucide-react';
+import { Search, X } from 'lucide-react';
+import { Link } from '@/i18n/routing';
 import TeacherCard from '@/components/cards/TeacherCard';
-import { Teacher } from '@/types/teacher';
+import { Button, EmptyState, Input } from '@/components/ui';
+import Reveal from '@/components/ui/Reveal';
+import Pagination from '@/components/courses/Pagination';
+import { matches } from '@/components/courses/search';
+import { coverSrc } from '@/components/courses/media';
+import type { Teacher } from '@/types/teacher';
 
+/**
+ * Teacher directory (client island): search by name / position / bio, paginated grid of arched
+ * portraits (two columns on phones). The query lives in the URL (?q=&page=). Placeholder portraits
+ * (missing / stock / mock images) render as sketches (coverSrc).
+ */
 interface TeachersClientPageProps {
   teachers: Teacher[];
   locale: string;
 }
 
+const PAGE_SIZE = 12;
+
 export default function TeachersClientPage({ teachers, locale }: TeachersClientPageProps) {
   const t = useTranslations('teachers');
-  const [searchQuery, setSearchQuery] = useState('');
+  const tp = useTranslations('teachersPage');
+  const tn = useTranslations('nav');
 
-  const filteredTeachers = useMemo(() => {
-    return teachers.filter((teacher) => {
-      const matchesSearch = 
-        teacher.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        teacher.position.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesSearch;
+  const [query, setQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const resultsRef = useRef<HTMLHeadingElement>(null);
+  const hydrated = useRef(false);
+
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    setQuery(p.get('q') ?? '');
+    const pg = Number(p.get('page'));
+    if (Number.isInteger(pg) && pg > 1) setPage(pg);
+    hydrated.current = true;
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated.current) return;
+    const p = new URLSearchParams(window.location.search);
+    if (query.trim()) p.set('q', query.trim());
+    else p.delete('q');
+    if (page > 1) p.set('page', String(page));
+    else p.delete('page');
+    const qs = p.toString();
+    const url = `${window.location.pathname}${qs ? `?${qs}` : ''}${window.location.hash}`;
+    if (url !== `${window.location.pathname}${window.location.search}${window.location.hash}`) {
+      window.history.replaceState(window.history.state, '', url);
+    }
+  }, [query, page]);
+
+  const filtered = useMemo(
+    () => teachers.filter((teacher) => matches(query, [teacher.name, teacher.position, teacher.bio], locale)),
+    [teachers, query, locale]
+  );
+
+  const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const current = Math.min(page, pages);
+  const visible = filtered.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE);
+
+  const goToPage = (next: number) => {
+    setPage(next);
+    requestAnimationFrame(() => {
+      resultsRef.current?.scrollIntoView({ block: 'start' });
+      resultsRef.current?.focus({ preventScroll: true });
     });
-  }, [teachers, searchQuery]);
+  };
+  const clear = () => {
+    setQuery('');
+    setPage(1);
+  };
 
-  return (
-    <div className="min-h-screen pt-28 pb-20">
-      {/* Header Section */}
-      <section className="relative mb-16 overflow-hidden">
-        <div className="absolute inset-0 bg-primary/5 -skew-y-3 origin-left translate-y-[-50%]" />
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-6">
-              <Users size={14} />
-              <span>{t('badge')}</span>
-            </div>
-            <h1 className="font-heading text-4xl sm:text-6xl font-extrabold tracking-tight mb-6">
-              {t('page_title')}
-            </h1>
-            <p className="text-muted-foreground text-lg sm:text-xl leading-relaxed">
-              {t('page_description')}
-            </p>
-          </div>
+  if (!teachers.length) {
+    return (
+      <section className="mx-auto max-w-3xl px-4 pb-24 pt-6 sm:px-6">
+        <div className="card-paper">
+          <EmptyState
+            sketch="notebook"
+            title={tp('unavailable_title')}
+            description={tp('unavailable_desc')}
+            action={
+              <Button as={Link} href="/courses" variant="outline">
+                {tn('courses')}
+              </Button>
+            }
+          />
         </div>
       </section>
+    );
+  }
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Controls */}
-        <div className="flex flex-col md:flex-row gap-6 mb-12 items-center justify-between">
-          <div className="relative w-full md:max-w-md group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={20} />
-            <input
-              type="text"
-              placeholder={t('search_placeholder')}
-              className="w-full pl-12 pr-4 py-4 rounded-2xl bg-card border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-
-          <div className="flex items-center gap-6 text-sm text-muted-foreground whitespace-nowrap">
-            <div className="flex items-center gap-2">
-              <GraduationCap size={18} className="text-primary" />
-              <span><strong className="text-foreground">{teachers.length}</strong> {t('stat_teachers')}</span>
-            </div>
-            <div className="hidden sm:flex items-center gap-2">
-              <Briefcase size={18} className="text-primary" />
-              <span>{t('stat_experts')}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Teachers Grid */}
-        {filteredTeachers.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {filteredTeachers.map((teacher) => (
-              <TeacherCard key={teacher.id} teacher={teacher} locale={locale} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20 bg-accent/30 rounded-3xl border border-dashed border-border">
-            <Search size={48} className="mx-auto text-muted-foreground/30 mb-4" />
-            <h3 className="text-xl font-bold mb-2">{t('no_results_title')}</h3>
-            <p className="text-muted-foreground">{t('no_results_desc')}</p>
-            <button 
-              onClick={() => setSearchQuery('')}
-              className="mt-6 text-primary font-bold hover:underline"
+  return (
+    <section aria-labelledby="teacher-results" className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
+      <div className="card relative z-[1] mx-auto -mt-6 flex max-w-3xl flex-col gap-3 p-4 sm:-mt-10 sm:flex-row sm:items-center sm:p-5">
+        <div className="relative min-w-0 flex-1">
+          <label htmlFor="teacher-search" className="sr-only">
+            {tp('search_label')}
+          </label>
+          <Input
+            id="teacher-search"
+            type="search"
+            icon={Search}
+            value={query}
+            autoComplete="off"
+            enterKeyHint="search"
+            placeholder={t('search_placeholder')}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setPage(1);
+            }}
+            className="pr-11 [&::-webkit-search-cancel-button]:hidden"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={clear}
+              aria-label={t('clear_search')}
+              className="btn btn-ghost btn-icon btn-sm absolute right-1 top-1/2 -translate-y-1/2"
             >
-              {t('clear_search')}
+              <X size={16} strokeWidth={1.6} aria-hidden="true" />
             </button>
-          </div>
-        )}
+          )}
+        </div>
+        <p className="sc num whitespace-nowrap text-center text-[0.85rem] text-ink-muted sm:text-right" aria-live="polite">
+          {tp('results', { count: filtered.length })}
+        </p>
       </div>
-    </div>
+
+      <h2 id="teacher-results" ref={resultsRef} tabIndex={-1} className="sr-only">
+        {tp('list_label')}
+      </h2>
+
+      {visible.length ? (
+        <>
+          <Reveal as="ul" stagger className="mt-10 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
+            {visible.map((teacher) => (
+              <li key={teacher.id}>
+                <TeacherCard teacher={{ ...teacher, image: coverSrc(teacher.image) }} />
+              </li>
+            ))}
+          </Reveal>
+          <Pagination page={current} total={pages} onChange={goToPage} className="mt-12" />
+        </>
+      ) : (
+        <div className="card-paper mx-auto mt-10 max-w-3xl sm:mt-12">
+          <EmptyState
+            sketch="inkwell"
+            title={tp('empty_title')}
+            description={t('no_results_desc')}
+            action={
+              <Button variant="outline" onClick={clear}>
+                {t('clear_search')}
+              </Button>
+            }
+          />
+        </div>
+      )}
+    </section>
   );
 }
