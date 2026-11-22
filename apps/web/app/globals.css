@@ -1180,6 +1180,9 @@ select.field {
   }
 }
 @media print {
+  .cv-auto {
+    content-visibility: visible;
+  }
   .reveal.is-pending,
   .reveal-stagger.is-pending > * {
     opacity: 1 !important;

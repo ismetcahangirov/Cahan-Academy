@@ -266,6 +266,7 @@ try {
     const samples = [];
     for (let run = 0; run < runs; run += 1) {
       const context = await newContext(browser, {
+        renderAll: false,
         theme,
         width: dev.width,
         height: dev.height,
