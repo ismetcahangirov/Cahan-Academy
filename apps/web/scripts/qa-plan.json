@@ -344,7 +344,7 @@
     "path": "admin:/dashboard/courses",
     "name": "confirm-delete",
     "actions": [
-      "click=main button:has(svg.lucide-trash-2)",
+      "click=main button:has(svg.lucide-trash2)",
       "wait=500"
     ]
   },
@@ -352,7 +352,7 @@
     "path": "admin:/dashboard/faq",
     "name": "toast",
     "actions": [
-      "click=main button:has(svg.lucide-trash-2)",
+      "click=main button:has(svg.lucide-trash2)",
       "wait=400",
       "click=[role=dialog] .btn-danger",
       "wait=700"
