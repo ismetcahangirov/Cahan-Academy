@@ -370,7 +370,7 @@
     "path": "admin:/dashboard/settings",
     "name": "validation",
     "actions": [
-      "click=main form:nth-of-type(2) button[type=submit]",
+      "click=main form >> nth=1 >> button[type=submit]",
       "wait=400"
     ]
   },
