@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import PageBand from '@/components/layout/PageBand';
 import BlogList from '@/components/blog/BlogList';
-import { loadPosts } from '@/components/blog/data';
+import { loadBlogPosts } from '@/lib/api';
 import { alternatesFor, ogImages } from '@/lib/seo';
 import JsonLd from '@/components/seo/JsonLd';
 import { absoluteUrl } from '@/lib/utils';
@@ -31,7 +31,7 @@ export default async function BlogPage({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'blog' });
-  const { posts, failed } = await loadPosts(locale);
+  const { items: posts, failed } = await loadBlogPosts(locale);
 
   return (
     <>
