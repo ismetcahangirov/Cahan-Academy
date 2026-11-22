@@ -33,7 +33,31 @@
     "message": "Message",
     "send": "Send",
     "success": "Your request has been received. We will contact you shortly.",
-    "error": "An error occurred. Please try again."
+    "error": "An error occurred. Please try again.",
+    "eyebrow": "Write to us",
+    "lead": "Have a question? Get in touch and our team will reply as soon as possible.",
+    "form_title": "Send a message",
+    "form_hint": "All fields are required.",
+    "info_title": "Find us",
+    "info_lead": "Call, write, or visit the academy.",
+    "address_label": "Address",
+    "address_value": "12 Nizami St., Baku",
+    "map_link": "Open in maps",
+    "hours_label": "Opening hours",
+    "hours_week": "Monday – Saturday: 09:00 – 18:00",
+    "hours_sunday": "Sunday: closed",
+    "ph_name": "e.g. Ali Aliyev",
+    "ph_email": "name@mail.com",
+    "ph_subject": "What is it about?",
+    "ph_message": "Write your message here…",
+    "err_name": "Name must be at least 2 characters",
+    "err_email": "Enter a valid email address",
+    "err_subject": "Subject must be at least 3 characters",
+    "err_message": "Message must be at least 10 characters",
+    "err_too_long": "The text is too long",
+    "success_title": "Thank you",
+    "send_another": "Send another message",
+    "error_title": "The message was not sent"
   },
   "enroll": {
     "title": "Enroll in a Course",
@@ -127,7 +151,21 @@
     "author_label": "Author",
     "share": "Share",
     "related_posts": "Related posts",
-    "back_to_blog": "Back to all articles"
+    "back_to_blog": "Back to all articles",
+    "search_label": "Search articles",
+    "clear_search": "Clear search",
+    "results_count": "{count, plural, one {# article} other {# articles}}",
+    "no_results_desc": "Try another word or clear the search.",
+    "empty_title": "Nothing here yet",
+    "empty_desc": "The first articles will appear here soon.",
+    "error_title": "A little later",
+    "error_desc": "The articles could not be loaded right now. Please try again in a moment.",
+    "latest_label": "Latest article",
+    "article_label": "Blog article",
+    "breadcrumb_label": "Breadcrumb",
+    "link_copied": "Link copied",
+    "reading_time": "Reading time",
+    "published_on": "Published"
   },
   "about": {
     "badge": "About Us",
@@ -150,21 +188,94 @@
     "value_student_desc": "Our graduates finding jobs and growing is our top priority.",
     "team_title": "Our Professional Team",
     "team_subtitle": "Field experts working to provide you with the best education.",
-    "all_teachers": "All teachers"
+    "all_teachers": "All teachers",
+    "history_eyebrow": "Our story",
+    "history_step1": "The beginning",
+    "history_step2": "Today",
+    "history_step3": "Tomorrow",
+    "mission_eyebrow": "Why we exist",
+    "values_eyebrow": "What unites us",
+    "team_eyebrow": "The people of the academy",
+    "team_empty_title": "Coming soon",
+    "team_empty_desc": "Our team will be introduced here soon. Meanwhile, meet our teachers.",
+    "team_error_title": "A little later",
+    "team_error_desc": "The team list could not be loaded right now. Please check back shortly, or meet our teachers."
   },
   "faq": {
     "badge": "Have Questions?",
     "title": "Frequently Asked Questions",
     "description": "Find answers to the most common questions about our academy, courses, and registration process.",
     "meta_title": "Frequently Asked Questions | Cahan Academy",
-    "meta_description": "Frequently asked questions and answers about Cahan Academy."
+    "meta_description": "Frequently asked questions and answers about Cahan Academy.",
+    "still_title": "Still wondering?",
+    "still_desc": "If your answer is not here, write to us and our team will reply.",
+    "still_cta": "Write to us",
+    "fallback": [
+      {
+        "q": "How do I enrol in a course?",
+        "a": "Press “Enroll Now” on the course page and fill in the form. Our team will get in touch with you."
+      },
+      {
+        "q": "Where can I find a course’s price and duration?",
+        "a": "Each course page shows its price, duration and level. For anything else, write to us through the contact form."
+      },
+      {
+        "q": "Where can I learn about the teachers?",
+        "a": "The “Teachers” section has a profile for every teacher, with their field and the courses they teach."
+      },
+      {
+        "q": "How can I contact you?",
+        "a": "Fill in the form on the “Contact” page, or use the phone number and e-mail address listed there."
+      }
+    ]
   },
   "legal": {
     "privacy_policy_title": "Privacy Policy",
     "terms_of_use_title": "Terms of Use",
     "last_updated": "Last updated",
     "privacy_content": "At Cahan Academy, your privacy is important to us. This document explains how your data is collected and protected...",
-    "terms_content": "By using this website, you agree to the following terms and conditions..."
+    "terms_content": "By using this website, you agree to the following terms and conditions...",
+    "eyebrow": "Legal information",
+    "toc": "Contents",
+    "see_also": "See also",
+    "privacy_lead": "At Cahan Academy, your privacy matters to us. This document explains how your data is collected and protected.",
+    "terms_lead": "By using this website, you accept the terms below.",
+    "privacy_sections": [
+      {
+        "title": "Data we collect",
+        "body": "We collect the information you provide (name, email, phone) when you register on our website, enrol in a course or fill in the contact form."
+      },
+      {
+        "title": "Why we use it",
+        "body": "The collected information is used to provide educational services, to contact you and to improve the quality of our service."
+      },
+      {
+        "title": "Security",
+        "body": "To keep your data safe we use modern encryption technologies and server security protocols."
+      },
+      {
+        "title": "Contact",
+        "body": "If you have any questions about this privacy policy, you can contact us at: info@cahanacademy.az"
+      }
+    ],
+    "terms_sections": [
+      {
+        "title": "General terms",
+        "body": "By using the Cahan Academy website you confirm that you agree to all of these terms. If you do not agree with them, please stop using the service."
+      },
+      {
+        "title": "Copyright",
+        "body": "All materials on the website (texts, videos, logos) belong to Cahan Academy and may not be copied without permission."
+      },
+      {
+        "title": "Acceptable use",
+        "body": "Users may use the services only for lawful purposes and must not do anything that interferes with the operation of the site."
+      },
+      {
+        "title": "Changes",
+        "body": "We reserve the right to change these terms at any time. Changes take effect from the moment they are published on the site."
+      }
+    ]
   },
   "cookie": {
     "title": "Cookies",

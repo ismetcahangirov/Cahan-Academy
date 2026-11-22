@@ -1,61 +1,89 @@
 import { getLocale, getTranslations } from 'next-intl/server';
-import Image from 'next/image';
-import { Link } from '@/i18n/routing';
 import { ArrowRight } from 'lucide-react';
+import { Link } from '@/i18n/routing';
+import { apiFetch } from '@/lib/api';
+import CoverImage from '@/components/cards/CoverImage';
+import { EdelweissGlyph, ScriptTitle } from '@/components/ornament';
+import { Button, EmptyState, Reveal } from '@/components/ui';
 
-async function getTeamMembers(locale?: string) {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api';
+/**
+ * TeamSection (about) — team members from GET /api/team in arched, matted portrait frames (photo or
+ * notebook sketch), name in serif, role in small caps. The endpoint is flaky in production (500), so a
+ * failure and an empty list both degrade to a framed empty state that points to the teachers page.
+ */
+interface TeamMember {
+  id: string;
+  name: string;
+  position: string | null;
+  image: string | null;
+}
+
+async function loadTeam(locale: string): Promise<{ members: TeamMember[]; failed: boolean }> {
   try {
-    const res = await fetch(`${API_URL}/team?locale=${locale ?? 'az'}`, { next: { tags: ['team'], revalidate: 86400 } });
-    if (!res.ok) return [];
-    const json = await res.json();
-    return json.data ?? [];
-  } catch {
-    return [];
+    const res = await apiFetch<{ data?: TeamMember[] }>(`/team?locale=${encodeURIComponent(locale)}`, {
+      tags: ['team'],
+      revalidate: 86400,
+    });
+    return { members: Array.isArray(res.data) ? res.data : [], failed: false };
+  } catch (error) {
+    console.error('[about] team fetch failed:', error instanceof Error ? error.message : error);
+    return { members: [], failed: true };
   }
 }
 
 export default async function TeamSection() {
   const t = await getTranslations('about');
-  const locale = await getLocale() as 'az' | 'en' | 'ru';
-  let members: any[] = [];
-
-  try {
-    members = await getTeamMembers(locale);
-  } catch (error) {
-    console.error('Team members fetch error:', error);
-  }
+  const locale = await getLocale();
+  const { members, failed } = await loadTeam(locale);
 
   return (
-    <section className="py-24 bg-foreground/[0.02]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-16">
-          <div className="max-w-2xl">
-            <h2 className="text-4xl font-bold text-foreground mb-4">{t('team_title')}</h2>
-            <p className="text-foreground/60 text-lg">{t('team_subtitle')}</p>
-          </div>
-        </div>
+    <section aria-labelledby="team-title" className="cv-auto pb-24 pt-8 sm:pb-28">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <Reveal>
+          <ScriptTitle
+            id="team-title"
+            align="center"
+            size="section"
+            eyebrow={t('team_eyebrow')}
+            title={t('team_title')}
+            lead={t('team_subtitle')}
+          />
+        </Reveal>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {members.map((member: any) => (
-            <div key={member.id} className="group relative">
-              <div className="relative aspect-[3/4] rounded-3xl overflow-hidden mb-6">
-                <Image
-                  src={member.image || 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=600'}
-                  alt={member.name}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </div>
-              <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
-                {member.name}
-              </h3>
-              <p className="text-foreground/50 font-medium">
-                {member.position}
-              </p>
-            </div>
-          ))}
+        {members.length > 0 ? (
+          <Reveal as="ul" stagger className="mt-12 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
+            {members.map((m) => (
+              <li key={m.id}>
+                <article className="card-ornate flex h-full flex-col items-center p-3 pb-5 text-center sm:p-5 sm:pb-6">
+                  <CoverImage
+                    src={m.image}
+                    alt={m.name}
+                    sketch="notebook"
+                    rounded="arch"
+                    sizes="(min-width: 1024px) 18rem, (min-width: 640px) 40vw, 45vw"
+                    className="aspect-[4/5] w-full max-w-[14rem]"
+                  />
+                  <EdelweissGlyph className="mt-4 h-4 w-4" />
+                  <h3 className="mt-2 text-[1.08rem] font-semibold leading-snug text-ink sm:text-[1.25rem]">{m.name}</h3>
+                  {m.position && <p className="sc mt-1 text-[0.78rem] text-ink-muted sm:text-[0.85rem]">{m.position}</p>}
+                </article>
+              </li>
+            ))}
+          </Reveal>
+        ) : (
+          <div className="card-paper mx-auto mt-12 max-w-2xl">
+            <EmptyState
+              sketch="notebook"
+              title={failed ? t('team_error_title') : t('team_empty_title')}
+              description={failed ? t('team_error_desc') : t('team_empty_desc')}
+            />
+          </div>
+        )}
+
+        <div className="mt-10 flex justify-center">
+          <Button as={Link} href="/teachers" variant="outline" iconAfter={ArrowRight}>
+            {t('all_teachers')}
+          </Button>
         </div>
       </div>
     </section>
