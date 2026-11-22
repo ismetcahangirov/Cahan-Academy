@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata, Viewport } from 'next';
 import { routing } from '@/i18n/routing';
 import { fontVariables } from '@/lib/fonts';
+import { SITE_URL } from '@/lib/utils';
 import CookieConsent from '@/components/ui/CookieConsent';
 import RevealObserver from '@/components/ui/RevealObserver';
 import ThemeScript from '@/components/layout/ThemeScript';
@@ -14,15 +15,8 @@ export function generateStaticParams() {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://cahanacademy.az'),
-  alternates: {
-    canonical: '/',
-    languages: {
-      'az-AZ': '/az',
-      'en-US': '/en',
-      'ru-RU': '/ru',
-    },
-  },
+  // canonical / hreflang are set per page (lib/utils localizedPath); the layout must not force '/' on every page
+  metadataBase: new URL(SITE_URL),
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION_CODE,
   },

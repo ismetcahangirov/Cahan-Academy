@@ -9,6 +9,7 @@ import TeachersPreview from '@/components/sections/TeachersPreview';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
 import CTASection from '@/components/sections/CTASection';
 import JsonLd from '@/components/seo/JsonLd';
+import { SITE_URL, absoluteUrl, localizedPath } from '@/lib/utils';
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -18,21 +19,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'meta' });
 
+  // OG/Twitter image comes from the file-based app/[locale]/opengraph-image.tsx
   return {
     title: t('home_title'),
     description: t('home_description'),
+    alternates: {
+      canonical: localizedPath(locale),
+      languages: {
+        az: localizedPath('az'),
+        en: localizedPath('en'),
+        ru: localizedPath('ru'),
+        'x-default': localizedPath('az'),
+      },
+    },
     openGraph: {
       title: t('home_title'),
       description: t('home_description'),
       type: 'website',
       locale,
-      images: [{ url: '/og/home-og.jpg', width: 1200, height: 630 }],
     },
     twitter: {
       card: 'summary_large_image',
       title: t('home_title'),
       description: t('home_description'),
-      images: ['/og/home-og.jpg'],
     },
   };
 }
@@ -54,8 +63,8 @@ export default async function HomePage({ params }: Props) {
           '@context': 'https://schema.org',
           '@type': 'EducationalOrganization',
           name: 'Cahan Academy',
-          url: 'https://cahanacademy.az',
-          logo: 'https://cahanacademy.az/logo.png',
+          url: absoluteUrl(locale),
+          logo: `${SITE_URL}/icon-512.png`,
           description: 'Azərbaycanda peşəkar texnologiya təhsili — proqramlaşdırma, dizayn, marketinq.',
           address: {
             '@type': 'PostalAddress',

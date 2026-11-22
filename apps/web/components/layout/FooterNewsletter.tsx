@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Check, Mail, Send } from 'lucide-react';
+import { AlertCircle, Check, Mail, Send } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { subscribeNewsletter } from '@/lib/api';
 import { FormField, Input } from '../ui/Field';
@@ -17,6 +17,7 @@ import Button from '../ui/Button';
 export default function FooterNewsletter() {
   const t = useTranslations('newsletter');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorText, setErrorText] = useState('');
   const schema = z.object({ email: z.string().trim().email(t('invalid_email')) });
   const {
     register,
@@ -31,7 +32,9 @@ export default function FooterNewsletter() {
       await subscribeNewsletter(email);
       setStatus('success');
       reset();
-    } catch {
+    } catch (error) {
+      // the API's own (localised) validation / rate-limit message, see lib/api ApiError
+      setErrorText(error instanceof Error && error.message ? error.message : t('error'));
       setStatus('error');
     }
   };
@@ -71,7 +74,12 @@ export default function FooterNewsletter() {
             {t('success')}
           </span>
         )}
-        {status === 'error' && <span className="font-semibold text-accent-text">{t('error')}</span>}
+        {status === 'error' && (
+          <span role="alert" className="inline-flex items-center gap-1.5 font-semibold text-accent-text">
+            <AlertCircle size={15} strokeWidth={2} aria-hidden="true" />
+            {errorText || t('error')}
+          </span>
+        )}
       </p>
     </form>
   );
