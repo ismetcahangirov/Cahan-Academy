@@ -4,7 +4,7 @@ Bu sənəddəki "Classic & Elegant" sistemi (qızılı vurğular, `#7B001C`/`#8B
 olunmur**. 2026-11-22-dən sayt dashboard ilə eyni **ornate** dizayn dilinə keçir.
 
 **Yeganə etibarlı mənbə:** [`apps/web/docs/DESIGN.md`](../apps/web/docs/DESIGN.md) — rəng qanunu (yalnız `#5C000E`,
-ağ, qara), tokenlər, şriftlər (Great Vibes / EB Garamond / Cormorant SC), ornamentlər, komponentlər, səhifə
+ağ, qara), tokenlər, şriftlər (Cahan Display / EB Garamond / Cormorant SC), ornamentlər, komponentlər, səhifə
 reseptləri, hərəkət qaydaları və yoxlama skriptləri. Canlı qalereya: `/kit`.
 
 This document is retired. The only valid design reference is

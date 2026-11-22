@@ -52,8 +52,9 @@
   --color-focus: var(--focus);
 
   /* fonts: next/font/local variables set on <html> by lib/fonts.ts */
-  /* Latin face + Cyrillic face (unicode-range split, see lib/fonts.ts) */
-  --font-script: var(--font-great-vibes), var(--font-great-vibes-cyr), "Segoe Script", cursive;
+  /* serif / sc: Latin face + Cyrillic face (unicode-range split, see lib/fonts.ts).
+     --font-script keeps its historic name but is the title face: Cahan Display (one file per weight, all scripts). */
+  --font-script: var(--font-cahan-display), Georgia, serif;
   --font-serif: var(--font-eb-garamond), var(--font-eb-garamond-cyr), "Garamond", "Georgia", serif;
   --font-sc: var(--font-cormorant-sc), var(--font-eb-garamond), var(--font-eb-garamond-cyr), "Georgia", serif;
   --font-sans: var(--font-eb-garamond), var(--font-eb-garamond-cyr), "Garamond", "Georgia", serif;
@@ -377,9 +378,11 @@ html::-webkit-scrollbar-thumb:hover,
 @layer components {
 
 /* ------------------------------------------------------------------ typography */
+/* .font-script / .script-title: the title face (Cahan Display 400, upright). Class names are historic. */
 .font-script {
   font-size-adjust: none;
   font-weight: 400;
+  font-style: normal;
   letter-spacing: 0;
 }
 
@@ -396,6 +399,7 @@ html::-webkit-scrollbar-thumb:hover,
   font-family: var(--font-script);
   font-size-adjust: none;
   font-weight: 400;
+  font-style: normal;
   line-height: 1.08;
   color: var(--accent-text);
 }

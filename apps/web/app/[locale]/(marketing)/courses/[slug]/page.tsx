@@ -154,7 +154,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                 <Badge>{levelLabel}</Badge>
                 {course.isPopular && <Badge tone="accent">{t('filter_popular')}</Badge>}
               </div>
-              <p className="font-script mt-6 text-[2rem] leading-none text-ink-muted sm:text-[2.3rem]">{tp('detail_script')}</p>
+              <p className="font-script mt-6 text-[1.4rem] leading-tight text-ink-muted sm:text-[1.6rem]">{tp('detail_script')}</p>
               <h1 className="mt-2 break-words text-[2.2rem] font-semibold leading-[1.12] text-ink sm:text-[2.8rem]">
                 {course.title}
               </h1>
@@ -312,7 +312,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
           {teacher && (
             <Card as="section" aria-labelledby="teacher-title" className="relative p-6 text-center">
-              <p id="teacher-title" className="font-script text-[1.9rem] leading-none text-accent-text dark:text-ink">
+              <p id="teacher-title" className="font-script text-[1.35rem] leading-tight text-accent-text dark:text-ink">
                 {tp('teacher_title')}
               </p>
               <CoverImage

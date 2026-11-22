@@ -32,7 +32,7 @@ export default function TestimonialSlider({ items }: { items: Testimonial[] }) {
     <div className="mx-auto max-w-3xl text-center">
       <div aria-live="polite">
       <figure key={item.id} className="orn-reveal">
-        <span aria-hidden="true" className="font-script block text-[5rem] leading-[0.6] text-ornament">
+        <span aria-hidden="true" className="font-script block text-[4rem] leading-[0.55] text-ornament">
           “
         </span>
         <blockquote className="mt-4 text-[1.2rem] italic leading-relaxed text-ink sm:text-[1.4rem]">

@@ -114,7 +114,7 @@ export default async function TeacherDetailPage({ params }: PageProps) {
             </div>
 
             <div className="orn-rise min-w-0 text-center md:text-left">
-              <p className="font-script text-[2rem] leading-none text-ink-muted sm:text-[2.3rem]">{tp('detail_script')}</p>
+              <p className="font-script text-[1.4rem] leading-tight text-ink-muted sm:text-[1.6rem]">{tp('detail_script')}</p>
               <h1 className="mt-2 break-words text-[2.3rem] font-semibold leading-[1.1] text-ink sm:text-[2.9rem]">{teacher.name}</h1>
               {teacher.position && <p className="sc mt-3 text-[0.95rem] text-ink-muted">{teacher.position}</p>}
               <OrnamentDivider align="start" className="mt-4 hidden md:flex" />

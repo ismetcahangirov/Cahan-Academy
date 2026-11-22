@@ -75,7 +75,7 @@ export default function LoginPage() {
           <WaxSeal size={72} className="hidden lg:block" />
           <BrandLogo title="Cahan Academy" className="mt-6 hidden h-36 w-auto text-accent-text lg:block xl:h-44" />
           <BrandLockup title="Cahan Academy" className="h-9 w-auto text-accent-text lg:hidden" />
-          <p className="font-script mt-4 text-[2.4rem] leading-none text-ink lg:mt-8 lg:text-[3.2rem]">{t('login.panel_title')}</p>
+          <p className="font-script mt-4 text-[1.7rem] leading-tight text-ink lg:mt-8 lg:text-[2.3rem]">{t('login.panel_title')}</p>
           <OrnamentDivider draw={false} className="mt-1" />
           <p className="mt-2 hidden max-w-xs text-[1.05rem] text-ink-muted lg:block">{t('login.panel_text')}</p>
         </div>

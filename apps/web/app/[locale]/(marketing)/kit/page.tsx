@@ -116,8 +116,8 @@ export default async function KitPage({ params }: { params: Promise<{ locale: st
       <Block id="type" title="Typography">
         <div className="grid gap-8 lg:grid-cols-2">
           <div className="space-y-3">
-            <p className="script-title text-[3.4rem]">Bilikli gələcək</p>
-            <p className="script-title text-[2.4rem]">Öyrənmə yolu</p>
+            <p className="script-title text-[2.4rem]">Bilikli gələcək</p>
+            <p className="script-title text-[1.7rem]">Öyrənmə yolu</p>
             <p className="sc text-[0.9rem] text-ink-muted">Kiçik başlıq · Giriş · İŞ · ŞƏRTLƏR</p>
           </div>
           <div className="space-y-3">
@@ -206,7 +206,7 @@ export default async function KitPage({ params }: { params: Promise<{ locale: st
           </Card>
         </div>
         <OrnateFrame className="mt-6 p-8 text-center">
-          <p className="script-title text-[2.2rem]">OrnateFrame</p>
+          <p className="script-title text-[1.55rem]">OrnateFrame</p>
           <OrnamentDivider className="mt-2" />
           <p className="mt-3 text-ink-muted">Dörd künc naxışı, daxili xətt, yumşaq daxili parıltı.</p>
         </OrnateFrame>

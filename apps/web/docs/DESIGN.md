@@ -10,8 +10,8 @@ to the dashboard sees one brand. The landing is *more expressive*: it gets the f
 with lace, draped ribbon and wax seal, wavy section joins, parchment bands, sketches, timeline, bookmark ribbons,
 ornate portrait frames). The admin CMS (`/dashboard/*`) follows the calmer data-page recipe.
 
-Mood: a manuscript academy in deep wine — lace and satin at the edges, parchment for reading, a calligraphic hand for
-short headings, small caps for labels. The ornament frames content and never hides it.
+Mood: a manuscript academy in deep wine — lace and satin at the edges, parchment for reading, the academy's own
+high-contrast display serif for short headings, small caps for labels. The ornament frames content and never hides it.
 
 ---
 
@@ -90,20 +90,27 @@ An inline `<head>` script (`ThemeScript`) applies `.dark` before first paint (no
 
 | role | family | class | rules |
 |---|---|---|---|
-| Script | **Great Vibes** | `.script-title`, `font-script`, `<ScriptTitle>` | short fixed headings (2–4 words): hero, section, page, modal, empty state. **Never** data (course/teacher/post names), buttons, inputs, nav, tables. |
+| Title | **Cahan Display** 400 (the academy's own face; 300/700 shipped, not used yet) | `.script-title`, `font-script`, `<ScriptTitle>` (historic names, kept) | short fixed headings (2–4 words): hero, section, page, modal, empty state. Always weight 400, upright (`font-style: normal`, set by the classes). **Never** data (course/teacher/post names), body text, buttons, inputs, nav, tables, numbers. |
 | Serif body + data | **EB Garamond** 400–800 + italic | default `font-serif` | everything readable; `.num` = lining tabular figures; `.time-italic` for dates/times. |
 | Small caps | **Cormorant SC** 600/700 | `.sc`, `font-sc` | eyebrows, labels, buttons, badges, nav, table headers. Always `text-transform: uppercase` (built into `.sc`, `.btn`, `.badge`, `.field-label`…). With `<html lang="az">` this gives the dotted **İ** — Cormorant SC draws lowercase `i` dotless ("Giriş" would read "Gırış"). Never remove the uppercase. Cormorant SC has no `₼`. |
 
 Fonts are self-hosted with `next/font/local` (`lib/fonts.ts`, files in `assets/fonts/`, `display: swap`,
-metric-adjusted fallback). EB Garamond and Great Vibes are split into a `-latin` subset (Basic Latin, Latin-1,
+metric-adjusted fallback). EB Garamond is split into a `-latin` subset (Basic Latin, Latin-1,
 Latin Ext-A, Ə/ə, punctuation, №, ₼ — preloaded, everything az/en pages need) and a `-cyrillic` subset (only
 downloaded on ru pages, via `unicode-range`); Cormorant SC is one small file per weight (600/700, not preloaded).
-Proof: `npm run fonts:coverage` (every subset + every family). Rebuild: download the OFL TTFs from
-`github.com/google/fonts/ofl/{ebgaramond,greatvibes,cormorantsc}` and run
+**Cahan Display** (`cahan-display-{light,regular,bold}.woff2`, SIL OFL `assets/fonts/OFL-CahanDisplay.txt`) is one
+file per weight that already covers Latin, every Azerbaijani letter, Russian Cyrillic, № and ₼, so it has no
+unicode-range split; it is preloaded. Its hhea and typo metrics are equal (950/−300, UPM 1000, line gap 0), so the
+automatic `adjustFontFallback: 'Times New Roman'` fallback lines up. Source OTFs, README (how it was drawn) and the
+licence live in `docs/brand/font/cahan-display/`; the font is built in its own project, not in this repo.
+Proof: `npm run fonts:coverage` (every subset + every family). Rebuild EB Garamond / Cormorant SC: download the OFL TTFs from
+`github.com/google/fonts/ofl/{ebgaramond,cormorantsc}` and run
 `pyftsubset <ttf> --unicodes="<range from lib/fonts.ts>" --layout-features='kern,liga,clig,calt,lnum,onum,tnum,pnum,ccmp,locl,mark,mkmk,case' --flavor=woff2 --no-hinting --desubroutinize`.
 Do not add other families.
 
-Scale: hero script 3.3→5.6rem; page title 2.7→3.4rem; section 2.35→2.9rem; card/modal script 1.85rem; card title
+Scale (Cahan Display is a wide face with a tall x-height, so its sizes are about 0.7× the old calligraphic ones):
+hero title 2.4→4rem (`text-balance`, two lines at 1440); page title 2→2.75rem; section 1.75→2.25rem;
+card/modal title 1.4rem; script phrase above a detail page's serif h1 1.4→1.6rem `text-ink-muted`; card title
 serif `text-[1.25–1.3rem] font-semibold`; body 1.0625rem; lead 1.1–1.25rem `text-ink-muted`; SC labels 0.8–0.95rem.
 Detail pages may show the entity's own name as the page title **in serif** (`text-[2.4rem] font-semibold`), with a
 short script phrase above it if wanted.
@@ -264,7 +271,7 @@ Do: one ornament idea per region; centred compositions in heroes; generous air; 
 string in `messages/{az,en,ru}.json` (check each bundle); `<html lang>` = locale (layout does it); images through
 `CoverImage`; icons `strokeWidth={1.6}` in `text-ornament` / `text-accent-text`.
 
-Don't: script for data/buttons/nav; `text-*/NN` opacity on tokens; Tailwind palette colours; gold; glows/blur orbs;
+Don't: the title face for data/buttons/nav/body; `text-*/NN` opacity on tokens; Tailwind palette colours; gold; glows/blur orbs;
 `bg-black/60 backdrop-blur-sm`; `rounded-2xl shadow-2xl` generic cards; emoji decoration ("Made with ❤️");
 invented facts (counts, ratings, "№1", phones, testimonials) — keep existing copy and list it as "Owner must confirm";
 `alert()`/`confirm()`; native validation bubbles; hard-coded `/ornaments/*.webp` without the dark variant.
