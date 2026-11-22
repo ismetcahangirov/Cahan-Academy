@@ -1209,6 +1209,12 @@ html[lang="ru"] .i18n-ru {
   .skeleton::after {
     animation: none;
   }
+  /* react-hot-toast animates its icons (one loops); toasts appear and leave without motion */
+  .toast-ornate,
+  .toast-ornate * {
+    animation: none !important;
+    transition: none !important;
+  }
   .spin {
     animation-duration: 2.4s;
   }
