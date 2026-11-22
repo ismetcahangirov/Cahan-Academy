@@ -27,10 +27,12 @@ describe('JWT Utilities', () => {
 
   it('Expire olmuş token xəta atmalıdır', async () => {
     // 1 saniyəlik token yaradaq
-    const ACCESS_TOKEN_SECRET = new TextEncoder().encode(env.JWT_ACCESS_SECRET);
+    const ACCESS_TOKEN_SECRET = new TextEncoder().encode(env.JWT_SECRET);
     const expiredToken = await new jose.SignJWT(mockPayload)
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
+      .setIssuer('cahan-academy-api')
+      .setAudience('cahan-academy:access')
       .setExpirationTime('1s')
       .sign(ACCESS_TOKEN_SECRET);
 
@@ -41,5 +43,21 @@ describe('JWT Utilities', () => {
     await new Promise(resolve => setTimeout(resolve, 1500));
 
     await expect(verifyAccessToken(expiredToken)).rejects.toThrow();
+  });
+
+  it('boş açarla imzalanmış (saxta) token rədd edilməlidir', async () => {
+    const forged = await new jose.SignJWT(mockPayload)
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setIssuer('cahan-academy-api')
+      .setAudience('cahan-academy:access')
+      .setExpirationTime('1h')
+      .sign(new Uint8Array(0));
+    await expect(verifyAccessToken(forged)).rejects.toThrow();
+  });
+
+  it('refresh token access token kimi qəbul edilməməlidir', async () => {
+    const refresh = await generateRefreshToken({ sub: mockPayload.sub });
+    await expect(verifyAccessToken(refresh)).rejects.toThrow();
   });
 });
