@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import LegalDocument from '@/components/legal/LegalDocument';
-import { alternatesFor } from '@/lib/seo';
+import { alternatesFor, ogImages } from '@/lib/seo';
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -15,6 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: t('terms_title'),
     description: t('terms_description'),
     alternates: alternatesFor(locale, '/terms'),
+    openGraph: { title: t('terms_title'), description: t('terms_description'), type: 'website', locale, images: ogImages(locale) },
   };
 }
 

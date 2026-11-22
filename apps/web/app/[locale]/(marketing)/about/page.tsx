@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import PageBand from '@/components/layout/PageBand';
-import { alternatesFor } from '@/lib/seo';
+import { alternatesFor, ogImages } from '@/lib/seo';
 import HistorySection from '@/components/sections/about/HistorySection';
 import MissionSection from '@/components/sections/about/MissionSection';
 import ValuesSection from '@/components/sections/about/ValuesSection';
@@ -33,6 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: t('about_description'),
       type: 'website',
       locale,
+      images: ogImages(locale),
     },
   };
 }

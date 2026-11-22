@@ -3,6 +3,10 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { AuthProvider } from '@/context/AuthContext';
 
+// Rendered per request and never cached by a CDN: the admin shell is session-gated (middleware), so it
+// must not be served as shared static HTML like the marketing pages.
+export const dynamic = 'force-dynamic';
+
 // The admin area never belongs in a search index.
 export const metadata: Metadata = {
   title: 'Cahan Academy Admin',

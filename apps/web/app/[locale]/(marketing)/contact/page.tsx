@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Clock, ExternalLink, Mail, MapPin, Phone, type LucideIcon } from 'lucide-react';
 import ContactForm from '@/components/forms/ContactForm';
 import PageBand from '@/components/layout/PageBand';
-import { alternatesFor } from '@/lib/seo';
+import { alternatesFor, ogImages } from '@/lib/seo';
 import { OrnateFrame, ScriptTitle, SketchIllustration } from '@/components/ornament';
 import JsonLd from '@/components/seo/JsonLd';
 import { absoluteUrl } from '@/lib/utils';
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: t('contact_title'),
     description: t('contact_description'),
     alternates: alternatesFor(locale, '/contact'),
-    openGraph: { title: t('contact_title'), description: t('contact_description'), type: 'website', locale },
+    openGraph: { title: t('contact_title'), description: t('contact_description'), type: 'website', locale, images: ogImages(locale) },
   };
 }
 

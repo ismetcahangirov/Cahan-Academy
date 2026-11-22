@@ -6,7 +6,7 @@ import { getFaqs, type Faq } from '@/lib/api';
 import FAQAccordion from '@/components/ui/FAQAccordion';
 import { Button } from '@/components/ui';
 import PageBand from '@/components/layout/PageBand';
-import { alternatesFor } from '@/lib/seo';
+import { alternatesFor, ogImages } from '@/lib/seo';
 import { OrnateFrame, ScriptTitle, SketchIllustration } from '@/components/ornament';
 import JsonLd from '@/components/seo/JsonLd';
 
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: t('meta_title'),
     description: t('meta_description'),
     alternates: alternatesFor(locale, '/faq'),
-    openGraph: { title: t('meta_title'), description: t('meta_description'), type: 'website', locale },
+    openGraph: { title: t('meta_title'), description: t('meta_description'), type: 'website', locale, images: ogImages(locale) },
   };
 }
 

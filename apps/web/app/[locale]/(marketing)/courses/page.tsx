@@ -5,7 +5,7 @@ import { absoluteUrl } from '@/lib/utils';
 import type { Course } from '@/types/course';
 import JsonLd from '@/components/seo/JsonLd';
 import PageBand from '@/components/layout/PageBand';
-import { alternatesFor } from '@/lib/seo';
+import { alternatesFor, ogImages } from '@/lib/seo';
 import CoursesClientPage, { type Category } from './CoursesClientPage';
 
 // ISR: static HTML, regenerated in the background at most this often (same window as the
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: t('courses_title'),
     description: t('courses_description'),
     alternates: alternatesFor(locale, '/courses'),
-    openGraph: { title: t('courses_title'), description: t('courses_description'), type: 'website', locale },
+    openGraph: { title: t('courses_title'), description: t('courses_description'), type: 'website', locale, images: ogImages(locale) },
   };
 }
 

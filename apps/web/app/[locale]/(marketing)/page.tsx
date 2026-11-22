@@ -10,7 +10,7 @@ import TestimonialsSection from '@/components/sections/TestimonialsSection';
 import CTASection from '@/components/sections/CTASection';
 import JsonLd from '@/components/seo/JsonLd';
 import { SITE_URL, absoluteUrl } from '@/lib/utils';
-import { alternatesFor } from '@/lib/seo';
+import { alternatesFor, ogImages } from '@/lib/seo';
 
 // ISR: static HTML, regenerated in the background at most this often (same window as the
 // fetches it renders: courses 1 h, teachers 1 d). Explicit, so a page whose build-time fetch failed still revalidates.
@@ -34,6 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: t('home_description'),
       type: 'website',
       locale,
+      images: ogImages(locale),
     },
     twitter: {
       card: 'summary_large_image',

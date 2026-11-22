@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import PageBand from '@/components/layout/PageBand';
 import BlogList from '@/components/blog/BlogList';
 import { loadPosts } from '@/components/blog/data';
-import { alternatesFor } from '@/lib/seo';
+import { alternatesFor, ogImages } from '@/lib/seo';
 import JsonLd from '@/components/seo/JsonLd';
 import { absoluteUrl } from '@/lib/utils';
 
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: t('blog_title'),
     description: t('blog_description'),
     alternates: alternatesFor(locale, '/blog'),
-    openGraph: { title: t('blog_title'), description: t('blog_description'), type: 'website', locale },
+    openGraph: { title: t('blog_title'), description: t('blog_description'), type: 'website', locale, images: ogImages(locale) },
   };
 }
 
