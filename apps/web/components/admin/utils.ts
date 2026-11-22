@@ -43,3 +43,8 @@ export function fmtDate(iso: string | undefined | null, locale: string, withTime
     ...(withTime ? { hour: '2-digit', minute: '2-digit' } : null),
   }).format(d);
 }
+
+/** Throws an axios-shaped error when an API envelope says `success: false` (so apiMessage() can read it). */
+export function assertOk(data: { success?: boolean; message?: string }) {
+  if (!data?.success) throw { response: { data: { message: data?.message } } };
+}

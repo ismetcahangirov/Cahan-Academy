@@ -1,197 +1,128 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useAuth } from '@/context/AuthContext';
+import { useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { useTranslations } from 'next-intl';
+import { AlertCircle, KeyRound, Save, User as UserIcon } from 'lucide-react';
 import adminApi from '@/lib/adminApi';
-import { Save, KeyRound, User as UserIcon } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { useAuth } from '@/context/AuthContext';
+import { Button, FormField, Input, Card, CardHeader } from '@/components/ui';
+import { ScriptTitle } from '@/components/ornament';
+import { useAdminFeedback } from '@/components/admin/feedback';
+import { apiMessage, assertOk } from '@/components/admin/utils';
 
 export default function SettingsPage() {
+  const t = useTranslations('admin');
   const { user, updateUser, logout } = useAuth();
-  
-  const [profileData, setProfileData] = useState({
-    name: user?.name || '',
-    email: user?.email || '',
+  const { ok } = useAdminFeedback();
+  const [profileError, setProfileError] = useState('');
+  const [pwError, setPwError] = useState('');
+
+  const profileSchema = useMemo(
+    () =>
+      z.object({
+        name: z.string().trim().min(2, t('users.err_name')),
+        email: z.string().trim().min(1, t('login.err_email_required')).email(t('login.err_email_invalid')),
+      }),
+    [t]
+  );
+  const pwSchema = useMemo(
+    () =>
+      z
+        .object({
+          oldPassword: z.string().min(1, t('settings.err_old')),
+          newPassword: z.string().min(6, t('users.err_password')),
+          confirmPassword: z.string().min(1, t('settings.err_confirm')),
+        })
+        .refine((v) => v.newPassword === v.confirmPassword, { path: ['confirmPassword'], message: t('settings.err_mismatch') }),
+    [t]
+  );
+
+  const profile = useForm<z.infer<typeof profileSchema>>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: { name: user?.name ?? '', email: user?.email ?? '' },
   });
-  
-  const [passwordData, setPasswordData] = useState({
-    oldPassword: '',
-    newPassword: '',
-    confirmPassword: ''
+  const pw = useForm<z.infer<typeof pwSchema>>({
+    resolver: zodResolver(pwSchema),
+    defaultValues: { oldPassword: '', newPassword: '', confirmPassword: '' },
   });
 
-  const [isProfileSubmitting, setIsProfileSubmitting] = useState(false);
-  const [isPasswordSubmitting, setIsPasswordSubmitting] = useState(false);
-
-  const handleProfileSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsProfileSubmitting(true);
-    
+  const saveProfile = async (v: z.infer<typeof profileSchema>) => {
+    setProfileError('');
     try {
-      const { data } = await adminApi.put('/admin/profile', profileData);
-      if (data.success) {
-        toast.success(data.message);
-        // AuthContext istifadəçisini yeniləyirik
-        updateUser(data.data);
-      }
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Profili yeniləmək mümkün olmadı');
-    } finally {
-      setIsProfileSubmitting(false);
+      const { data } = await adminApi.put('/admin/profile', v);
+      assertOk(data);
+      ok(data.message || t('common.saved'));
+      updateUser(data.data);
+      profile.reset(v);
+    } catch (e) {
+      setProfileError(apiMessage(e, t('settings.profile_error')));
     }
   };
 
-  const handlePasswordSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      toast.error('Yeni şifrələr uyğun gəlmir');
-      return;
-    }
-
-    if (passwordData.newPassword.length < 6) {
-      toast.error('Yeni şifrə ən azı 6 simvol olmalıdır');
-      return;
-    }
-
-    setIsPasswordSubmitting(true);
-    
+  const savePassword = async (v: z.infer<typeof pwSchema>) => {
+    setPwError('');
     try {
-      const { data } = await adminApi.put('/admin/profile/password', {
-        oldPassword: passwordData.oldPassword,
-        newPassword: passwordData.newPassword
-      });
-      
-      if (data.success) {
-        toast.success(data.message);
-        // Şifrə dəyişdikdən sonra sessiya ləğv edilir
-        setTimeout(() => {
-          logout();
-        }, 1500);
-      }
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Şifrəni dəyişmək mümkün olmadı');
-    } finally {
-      setIsPasswordSubmitting(false);
+      const { data } = await adminApi.put('/admin/profile/password', { oldPassword: v.oldPassword, newPassword: v.newPassword });
+      assertOk(data);
+      ok(data.message || t('settings.password_changed'));
+      // changing the password revokes the session: sign out shortly after
+      setTimeout(() => void logout(), 1500);
+    } catch (e) {
+      setPwError(apiMessage(e, t('settings.password_error')));
     }
   };
+
+  const err = (msg: string, id: string) =>
+    msg && (
+      <p id={id} role="alert" className="field-error">
+        <AlertCircle aria-hidden="true" strokeWidth={2} />
+        {msg}
+      </p>
+    );
+
+  const unchanged = !profile.formState.isDirty;
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      <div>
-        <h1 className="text-2xl font-bold text-white">Tənzimləmələr</h1>
-        <p className="text-slate-400 mt-1">Şəxsi məlumatlarınızı və təhlükəsizlik ayarlarınızı idarə edin.</p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Profile Settings */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
-          <div className="p-6 border-b border-slate-800 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
-              <UserIcon size={20} />
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold text-white">Profil Məlumatları</h2>
-              <p className="text-sm text-slate-400">Şəxsi məlumatlarınızı yeniləyin</p>
-            </div>
-          </div>
-          
-          <form onSubmit={handleProfileSubmit} className="p-6 space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Ad</label>
-              <input
-                type="text"
-                required
-                value={profileData.name}
-                onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Email</label>
-              <input
-                type="email"
-                required
-                value={profileData.email}
-                onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
-              />
-            </div>
-
-            <div className="pt-2">
-              <button
-                type="submit"
-                disabled={isProfileSubmitting || (profileData.name === user?.name && profileData.email === user?.email)}
-                className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-amber-500 text-slate-900 rounded-lg font-medium hover:bg-amber-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Save size={18} />
-                {isProfileSubmitting ? 'Saxlanılır...' : 'Məlumatları Saxla'}
-              </button>
-            </div>
+    <div>
+      <ScriptTitle className="mb-6" title={t('settings.title')} subtitle={t('settings.subtitle')} />
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card variant="paper" className="p-5 sm:p-6">
+          <CardHeader title={t('settings.profile_title')} subtitle={t('settings.profile_subtitle')} actions={<UserIcon size={20} strokeWidth={1.6} aria-hidden="true" className="text-ornament" />} />
+          <form noValidate onSubmit={profile.handleSubmit(saveProfile)} className="mt-5 space-y-4">
+            <FormField label={t('common.name')} error={profile.formState.errors.name?.message} required>
+              <Input autoComplete="name" {...profile.register('name')} />
+            </FormField>
+            <FormField label={t('common.email')} error={profile.formState.errors.email?.message} required>
+              <Input type="email" autoComplete="email" {...profile.register('email')} />
+            </FormField>
+            {err(profileError, 'profile-error')}
+            <Button type="submit" icon={Save} loading={profile.formState.isSubmitting} disabled={unchanged}>
+              {profile.formState.isSubmitting ? t('common.saving') : t('settings.save_profile')}
+            </Button>
           </form>
-        </div>
+        </Card>
 
-        {/* Security Settings */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
-          <div className="p-6 border-b border-slate-800 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
-              <KeyRound size={20} />
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold text-white">Təhlükəsizlik</h2>
-              <p className="text-sm text-slate-400">Hesabınızın şifrəsini dəyişdirin</p>
-            </div>
-          </div>
-          
-          <form onSubmit={handlePasswordSubmit} className="p-6 space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Mövcud Şifrə</label>
-              <input
-                type="password"
-                required
-                value={passwordData.oldPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, oldPassword: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Yeni Şifrə</label>
-              <input
-                type="password"
-                required
-                minLength={6}
-                value={passwordData.newPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Yeni Şifrə (Təkrar)</label>
-              <input
-                type="password"
-                required
-                minLength={6}
-                value={passwordData.confirmPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
-              />
-            </div>
-
-            <div className="pt-2">
-              <button
-                type="submit"
-                disabled={isPasswordSubmitting || !passwordData.oldPassword || !passwordData.newPassword || !passwordData.confirmPassword}
-                className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Save size={18} />
-                {isPasswordSubmitting ? 'Dəyişdirilir...' : 'Şifrəni Dəyişdir'}
-              </button>
-            </div>
+        <Card variant="paper" className="p-5 sm:p-6">
+          <CardHeader title={t('settings.security_title')} subtitle={t('settings.security_subtitle')} actions={<KeyRound size={20} strokeWidth={1.6} aria-hidden="true" className="text-ornament" />} />
+          <form noValidate onSubmit={pw.handleSubmit(savePassword)} className="mt-5 space-y-4">
+            <FormField label={t('settings.old_password')} error={pw.formState.errors.oldPassword?.message} required>
+              <Input type="password" autoComplete="current-password" {...pw.register('oldPassword')} />
+            </FormField>
+            <FormField label={t('settings.new_password')} hint={t('users.password_hint')} error={pw.formState.errors.newPassword?.message} required>
+              <Input type="password" autoComplete="new-password" {...pw.register('newPassword')} />
+            </FormField>
+            <FormField label={t('settings.confirm_password')} error={pw.formState.errors.confirmPassword?.message} required>
+              <Input type="password" autoComplete="new-password" {...pw.register('confirmPassword')} />
+            </FormField>
+            {err(pwError, 'pw-error')}
+            <Button type="submit" icon={Save} loading={pw.formState.isSubmitting}>
+              {pw.formState.isSubmitting ? t('settings.changing') : t('settings.change_password')}
+            </Button>
           </form>
-        </div>
+        </Card>
       </div>
     </div>
   );

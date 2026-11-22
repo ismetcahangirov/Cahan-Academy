@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Toaster, toast, type ToastOptions } from 'react-hot-toast';
+import { Toaster, toast, type DefaultToastOptions } from 'react-hot-toast';
 import { AlertCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button, Modal } from '@/components/ui';
@@ -24,7 +24,7 @@ import { apiMessage } from './utils';
  * Toasts keep the colour law: surface + hairline border; success/error differ by icon shape and text,
  * never by green/red (react-hot-toast's default icon colours are overridden).
  */
-const toastOptions: ToastOptions = {
+const toastOptions: DefaultToastOptions = {
   duration: 4200,
   className: 'toast-ornate',
   style: {

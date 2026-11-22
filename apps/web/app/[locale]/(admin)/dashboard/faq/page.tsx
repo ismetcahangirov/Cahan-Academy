@@ -1,178 +1,150 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { ChevronDown, Eye, EyeOff, HelpCircle, Pencil, Plus, Trash2 } from 'lucide-react';
 import adminApi from '@/lib/adminApi';
-import { HelpCircle, Plus, Edit, Trash2, RefreshCcw, Eye, EyeOff, ChevronDown, ChevronUp } from 'lucide-react';
+import { Button, Card, EmptyState, Skeleton, StatusPill } from '@/components/ui';
+import FaqModal from '@/components/admin/FaqModal';
+import { PageHead, RowAction } from '@/components/admin/AdminUI';
+import { useAdminFeedback } from '@/components/admin/feedback';
+import { useAdminList } from '@/components/admin/useAdminList';
+import { apiMessage, assertOk } from '@/components/admin/utils';
+import { cn } from '@/lib/utils';
 
-interface FAQ {
+type L3 = { az: string; en: string; ru: string };
+interface Faq {
   id: string;
-  question: {
-    az: string;
-    en: string;
-    ru: string;
-  };
-  answer: {
-    az: string;
-    en: string;
-    ru: string;
-  };
+  question: L3;
+  answer: L3;
   order: number;
   isActive: boolean;
 }
 
 export default function FAQAdminPage() {
-  const [faqs, setFaqs] = useState<FAQ[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const t = useTranslations('admin');
+  const { confirm, ok, fail } = useAdminFeedback();
+  const { items, setItems, loading, error, reload } = useAdminList<Faq>('/faqs/admin/all');
+  const [open, setOpen] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<Faq | null>(null);
+  const sorted = useMemo(() => [...items].sort((a, b) => a.order - b.order), [items]);
 
-  const fetchFaqs = async () => {
-    setIsLoading(true);
+  const openModal = (f: Faq | null) => {
+    setEditTarget(f);
+    setModalOpen(true);
+  };
+
+  const toggle = async (f: Faq) => {
     try {
-      const { data } = await adminApi.get('/faqs/admin/all');
-      if (data.success) {
-        setFaqs(data.data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch FAQs:', error);
-    } finally {
-      setIsLoading(false);
+      const { data } = await adminApi.put(`/faqs/admin/${f.id}/status`, { isActive: !f.isActive });
+      assertOk(data);
+      setItems((prev) => prev.map((x) => (x.id === f.id ? { ...x, isActive: !f.isActive } : x)));
+      ok(t('common.saved'));
+    } catch (e) {
+      fail(apiMessage(e, t('common.status_error')));
     }
   };
 
-  useEffect(() => {
-    fetchFaqs();
-  }, []);
+  const askDelete = (f: Faq) =>
+    confirm({
+      title: t('confirm.delete_title'),
+      entity: f.question.az,
+      message: t('confirm.delete_body'),
+      confirmLabel: t('confirm.delete_action'),
+      onConfirm: async () => {
+        const { data } = await adminApi.delete(`/faqs/admin/${f.id}`);
+        assertOk(data);
+        setItems((prev) => prev.filter((x) => x.id !== f.id));
+        ok(t('common.deleted'));
+      },
+    });
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Bu sualı silmək istədiyinizə əminsiniz?')) return;
-    
-    try {
-      const { data } = await adminApi.delete(`/faqs/admin/${id}`);
-      if (data.success) {
-        setFaqs(faqs.filter(f => f.id !== id));
-      }
-    } catch (error) {
-      alert('Silmə xətası');
-    }
-  };
-
-  const toggleStatus = async (id: string, currentStatus: boolean) => {
-    try {
-      const { data } = await adminApi.put(`/faqs/admin/${id}/status`, { isActive: !currentStatus });
-      if (data.success) {
-        setFaqs(faqs.map(f => f.id === id ? { ...f, isActive: !currentStatus } : f));
-      }
-    } catch (error) {
-      alert('Status dəyişmə xətası');
-    }
-  };
+  const newBtn = (
+    <Button icon={Plus} onClick={() => openModal(null)}>
+      {t('faq.new')}
+    </Button>
+  );
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Tez-tez verilən suallar (FAQ)</h1>
-          <p className="text-slate-400 text-sm">Saytda görünən sualların idarə edilməsi</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={fetchFaqs}
-            className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors"
-          >
-            <RefreshCcw size={18} />
-          </button>
-          <button
-            className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-lg font-medium transition-colors"
-          >
-            <Plus size={18} />
-            Yeni Sual
-          </button>
-        </div>
-      </div>
+    <div>
+      <PageHead title={t('faq.title')} subtitle={t('faq.subtitle', { count: items.length })} onRefresh={reload} loading={loading} actions={newBtn} />
 
-      <div className="space-y-4">
-        {isLoading ? (
-          <div className="text-center py-12 text-slate-500">Yüklənir...</div>
-        ) : faqs.length === 0 ? (
-          <div className="text-center py-12 text-slate-500">Heç bir sual tapılmadı.</div>
-        ) : (
-          faqs.sort((a, b) => a.order - b.order).map((faq) => (
-            <div 
-              key={faq.id} 
-              className={`bg-slate-900 border transition-all rounded-xl overflow-hidden ${
-                expandedId === faq.id ? 'border-amber-500/50 ring-1 ring-amber-500/20' : 'border-slate-800 hover:border-slate-700'
-              }`}
-            >
-              <div 
-                className="p-4 flex items-center justify-between cursor-pointer"
-                onClick={() => setExpandedId(expandedId === faq.id ? null : faq.id)}
-              >
-                <div className="flex items-center gap-4 flex-1 min-w-0">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                    faq.isActive ? 'bg-amber-500/10 text-amber-500' : 'bg-slate-800 text-slate-500'
-                  }`}>
-                    <HelpCircle size={18} />
+      {loading && items.length === 0 ? (
+        <Card className="space-y-4 p-5" aria-busy="true">
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-6 w-full" />
+          ))}
+        </Card>
+      ) : error && items.length === 0 ? (
+        <Card className="p-2">
+          <EmptyState
+            sketch="inkwell"
+            title={t('common.load_error_title')}
+            description={error}
+            action={
+              <Button variant="outline" onClick={reload}>
+                {t('common.retry')}
+              </Button>
+            }
+          />
+        </Card>
+      ) : sorted.length === 0 ? (
+        <Card className="p-2">
+          <EmptyState sketch="lamp" title={t('faq.empty_title')} description={t('faq.empty_desc')} action={newBtn} />
+        </Card>
+      ) : (
+        <ul className="space-y-3">
+          {sorted.map((f) => {
+            const expanded = open === f.id;
+            return (
+              <li key={f.id}>
+                <Card className={cn('overflow-hidden', expanded && 'border-line-strong')}>
+                  <div className="flex items-center gap-2 p-2 pl-4">
+                    <button
+                      type="button"
+                      aria-expanded={expanded}
+                      aria-controls={`faq-${f.id}`}
+                      onClick={() => setOpen(expanded ? null : f.id)}
+                      className="flex min-h-11 min-w-0 flex-1 items-center gap-3 rounded-md text-left"
+                    >
+                      <HelpCircle size={18} strokeWidth={1.6} aria-hidden="true" className="shrink-0 text-ornament" />
+                      <span className="min-w-0">
+                        <span className="block font-semibold">{f.question.az}</span>
+                        <span className="num block text-[0.9rem] text-ink-muted">
+                          {t('faq.order')}: {f.order}
+                        </span>
+                      </span>
+                      <ChevronDown size={18} strokeWidth={1.6} aria-hidden="true" className={cn('ml-auto shrink-0 transition-transform', expanded && 'rotate-180')} />
+                    </button>
+                    <span className="hidden sm:block">
+                      {f.isActive ? <StatusPill status="success">{t('faq.visible')}</StatusPill> : <StatusPill status="neutral">{t('faq.hidden')}</StatusPill>}
+                    </span>
+                    <div className="flex shrink-0 items-center">
+                      <RowAction icon={f.isActive ? EyeOff : Eye} label={`${f.isActive ? t('faq.hide') : t('faq.show')}: ${f.question.az}`} onClick={() => toggle(f)} />
+                      <RowAction icon={Pencil} label={`${t('common.edit')}: ${f.question.az}`} onClick={() => openModal(f)} />
+                      <RowAction icon={Trash2} label={`${t('common.delete')}: ${f.question.az}`} onClick={() => askDelete(f)} />
+                    </div>
                   </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-white font-medium text-sm truncate">{faq.question.az}</span>
-                    <span className="text-slate-500 text-xs">Sıra: {faq.order}</span>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-3 ml-4" onClick={e => e.stopPropagation()}>
-                  <button
-                    onClick={() => toggleStatus(faq.id, faq.isActive)}
-                    className={`p-1.5 rounded-lg transition-colors ${
-                      faq.isActive ? 'text-emerald-500 hover:bg-emerald-500/10' : 'text-slate-500 hover:bg-slate-800'
-                    }`}
-                    title={faq.isActive ? 'Deaktiv et' : 'Aktiv et'}
-                  >
-                    {faq.isActive ? <Eye size={18} /> : <EyeOff size={18} />}
-                  </button>
-                  <button
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
-                    title="Redaktə et"
-                  >
-                    <Edit size={18} />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(faq.id)}
-                    className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
-                    title="Sil"
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                  <div className="text-slate-500 ml-2">
-                    {expandedId === faq.id ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                  </div>
-                </div>
-              </div>
+                  {expanded && (
+                    <div id={`faq-${f.id}`} className="grid gap-5 border-t border-line-hair bg-surface-2 p-5 md:grid-cols-3">
+                      {(['az', 'en', 'ru'] as const).map((l) => (
+                        <div key={l} lang={l}>
+                          <h4 className="sc text-[0.85rem] tracking-[0.12em] text-ink-muted">{t(`common.lang_${l}`)}</h4>
+                          <p className="mt-1 font-semibold">{f.question[l]}</p>
+                          <p className="mt-1 text-ink-muted">{f.answer[l]}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </Card>
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
-              {expandedId === faq.id && (
-                <div className="px-4 pb-4 pt-2 border-t border-slate-800 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
-                    <div className="space-y-4">
-                      <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Azərbaycanca</h4>
-                      <p className="text-sm text-slate-300 font-medium">{faq.question.az}</p>
-                      <p className="text-sm text-slate-400 leading-relaxed">{faq.answer.az}</p>
-                    </div>
-                    <div className="space-y-4">
-                      <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">İngiliscə</h4>
-                      <p className="text-sm text-slate-300 font-medium">{faq.question.en}</p>
-                      <p className="text-sm text-slate-400 leading-relaxed">{faq.answer.en}</p>
-                    </div>
-                    <div className="space-y-4">
-                      <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Rusca</h4>
-                      <p className="text-sm text-slate-300 font-medium">{faq.question.ru}</p>
-                      <p className="text-sm text-slate-400 leading-relaxed">{faq.answer.ru}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))
-        )}
-      </div>
+      <FaqModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSuccess={reload} faqToEdit={editTarget} />
     </div>
   );
 }

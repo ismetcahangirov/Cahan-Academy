@@ -1,8 +1,15 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
+import { Download } from 'lucide-react';
 import adminApi from '@/lib/adminApi';
-import { Download, Search, RefreshCcw } from 'lucide-react';
+import { Button, Select, StatusPill } from '@/components/ui';
+import type { StatusName } from '@/components/ui/Badge';
+import { DataView, PageHead, Toolbar } from '@/components/admin/AdminUI';
+import { useAdminFeedback } from '@/components/admin/feedback';
+import { useAdminList } from '@/components/admin/useAdminList';
+import { apiMessage, assertOk, fmtDate } from '@/components/admin/utils';
 
 interface Lead {
   id: string;
@@ -14,169 +21,118 @@ interface Lead {
   createdAt: string;
 }
 
+const STATUSES = ['new', 'contacted', 'enrolled', 'cancelled'] as const;
+const PILL: Record<string, StatusName> = { new: 'pending', contacted: 'partial', enrolled: 'success', cancelled: 'absent' };
+
 export default function LeadsPage() {
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const t = useTranslations('admin');
+  const locale = useLocale();
+  const { ok, fail } = useAdminFeedback();
+  const { items, setItems, loading, error, reload } = useAdminList<Lead>('/leads');
+  const [q, setQ] = useState('');
+  const [exporting, setExporting] = useState(false);
 
-  const fetchLeads = async () => {
-    setIsLoading(true);
+  const filtered = useMemo(() => {
+    const s = q.trim().toLowerCase();
+    if (!s) return items;
+    return items.filter((l) => [l.name, l.email, l.course].some((v) => (v || '').toLowerCase().includes(s)));
+  }, [items, q]);
+
+  const exportCsv = async () => {
+    setExporting(true);
     try {
-      const { data } = await adminApi.get('/leads');
-      if (data.success) {
-        setLeads(data.data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch leads:', error);
+      const res = await adminApi.get('/leads/export', { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'leads-export.csv';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      fail(apiMessage(e, t('leads.export_error')));
     } finally {
-      setIsLoading(false);
+      setExporting(false);
     }
   };
 
-  useEffect(() => {
-    fetchLeads();
-  }, []);
-
-  const handleExportCSV = async () => {
-    try {
-      const response = await adminApi.get('/leads/export', { responseType: 'blob' });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'leads-export.csv');
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      alert('CSV eksport xətası');
-    }
-  };
-
-  const handleStatusChange = async (id: string, status: string) => {
+  const changeStatus = async (id: string, status: string) => {
     try {
       const { data } = await adminApi.patch(`/leads/${id}/status`, { status });
-      if (data.success) {
-        setLeads(leads.map(l => l.id === id ? { ...l, status } : l));
-      }
-    } catch (error) {
-      alert('Status yeniləmə xətası');
+      assertOk(data);
+      setItems((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)));
+      ok(t('common.saved'));
+    } catch (e) {
+      fail(apiMessage(e, t('common.status_error')));
     }
   };
 
-  const filteredLeads = leads.filter(l => 
-    l.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    l.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    l.course.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Müraciətlər</h1>
-          <p className="text-slate-400 text-sm">Kurslara olan qeydiyyat müraciətlərinin siyahısı</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={fetchLeads}
-            className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors"
-            title="Yenilə"
-          >
-            <RefreshCcw size={18} />
-          </button>
-          <button
-            onClick={handleExportCSV}
-            className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-lg font-medium transition-colors"
-          >
-            <Download size={18} />
-            CSV Eksport
-          </button>
-        </div>
-      </div>
-
-      <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
-        <div className="p-4 border-b border-slate-800 flex items-center gap-3">
-          <Search size={18} className="text-slate-500" />
-          <input
-            type="text"
-            placeholder="Axtar (Ad, email, kurs...)"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="bg-transparent border-none focus:ring-0 text-slate-200 placeholder-slate-500 text-sm w-full"
-          />
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-800/50 text-slate-400 text-xs uppercase tracking-wider">
-                <th className="px-6 py-3 font-medium">İstifadəçi</th>
-                <th className="px-6 py-3 font-medium">Kurs</th>
-                <th className="px-6 py-3 font-medium">Tarix</th>
-                <th className="px-6 py-3 font-medium">Status</th>
-                <th className="px-6 py-3 font-medium text-right">Əməliyyat</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800">
-              {isLoading ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-slate-500">
-                    Yüklənir...
-                  </td>
-                </tr>
-              ) : filteredLeads.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-slate-500">
-                    Müraciət tapılmadı.
-                  </td>
-                </tr>
-              ) : (
-                filteredLeads.map((lead) => (
-                  <tr key={lead.id} className="hover:bg-slate-800/30 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex flex-col">
-                        <span className="text-white font-medium text-sm">{lead.name}</span>
-                        <span className="text-slate-500 text-xs">{lead.email}</span>
-                        <span className="text-slate-500 text-xs">{lead.phone}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-slate-300">
-                      {lead.course}
-                    </td>
-                    <td className="px-6 py-4 text-xs text-slate-400">
-                      {new Date(lead.createdAt).toLocaleDateString('az-AZ')}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        lead.status === 'new' ? 'bg-amber-500/10 text-amber-500' :
-                        lead.status === 'contacted' ? 'bg-blue-500/10 text-blue-500' :
-                        lead.status === 'enrolled' ? 'bg-emerald-500/10 text-emerald-500' :
-                        'bg-red-500/10 text-red-500'
-                      }`}>
-                        {lead.status === 'new' ? 'Gözləyir' :
-                         lead.status === 'contacted' ? 'Əlaqə saxlanılıb' :
-                         lead.status === 'enrolled' ? 'Qeydiyyatdan keçib' : 'Ləğv edilib'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <select
-                        value={lead.status}
-                        onChange={(e) => handleStatusChange(lead.id, e.target.value)}
-                        className="bg-slate-800 border border-slate-700 text-slate-300 text-xs rounded-lg focus:ring-amber-500 focus:border-amber-500 p-1 cursor-pointer"
-                      >
-                        <option value="new">Gözləyir</option>
-                        <option value="contacted">Əlaqə saxlanılıb</option>
-                        <option value="enrolled">Qeydiyyatdan keçib</option>
-                        <option value="cancelled">Ləğv et</option>
-                      </select>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+    <div>
+      <PageHead
+        title={t('leads.title')}
+        subtitle={t('leads.subtitle', { count: items.length })}
+        onRefresh={reload}
+        loading={loading}
+        actions={
+          <Button variant="outline" icon={Download} onClick={exportCsv} loading={exporting}>
+            {t('leads.export')}
+          </Button>
+        }
+      />
+      <Toolbar value={q} onChange={setQ} placeholder={t('leads.search')} />
+      <DataView
+        caption={t('leads.title')}
+        items={filtered}
+        rowKey={(l) => l.id}
+        loading={loading}
+        error={error}
+        onRetry={reload}
+        empty={{
+          sketch: 'notebook',
+          title: q ? t('common.no_match_title') : t('leads.empty_title'),
+          description: q ? t('common.no_match_desc') : t('leads.empty_desc'),
+        }}
+        columns={[
+          {
+            key: 'person',
+            header: t('leads.col_person'),
+            cell: (l) => (
+              <span className="block">
+                <span className="block font-semibold">{l.name}</span>
+                <span className="block text-[0.92rem] font-normal text-ink-muted">{l.email}</span>
+                <span className="num block text-[0.92rem] font-normal text-ink-muted">{l.phone}</span>
+              </span>
+            ),
+          },
+          { key: 'course', header: t('leads.col_course'), cell: (l) => l.course },
+          { key: 'date', header: t('common.date'), cell: (l) => <span className="time-italic">{fmtDate(l.createdAt, locale)}</span> },
+          {
+            key: 'status',
+            header: t('common.status'),
+            cell: (l) => <StatusPill status={PILL[l.status] ?? 'neutral'}>{t(`leads.status_${l.status}`)}</StatusPill>,
+          },
+          {
+            key: 'change',
+            header: t('leads.col_change'),
+            cell: (l) => (
+              <Select
+                value={l.status}
+                onChange={(e) => changeStatus(l.id, e.target.value)}
+                aria-label={`${t('leads.col_change')}: ${l.name}`}
+                className="!min-h-10 !py-1.5 text-[0.95rem]"
+              >
+                {STATUSES.map((s) => (
+                  <option key={s} value={s}>
+                    {t(`leads.status_${s}`)}
+                  </option>
+                ))}
+              </Select>
+            ),
+          },
+        ]}
+      />
     </div>
   );
 }

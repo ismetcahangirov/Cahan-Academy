@@ -1,155 +1,126 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Save } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { useTranslations } from 'next-intl';
+import { AlertCircle, Save } from 'lucide-react';
 import adminApi from '@/lib/adminApi';
+import { Button, FormField, Input, Modal } from '@/components/ui';
+import { LangTabs, type Lang } from './AdminUI';
+import { useAdminFeedback } from './feedback';
+import { apiMessage, slugify } from './utils';
 
-const formSchema = z.object({
-  nameAz: z.string().min(1, 'Azərbaycan dilində ad mütləqdir'),
-  nameEn: z.string().min(1, 'İngilis dilində ad mütləqdir'),
-  nameRu: z.string().min(1, 'Rus dilində ad mütləqdir'),
-  slug: z.string().min(1, 'Slug mütləqdir'),
-});
-
-type FormData = z.infer<typeof formSchema>;
-
-interface CategoryModalProps {
+interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  categoryToEdit?: any | null;
+  categoryToEdit?: { id: string; nameAz: string; nameEn: string; nameRu: string; slug: string } | null;
 }
 
-export default function CategoryModal({ isOpen, onClose, onSuccess, categoryToEdit }: CategoryModalProps) {
-  const [activeTab, setActiveTab] = useState<'az' | 'en' | 'ru'>('az');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+/** Category create / edit: name in az / en / ru + slug (auto from the az name for new items). */
+export default function CategoryModal({ isOpen, onClose, onSuccess, categoryToEdit }: Props) {
+  const t = useTranslations('admin');
+  const { ok } = useAdminFeedback();
+  const [tab, setTab] = useState<Lang>('az');
+  const [serverError, setServerError] = useState('');
 
+  const schema = useMemo(
+    () =>
+      z.object({
+        nameAz: z.string().trim().min(1, t('categories.err_name_az')),
+        nameEn: z.string().trim().min(1, t('categories.err_name_en')),
+        nameRu: z.string().trim().min(1, t('categories.err_name_ru')),
+        slug: z.string().trim().min(1, t('common.err_slug')),
+      }),
+    [t]
+  );
+  type Values = z.infer<typeof schema>;
   const {
     register,
     handleSubmit,
+    reset,
     setValue,
     watch,
-    reset,
-    formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-  });
-
-  const nameAzWatcher = watch('nameAz');
+    formState: { errors, isSubmitting },
+  } = useForm<Values>({ resolver: zodResolver(schema) });
 
   useEffect(() => {
-    if (isOpen) {
-      if (categoryToEdit) {
-        reset({
-          nameAz: categoryToEdit.nameAz || '',
-          nameEn: categoryToEdit.nameEn || '',
-          nameRu: categoryToEdit.nameRu || '',
-          slug: categoryToEdit.slug || '',
-        });
-      } else {
-        reset({ nameAz: '', nameEn: '', nameRu: '', slug: '' });
-      }
-      setActiveTab('az');
-    }
+    if (!isOpen) return;
+    setServerError('');
+    setTab('az');
+    reset({
+      nameAz: categoryToEdit?.nameAz ?? '',
+      nameEn: categoryToEdit?.nameEn ?? '',
+      nameRu: categoryToEdit?.nameRu ?? '',
+      slug: categoryToEdit?.slug ?? '',
+    });
   }, [isOpen, categoryToEdit, reset]);
 
+  const nameAz = watch('nameAz');
   useEffect(() => {
-    if (!categoryToEdit && nameAzWatcher) {
-      const slugify = (text: string) => {
-        return text
-          .toString().toLowerCase().trim()
-          .replace(/ə/g, 'e').replace(/ö/g, 'o').replace(/ğ/g, 'g').replace(/ı/g, 'i')
-          .replace(/ş/g, 's').replace(/ç/g, 'c').replace(/ü/g, 'u')
-          .replace(/[\s\W-]+/g, '-').replace(/-+$/, '');
-      };
-      setValue('slug', slugify(nameAzWatcher), { shouldValidate: true });
-    }
-  }, [nameAzWatcher, categoryToEdit, setValue]);
+    if (!categoryToEdit && nameAz) setValue('slug', slugify(nameAz), { shouldValidate: true });
+  }, [nameAz, categoryToEdit, setValue]);
 
-  const onSubmit = async (data: FormData) => {
-    setIsSubmitting(true);
+  const nameKey = ({ az: 'nameAz', en: 'nameEn', ru: 'nameRu' } as const)[tab];
+  const errorLangs = (['az', 'en', 'ru'] as Lang[]).filter((l) => errors[({ az: 'nameAz', en: 'nameEn', ru: 'nameRu' } as const)[l]]);
+
+  const onSubmit = async (v: Values) => {
+    setServerError('');
     try {
-      if (categoryToEdit) {
-        const res = await adminApi.put(`/categories/admin/${categoryToEdit.id}`, data);
-        if (res.data.success) { onSuccess(); onClose(); }
-      } else {
-        const res = await adminApi.post('/categories/admin', data);
-        if (res.data.success) { onSuccess(); onClose(); }
-      }
-    } catch (error) {
-      console.error('Error saving category:', error);
-      alert('Kateqoriyanı yadda saxlamaq mümkün olmadı.');
-    } finally {
-      setIsSubmitting(false);
+      const res = categoryToEdit ? await adminApi.put(`/categories/admin/${categoryToEdit.id}`, v) : await adminApi.post('/categories/admin', v);
+      if (!res.data.success) throw { response: { data: res.data } };
+      ok(t('common.saved'));
+      onSuccess();
+      onClose();
+    } catch (e) {
+      setServerError(apiMessage(e, t('common.save_error')));
     }
   };
 
-  const tabs = [
-    { id: 'az', label: 'Azərbaycanca' },
-    { id: 'en', label: 'İngiliscə' },
-    { id: 'ru', label: 'Rusca' },
-  ];
-
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-          <motion.div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-          <motion.div className="relative z-10 w-full max-w-xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col" initial={{ scale: 0.95, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 20 }} transition={{ type: 'spring', stiffness: 300, damping: 25 }}>
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900/50">
-              <div>
-                <h2 className="text-xl font-bold text-white">{categoryToEdit ? 'Kateqoriyanı Redaktə Et' : 'Yeni Kateqoriya'}</h2>
-                <p className="text-slate-400 text-sm mt-1">Kateqoriya adlarını 3 dildə daxil edin</p>
-              </div>
-              <button onClick={onClose} className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-colors"><X size={20} /></button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
-              <form id="category-form" onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-                <div className="flex p-1 bg-slate-800 rounded-xl w-fit">
-                  {tabs.map((tab) => (
-                    <button key={tab.id} type="button" onClick={() => setActiveTab(tab.id as any)} className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === tab.id ? 'bg-amber-500 text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}>{tab.label}</button>
-                  ))}
-                </div>
-
-                <div className="space-y-5 bg-slate-800/20 p-5 rounded-2xl border border-slate-800/50">
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-300">Kateqoriya Adı</label>
-                    <input
-                      {...register(activeTab === 'az' ? 'nameAz' : activeTab === 'en' ? 'nameEn' : 'nameRu')}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-colors"
-                      placeholder="Kateqoriya adı..."
-                    />
-                    {errors[activeTab === 'az' ? 'nameAz' : activeTab === 'en' ? 'nameEn' : 'nameRu'] && (
-                      <p className="text-red-500 text-xs mt-1">{errors[activeTab === 'az' ? 'nameAz' : activeTab === 'en' ? 'nameEn' : 'nameRu']?.message}</p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="space-y-5 pt-4 border-t border-slate-800">
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-300">URL Slug</label>
-                    <input {...register('slug')} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-colors" />
-                    {errors.slug && <p className="text-red-500 text-xs mt-1">{errors.slug.message}</p>}
-                  </div>
-                </div>
-              </form>
-            </div>
-
-            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-800 bg-slate-900/50">
-              <button type="button" onClick={onClose} className="px-5 py-2.5 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-xl transition-colors" disabled={isSubmitting}>Ləğv et</button>
-              <button type="submit" form="category-form" disabled={isSubmitting} className="flex items-center gap-2 px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-900 text-sm font-bold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                <Save size={18} />
-                {isSubmitting ? 'Saxlanılır...' : 'Yadda Saxla'}
-              </button>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      size="md"
+      title={categoryToEdit ? t('categories.modal_edit') : t('categories.modal_new')}
+      entity={categoryToEdit?.nameAz}
+      subtitle={t('common.three_langs')}
+      footer={
+        <>
+          <Button variant="ghost" onClick={onClose} disabled={isSubmitting}>
+            {t('common.cancel')}
+          </Button>
+          <Button type="submit" form="category-form" icon={Save} loading={isSubmitting}>
+            {isSubmitting ? t('common.saving') : t('common.save')}
+          </Button>
+        </>
+      }
+    >
+      <form
+        id="category-form"
+        noValidate
+        onSubmit={handleSubmit(onSubmit, (errs) => {
+          const first = (['az', 'en', 'ru'] as Lang[]).find((l) => errs[({ az: 'nameAz', en: 'nameEn', ru: 'nameRu' } as const)[l]]);
+          if (first) setTab(first);
+        })}
+        className="space-y-5"
+      >
+        <LangTabs value={tab} onChange={setTab} errorLangs={errorLangs} />
+        <FormField label={t('categories.name')} error={errors[nameKey]?.message} required>
+          <Input key={nameKey} {...register(nameKey)} />
+        </FormField>
+        <FormField label={t('common.slug')} error={errors.slug?.message} required>
+          <Input {...register('slug')} />
+        </FormField>
+        {serverError && (
+          <p role="alert" className="field-error">
+            <AlertCircle aria-hidden="true" strokeWidth={2} />
+            {serverError}
+          </p>
+        )}
+      </form>
+    </Modal>
   );
 }
