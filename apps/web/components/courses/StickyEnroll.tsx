@@ -55,10 +55,18 @@ export default function StickyEnroll({
       aria-hidden={!show}
       className={cn(
         'fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 lg:hidden',
-        'transition-transform duration-300 ease-[var(--ease-silk)]',
-        show ? 'translate-y-0' : 'pointer-events-none translate-y-full'
+        !show && 'pointer-events-none'
       )}
-      style={{ boxShadow: 'var(--shadow-md)' }}
+      style={{
+        boxShadow: 'var(--shadow-md)',
+        // off screen = translated below the viewport AND invisible (after the slide), so it never shows in
+        // a full-page capture or to the tab order
+        transform: show ? 'translate3d(0,0,0)' : 'translate3d(0,100%,0)',
+        visibility: show ? 'visible' : 'hidden',
+        transition: show
+          ? 'transform var(--dur-3) var(--ease-silk), visibility 0s'
+          : 'transform var(--dur-3) var(--ease-silk), visibility 0s linear var(--dur-3)',
+      }}
     >
       <div className="mx-auto flex max-w-xl items-center justify-between gap-3">
         <div className="min-w-0">
