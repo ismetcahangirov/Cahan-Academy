@@ -52,4 +52,12 @@ adminApi.interceptors.response.use(
   }
 );
 
+/** Ask the site to drop cached public data right after an admin save (best effort; the cache expires anyway). */
+export const refreshSite = (tags: string[]) =>
+  fetch('/api/revalidate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
+    body: JSON.stringify({ tags }),
+  }).catch(() => undefined);
+
 export default adminApi;

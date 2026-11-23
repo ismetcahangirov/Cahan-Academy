@@ -38,11 +38,8 @@
     "info_title": "Bizi tapın",
     "info_lead": "Zəng edin, yazın və ya akademiyaya gəlin.",
     "address_label": "Ünvan",
-    "address_value": "Bakı şəhəri, Nizami küç. 12",
     "map_link": "Xəritədə aç",
     "hours_label": "İş saatları",
-    "hours_week": "Bazar ertəsi – Şənbə: 09:00 – 18:00",
-    "hours_sunday": "Bazar: istirahət günü",
     "ph_name": "Məs: Əli Əliyev",
     "ph_email": "ad@poçt.az",
     "ph_subject": "Müraciətinizin mövzusu",
@@ -255,7 +252,7 @@
       },
       {
         "title": "Əlaqə",
-        "body": "Məxfilik siyasəti ilə bağlı hər hansı sualınız olarsa, bizimlə əlaqə saxlaya bilərsiniz: info@cahanacademy.az"
+        "body": "Məxfilik siyasəti ilə bağlı hər hansı sualınız olarsa, bizimlə əlaqə saxlaya bilərsiniz: {email}"
       }
     ],
     "terms_sections": [

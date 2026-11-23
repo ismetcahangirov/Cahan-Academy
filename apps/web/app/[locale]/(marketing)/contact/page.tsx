@@ -8,17 +8,13 @@ import { alternatesFor, ogImages } from '@/lib/seo';
 import { OrnateFrame, ScriptTitle, SketchIllustration } from '@/components/ornament';
 import JsonLd from '@/components/seo/JsonLd';
 import { absoluteUrl } from '@/lib/utils';
+import { getContactSettings, pick, telHref } from '@/lib/site';
 
 interface Props {
   params: Promise<{ locale: string }>;
 }
 
-/*
- * Contact details are the existing site copy. The phone, the e-mail (its domain does not resolve), the
- * street address and the opening hours look like placeholders → listed under "Owner must confirm" (A-26).
- */
-const PHONE = { display: '+994 50 123 45 67', href: 'tel:+994501234567' };
-const EMAIL = 'info@cahanacademy.az';
+/* Phone, e-mail, address and opening hours come from the admin panel (Site details). */
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
@@ -49,8 +45,9 @@ function Fact({ icon: Icon, label, children }: { icon: LucideIcon; label: string
 export default async function ContactPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations({ locale, namespace: 'contact' });
-  const address = t('address_value');
+  const [t, contact] = await Promise.all([getTranslations({ locale, namespace: 'contact' }), getContactSettings()]);
+  const address = pick(contact.address, locale);
+  const hours = pick(contact.hours, locale).split('\n').filter(Boolean);
   const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 
   return (
@@ -85,13 +82,13 @@ export default async function ContactPage({ params }: Props) {
           <ScriptTitle id="contact-info-title" size="card" as="h2" title={t('info_title')} lead={t('info_lead')} />
           <ul className="mt-7 space-y-6">
             <Fact icon={Phone} label={t('phone')}>
-              <a href={PHONE.href} className="num link">
-                {PHONE.display}
+              <a href={telHref(contact.phone)} className="num link">
+                {contact.phone}
               </a>
             </Fact>
             <Fact icon={Mail} label={t('email')}>
-              <a href={`mailto:${EMAIL}`} className="link break-words">
-                {EMAIL}
+              <a href={`mailto:${contact.email}`} className="link break-words">
+                {contact.email}
               </a>
             </Fact>
             <Fact icon={MapPin} label={t('address_label')}>
@@ -107,8 +104,11 @@ export default async function ContactPage({ params }: Props) {
               </a>
             </Fact>
             <Fact icon={Clock} label={t('hours_label')}>
-              <p className="time-italic">{t('hours_week')}</p>
-              <p className="time-italic text-ink-muted">{t('hours_sunday')}</p>
+              {hours.map((line, i) => (
+                <p key={i} className={i === 0 ? 'time-italic' : 'time-italic text-ink-muted'}>
+                  {line}
+                </p>
+              ))}
             </Fact>
           </ul>
           <SketchIllustration name="inkwell" className="mx-auto mt-9 w-28 sm:w-32" />

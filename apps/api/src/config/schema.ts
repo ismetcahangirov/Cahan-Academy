@@ -153,6 +153,26 @@ export const teamMembers = pgTable('team_members', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+// ─── Site settings (contact details, social links; one row per key) ──────────
+export const siteSettings = pgTable('site_settings', {
+  key: varchar('key', { length: 64 }).primaryKey(),
+  value: jsonb('value').notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// ─── Testimonials (student reviews on the home and about pages) ──────────────
+export const testimonials = pgTable('testimonials', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  role: varchar('role', { length: 255 }).notNull().default(''),
+  text: text('text').notNull(),
+  rating: integer('rating').notNull().default(5),
+  order: integer('order').default(0).notNull(),
+  isActive: boolean('is_active').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 // ─── Type Exports ─────────────────────────────────────────────────────────────
 export type Lead = typeof leads.$inferSelect;
 export type NewLead = typeof leads.$inferInsert;

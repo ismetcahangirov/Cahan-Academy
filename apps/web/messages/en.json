@@ -38,11 +38,8 @@
     "info_title": "Find us",
     "info_lead": "Call, write, or visit the academy.",
     "address_label": "Address",
-    "address_value": "12 Nizami St., Baku",
     "map_link": "Open in maps",
     "hours_label": "Opening hours",
-    "hours_week": "Monday – Saturday: 09:00 – 18:00",
-    "hours_sunday": "Sunday: closed",
     "ph_name": "e.g. Ali Aliyev",
     "ph_email": "name@mail.com",
     "ph_subject": "What is it about?",
@@ -255,7 +252,7 @@
       },
       {
         "title": "Contact",
-        "body": "If you have any questions about this privacy policy, you can contact us at: info@cahanacademy.az"
+        "body": "If you have any questions about this privacy policy, you can contact us at: {email}"
       }
     ],
     "terms_sections": [

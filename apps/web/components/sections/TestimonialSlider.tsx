@@ -6,14 +6,16 @@ import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import OrnamentDivider from '../ornament/OrnamentDivider';
 
-export interface Testimonial {
-  id: number;
-  name: string;
-  role: string;
-  initials: string;
-  text: string;
-  rating: number;
-}
+import type { Testimonial } from '@/lib/site';
+
+/** "Aysel Məmmədova" → "AM" (first letters of the first two words). */
+const initialsOf = (name: string) =>
+  name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]?.toLocaleUpperCase('az'))
+    .join('');
 
 /**
  * TestimonialSlider — one quote at a time (serif italic), stars in the ornament tone (never gold),
@@ -39,7 +41,7 @@ export default function TestimonialSlider({ items }: { items: Testimonial[] }) {
           {item.text}
         </blockquote>
         <div className="mt-6 flex justify-center gap-1" role="img" aria-label={t('testimonials_rating', { n: item.rating })}>
-          {Array.from({ length: item.rating }, (_, i) => (
+          {Array.from({ length: Math.max(1, Math.min(5, item.rating)) }, (_, i) => (
             <Star key={i} size={16} strokeWidth={1.4} className="fill-current text-ornament" aria-hidden="true" />
           ))}
         </div>
@@ -48,11 +50,11 @@ export default function TestimonialSlider({ items }: { items: Testimonial[] }) {
             aria-hidden="true"
             className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-line-strong bg-surface font-semibold text-ink"
           >
-            {item.initials}
+            {initialsOf(item.name)}
           </span>
           <span className="text-left">
             <span className="block text-[1.1rem] font-semibold text-ink">{item.name}</span>
-            <span className="sc block text-[0.8rem] text-ink-muted">{item.role}</span>
+            {item.role && <span className="sc block text-[0.8rem] text-ink-muted">{item.role}</span>}
           </span>
         </figcaption>
       </figure>

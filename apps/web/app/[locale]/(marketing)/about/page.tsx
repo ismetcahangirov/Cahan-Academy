@@ -10,6 +10,7 @@ import StatsSection from '@/components/sections/StatsSection';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
 import CTASection from '@/components/sections/CTASection';
 import JsonLd from '@/components/seo/JsonLd';
+import { getContactSettings, getTestimonials } from '@/lib/site';
 import { SITE_URL, absoluteUrl } from '@/lib/utils';
 
 // ISR: static HTML, regenerated in the background at most this often (same window as the
@@ -45,6 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function AboutPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const [contact, testimonials] = await Promise.all([getContactSettings(), getTestimonials()]);
   const t = await getTranslations({ locale, namespace: 'about' });
 
   return (
@@ -73,8 +75,8 @@ export default async function AboutPage({ params }: Props) {
       </MissionSection>
       <ValuesSection />
       <TeamSection />
-      <TestimonialsSection />
-      <CTASection />
+      <TestimonialsSection items={testimonials} />
+      <CTASection contact={contact} />
     </>
   );
 }

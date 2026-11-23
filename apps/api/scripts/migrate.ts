@@ -1,5 +1,6 @@
 import { neon } from '@neondatabase/serverless';
 import dotenv from 'dotenv';
+import { DEFAULT_CONTACT, DEFAULT_TESTIMONIALS } from '../src/config/siteDefaults.js';
 
 dotenv.config();
 
@@ -209,6 +210,45 @@ async function migrate() {
     );
   `;
   console.log('  ✅ team_members cədvəli hazır');
+
+  // Site settings (contact details, social links), edited in the admin panel → Site details.
+  await sql`
+    CREATE TABLE IF NOT EXISTS site_settings (
+      key         VARCHAR(64) PRIMARY KEY,
+      value       JSONB NOT NULL,
+      updated_at  TIMESTAMP NOT NULL DEFAULT NOW()
+    );
+  `;
+  await sql`
+    INSERT INTO site_settings (key, value) VALUES ('contact', ${JSON.stringify(DEFAULT_CONTACT)}::jsonb)
+    ON CONFLICT (key) DO NOTHING;
+  `;
+  console.log('  ✅ site_settings cədvəli hazır');
+
+  // Testimonials (home + about), edited in the admin panel → Testimonials. Seeded once with the site's copy.
+  await sql`
+    CREATE TABLE IF NOT EXISTS testimonials (
+      id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      name        VARCHAR(255) NOT NULL,
+      role        VARCHAR(255) NOT NULL DEFAULT '',
+      text        TEXT NOT NULL,
+      rating      INTEGER NOT NULL DEFAULT 5,
+      "order"     INTEGER NOT NULL DEFAULT 0,
+      is_active   BOOLEAN NOT NULL DEFAULT TRUE,
+      created_at  TIMESTAMP NOT NULL DEFAULT NOW(),
+      updated_at  TIMESTAMP NOT NULL DEFAULT NOW()
+    );
+  `;
+  const [{ count }] = (await sql`SELECT count(*)::int AS count FROM testimonials`) as { count: number }[];
+  if (count === 0) {
+    for (const t of DEFAULT_TESTIMONIALS) {
+      await sql`
+        INSERT INTO testimonials (name, role, text, rating, "order")
+        VALUES (${t.name}, ${t.role}, ${t.text}, ${t.rating}, ${t.order});
+      `;
+    }
+  }
+  console.log('  ✅ testimonials cədvəli hazır');
 
   console.log('\n🎉 Migrasiya uğurla tamamlandı!');
   process.exit(0);

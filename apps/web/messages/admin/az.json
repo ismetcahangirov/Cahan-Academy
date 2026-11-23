@@ -16,7 +16,9 @@
     "back_to_site": "Sayta qayıt",
     "logout": "Çıxış",
     "menu_open": "İdarəetmə menyusunu aç",
-    "menu_close": "İdarəetmə menyusunu bağla"
+    "menu_close": "İdarəetmə menyusunu bağla",
+    "testimonials": "Rəylər",
+    "site": "Sayt məlumatları"
   },
   "common": {
     "refresh": "Yenilə",
@@ -340,5 +342,44 @@
     "err_old": "Mövcud şifrəni daxil edin.",
     "err_confirm": "Yeni şifrəni təkrar daxil edin.",
     "err_mismatch": "Yeni şifrələr uyğun gəlmir."
+  },
+  "site": {
+    "title": "Sayt məlumatları",
+    "subtitle": "Telefon, e-poçt, ünvan, iş saatları və sosial şəbəkələr: footer, əlaqə səhifəsi və axtarış sistemləri bunları göstərir.",
+    "contact_title": "Əlaqə",
+    "contact_subtitle": "Footer, “Bu gün başlayın” kartı, əlaqə səhifəsi, məxfilik siyasəti.",
+    "phone_hint": "Saytda yazdığınız kimi görünür, məs. +994 50 123 45 67.",
+    "social_title": "Sosial şəbəkələr",
+    "social_subtitle": "Boş qoyulan link saytda göstərilmir.",
+    "instagram": "Instagram",
+    "facebook": "Facebook",
+    "youtube": "YouTube",
+    "place_title": "Ünvan və iş saatları",
+    "address": "Ünvan",
+    "hours": "İş saatları",
+    "hours_hint": "Hər sətir ayrıca göstərilir.",
+    "delay_note": "Yadda saxlanan dəyişiklik saytda dərhal görünür (bəzən bir neçə dəqiqə çəkə bilər).",
+    "saved": "Sayt məlumatları yadda saxlanıldı.",
+    "err_phone": "Telefon nömrəsində yalnız rəqəm, boşluq, +, -, () ola bilər.",
+    "err_link": "Link https:// ilə başlamalıdır.",
+    "err_address": "Ünvan hər üç dildə mütləqdir.",
+    "err_hours": "İş saatları hər üç dildə mütləqdir."
+  },
+  "testimonials": {
+    "title": "Rəylər",
+    "subtitle": "Ana səhifə və “Haqqımızda”dakı tələbə rəyləri: {count}",
+    "new": "Yeni rəy",
+    "modal_new": "Yeni rəy",
+    "modal_edit": "Rəyi redaktə et",
+    "role": "Vəzifə / iş yeri",
+    "role_hint": "Məs. Front-end Developer @ Kapital Bank. Boş qala bilər.",
+    "text": "Rəy",
+    "text_hint": "Tələbənin yazdığı kimi, hansı dildə yazıbsa o dildə. Yalnız icazə verilmiş real rəylər.",
+    "rating": "Ulduz (1–5)",
+    "rating_label": "5 ulduzdan {n}",
+    "empty_title": "Rəy yoxdur",
+    "empty_desc": "Rəy olmayanda saytda rəylər bölməsi göstərilmir.",
+    "err_text": "Rəy ən azı 10 simvol olmalıdır.",
+    "err_rating": "Ulduz sayı 1 ilə 5 arasında olmalıdır."
   }
 }

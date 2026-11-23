@@ -817,6 +817,58 @@ route('DELETE', '/api/faqs/admin/:id', ({ params }) => {
   return ok(undefined, 'FAQ deleted successfully');
 }, A);
 
+/* site details + testimonials (admin → Site details / Testimonials) */
+let siteContact = {
+  phone: '+994 50 123 45 67',
+  email: 'info@cahanacademy.az',
+  address: { az: 'Bakı şəhəri, Nizami küç. 12', en: '12 Nizami St., Baku', ru: 'Баку, ул. Низами, 12' },
+  hours: {
+    az: 'Bazar ertəsi – Şənbə: 09:00 – 18:00\nBazar: istirahət günü',
+    en: 'Monday – Saturday: 09:00 – 18:00\nSunday: closed',
+    ru: 'Понедельник – суббота: 09:00 – 18:00\nВоскресенье: выходной',
+  },
+  social: { instagram: 'https://instagram.com/cahanacademy', facebook: 'https://facebook.com/cahanacademy', youtube: 'https://youtube.com/@cahanacademy' },
+};
+route('GET', '/api/settings/contact', () => ok(siteContact));
+route('PUT', '/api/settings/admin/contact', ({ body }) => {
+  if (!str(5)(body.phone)) return zodFail('Telefon nömrəsi mütləqdir');
+  if (!/^\S+@\S+\.\S+$/.test(body.email ?? '')) return zodFail('Düzgün e-poçt daxil edin');
+  siteContact = { ...siteContact, ...body };
+  return ok(siteContact, 'Sayt məlumatları yeniləndi');
+}, A);
+
+const testimonials = [
+  { id: 'tst-1', name: 'Aysel Məmmədova', role: 'Front-end Developer @ Kapital Bank', text: 'Cahan Academy-dən əvvəl proqramlaşdırma haqqında heç bir bilgim yox idi. Yalnız 6 ayda ilk işimi tapdım.', rating: 5, order: 1, isActive: true },
+  { id: 'tst-2', name: 'Rauf Hüseynov', role: 'UI/UX Designer @ Pashabank', text: 'Dizayn kursunu bitirdikdən sonra portfolio hazırladım və 2 ay içərisində tam zamanlı dizayner kimi işə başladım.', rating: 5, order: 2, isActive: true },
+];
+const testimonialsSorted = (all) => [...testimonials].filter((x) => all || x.isActive).sort((a, b) => a.order - b.order);
+route('GET', '/api/testimonials', () => ok(testimonialsSorted(false)));
+route('GET', '/api/testimonials/admin/all', () => ok(testimonialsSorted(true)), A);
+route('POST', '/api/testimonials/admin', ({ body }) => {
+  if (!str(2)(body.name) || !str(10)(body.text)) return zodFail('name/text: Required');
+  const x = { id: newId('tst'), role: '', rating: 5, order: 0, isActive: true, ...body };
+  testimonials.push(x);
+  return ok(x, 'Rəy əlavə olundu', 201);
+}, A);
+route('PUT', '/api/testimonials/admin/:id/status', ({ params, body }) => {
+  const x = byId(testimonials, params.id);
+  if (!x) return fail(404, 'Rəy tapılmadı');
+  x.isActive = !!body.isActive;
+  return ok(x);
+}, A);
+route('PUT', '/api/testimonials/admin/:id', ({ params, body }) => {
+  const x = byId(testimonials, params.id);
+  if (!x) return fail(404, 'Rəy tapılmadı');
+  Object.assign(x, body);
+  return ok(x, 'Rəy yeniləndi');
+}, A);
+route('DELETE', '/api/testimonials/admin/:id', ({ params }) => {
+  const i = testimonials.findIndex((x) => x.id === params.id);
+  if (i < 0) return fail(404, 'Rəy tapılmadı');
+  testimonials.splice(i, 1);
+  return ok(undefined, 'Rəy silindi');
+}, A);
+
 /* team */
 const teamRules = [
   ['name', str(2), 'Ad mütləqdir'],

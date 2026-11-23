@@ -7,12 +7,14 @@ import { EdelweissGlyph, OrnamentDivider } from '@/components/ornament';
 import { Button } from '@/components/ui';
 import JsonLd from '@/components/seo/JsonLd';
 import { absoluteUrl } from '@/lib/utils';
+import { getContactSettings } from '@/lib/site';
 
 /**
  * LegalDocument — the parchment long-text recipe for /privacy-policy and /terms: wine head band with the
  * "last updated" date → table of contents (sticky column on desktop, a <details> disclosure on phones)
  * → numbered sections on a parchment panel, ornament dividers between them → link to the sibling page.
- * Sections come from messages (`legal.privacy_sections` / `legal.terms_sections`, az/en/ru). JSON-LD
+ * Sections come from messages (`legal.privacy_sections` / `legal.terms_sections`, az/en/ru); `{email}` in a body is
+ * the contact e-mail from the admin panel (Site details). JSON-LD
  * uses absoluteUrl() (A-27).
  */
 const DOCS = {
@@ -69,7 +71,7 @@ function TocList({ sections, idPrefix }: { sections: { title: string }[]; idPref
 }
 
 export default async function LegalDocument({ kind, locale }: { kind: keyof typeof DOCS; locale: string }) {
-  const t = await getTranslations({ locale, namespace: 'legal' });
+  const [t, contact] = await Promise.all([getTranslations({ locale, namespace: 'legal' }), getContactSettings()]);
   const doc = DOCS[kind];
   const sections = t.raw(doc.sections) as { title: string; body: string }[];
   const title = t(doc.title);
@@ -129,7 +131,7 @@ export default async function LegalDocument({ kind, locale }: { kind: keyof type
                   <span className="time-italic shrink-0 text-[1.15rem] font-normal text-ink-muted">{ROMAN[i] ?? i + 1}.</span>
                   {s.title}
                 </h2>
-                <p className="mt-3 max-w-[42rem] text-[1.12rem] leading-[1.75] text-ink">{withLinks(s.body)}</p>
+                <p className="mt-3 max-w-[42rem] text-[1.12rem] leading-[1.75] text-ink">{withLinks(s.body.replaceAll('{email}', contact.email))}</p>
               </section>
             </Fragment>
           ))}
