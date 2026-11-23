@@ -3,15 +3,14 @@ import { Mail, MapPin, Phone } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { BrandLogo } from '../brand/Brand';
 import WaveEdge from '../ornament/WaveEdge';
-import WaxSeal from '../ornament/WaxSeal';
-import { LaceCorner } from '../ornament/Lace';
+import EdelweissCorner from '../ornament/EdelweissCorner';
 import OrnamentDivider from '../ornament/OrnamentDivider';
 import FooterNewsletter from './FooterNewsletter';
 import { FOOTER_LINKS } from './nav';
 
 /**
- * Footer — deep wine band (.theme-wine) rising from the page in a wave, wax seal on the join,
- * stacked logo, links, contact, newsletter, lace corners. Same look in both themes.
+ * Footer — deep wine band (.theme-wine) rising from the page in a wave,
+ * stacked logo, links, contact, newsletter, edelweiss clusters opening in the bottom corners. Same look in both themes.
  * `waveFill` = background of the section right above the footer (default the page).
  */
 const SOCIAL = [
@@ -60,8 +59,8 @@ export default function Footer({ waveFill = 'var(--page-base)' }: { waveFill?: s
     <footer className="cv-auto relative mt-auto">
       <div className="theme-wine band-wine relative overflow-hidden pb-8 pt-24 sm:pt-28">
         <WaveEdge invert fill={waveFill} className="absolute inset-x-0 -top-px" />
-        <LaceCorner corner="bl" className="absolute bottom-0 left-0 w-20 sm:w-36" />
-        <LaceCorner corner="br" className="absolute bottom-0 right-0 w-20 sm:w-36" />
+        <EdelweissCorner corner="bl" onWine className="absolute bottom-0 left-0 w-20 sm:w-32" />
+        <EdelweissCorner corner="br" onWine className="absolute bottom-0 right-0 w-20 sm:w-32" />
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.4fr]">
@@ -161,7 +160,6 @@ export default function Footer({ waveFill = 'var(--page-base)' }: { waveFill?: s
           </div>
         </div>
       </div>
-      <WaxSeal size={84} className="absolute left-1/2 top-3 z-[2] -translate-x-1/2 sm:top-4" />
     </footer>
   );
 }

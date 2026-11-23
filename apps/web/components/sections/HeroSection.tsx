@@ -1,20 +1,17 @@
 import { useTranslations } from 'next-intl';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import { LaceCorner, LaceEdge } from '../ornament/Lace';
-import { DrapedRibbon } from '../ornament/Ribbons';
+import EdelweissCorner from '../ornament/EdelweissCorner';
 import OrnamentDivider from '../ornament/OrnamentDivider';
 import SketchIllustration from '../ornament/SketchIllustration';
 import WaveEdge from '../ornament/WaveEdge';
-import WaxSeal from '../ornament/WaxSeal';
 import { EdelweissGlyph } from '../ornament/Edelweiss';
 import Button from '../ui/Button';
 
 /**
- * Home hero — the full reference composition: deep wine band (same in both themes) with lace corners,
- * a satin ribbon draped over the top-right corner, a centred script title, small-caps eyebrow, serif lead,
- * two CTAs, engraved sketches at the sides (desktop), then lace + a wave into the parchment section with
- * the wax seal pressed on the join. Server component; entrance = one-shot CSS (no JS, no blank state).
+ * Home hero — deep wine band (same in both themes) with edelweiss clusters opening in the two top corners,
+ * a centred script title, small-caps eyebrow, serif lead, two CTAs, engraved sketches at the sides (desktop),
+ * then a wave into the parchment section. Server component; entrance = one-shot CSS (no JS, no blank state).
  */
 export default function HeroSection() {
   const t = useTranslations('hero');
@@ -22,11 +19,8 @@ export default function HeroSection() {
 
   return (
     <section aria-labelledby="hero-title" className="theme-wine hero-wine relative isolate overflow-hidden">
-      <LaceCorner corner="tl" priority onWine className="absolute left-0 top-0 w-32 sm:w-48 lg:w-64" />
-      <LaceCorner corner="tr" priority onWine className="absolute right-0 top-0 hidden w-48 sm:block lg:w-64" />
-      <div className="pointer-events-none absolute -right-10 -top-6 w-56 sm:-right-6 sm:w-80 lg:right-4 lg:w-[26rem]">
-        <DrapedRibbon priority onWine className="orn-sway w-full" />
-      </div>
+      <EdelweissCorner corner="tl" priority onWine className="absolute left-0 top-0 w-28 sm:w-40 lg:w-56" />
+      <EdelweissCorner corner="tr" priority onWine delay={260} className="absolute right-0 top-0 w-28 sm:w-40 lg:w-56" />
       <SketchIllustration name="books" className="absolute bottom-24 left-[4%] hidden w-40 xl:block" />
       <SketchIllustration name="globe" className="absolute bottom-28 right-[5%] hidden w-32 xl:block" />
 
@@ -60,11 +54,7 @@ export default function HeroSection() {
         </a>
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0">
-        <LaceEdge direction="up" size={26} className="relative -mb-9 md:-mb-12" />
-        <WaveEdge fill="var(--paper-base)" className="relative -mb-px" />
-      </div>
-      <WaxSeal size={88} priority onWine className="absolute bottom-1 left-1/2 z-[2] -translate-x-1/2 md:bottom-3" />
+      <WaveEdge fill="var(--paper-base)" className="absolute inset-x-0 -bottom-px" />
     </section>
   );
 }

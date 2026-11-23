@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { BrandLockup } from '@/components/brand';
-import { LaceCorner, OrnateFrame, ScriptTitle, SketchIllustration } from '@/components/ornament';
+import { EdelweissCorner, OrnateFrame, ScriptTitle, SketchIllustration } from '@/components/ornament';
 import { buttonClass } from '@/components/ui/Button';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 
@@ -33,8 +33,8 @@ function PerLocale({ render }: { render: (l: (typeof LOCALES)[number]) => ReactN
 export default function LocaleNotFound() {
   return (
     <main className="paper relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-4 py-16">
-      <LaceCorner corner="tl" className="absolute left-0 top-0 w-24 sm:w-36" />
-      <LaceCorner corner="br" className="absolute bottom-0 right-0 w-24 sm:w-36" />
+      <EdelweissCorner corner="tl" priority className="absolute left-0 top-0 w-24 sm:w-32" />
+      <EdelweissCorner corner="br" priority delay={260} className="absolute bottom-0 right-0 w-24 sm:w-32" />
       {/* the page has no site header: the theme switch still has to be reachable (owner requirement) */}
       <ThemeToggle className="absolute right-4 top-4" />
       <PerLocale

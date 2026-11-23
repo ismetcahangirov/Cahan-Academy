@@ -1,12 +1,12 @@
 import { useTranslations } from 'next-intl';
-import { LaceCorner, LaceEdge } from '../ornament/Lace';
+import EdelweissCorner from '../ornament/EdelweissCorner';
 import ScriptTitle from '../ornament/ScriptTitle';
 import WaveEdge from '../ornament/WaveEdge';
 import Reveal from '../ui/Reveal';
 import TestimonialSlider, { type Testimonial } from './TestimonialSlider';
 
 /**
- * TestimonialsSection — deep wine band (same in both themes) with lace trim and wavy joins, centred
+ * TestimonialsSection — deep wine band (same in both themes) with edelweiss corners and wavy joins, centred
  * script title, quote slider. Used on the home and about pages.
  * The quotes below are the existing hard-coded copy (Azerbaijani originals, shown as quoted) and are
  * listed under "Owner must confirm" — replace with real, consented reviews (or an API source).
@@ -59,9 +59,8 @@ export default function TestimonialsSection({
   return (
     <section aria-labelledby="testimonials-title" className="cv-auto theme-wine band-wine relative overflow-hidden py-28 sm:py-32">
       <WaveEdge invert fill={topFill} className="absolute inset-x-0 -top-px" />
-      <LaceEdge size={24} className="absolute inset-x-0 top-9 md:top-12" />
-      <LaceCorner corner="bl" className="absolute bottom-10 left-0 w-28 sm:w-40" />
-      <LaceCorner corner="br" className="absolute bottom-10 right-0 w-28 sm:w-40" />
+      <EdelweissCorner corner="bl" onWine className="absolute bottom-10 left-0 w-24 sm:w-36" />
+      <EdelweissCorner corner="br" onWine className="absolute bottom-10 right-0 w-24 sm:w-36" />
 
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <Reveal>

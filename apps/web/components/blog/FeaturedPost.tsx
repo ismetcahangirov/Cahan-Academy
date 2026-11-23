@@ -4,12 +4,12 @@ import { Link } from '@/i18n/routing';
 import type { BlogPost } from '@/lib/api';
 import CoverImage from '@/components/cards/CoverImage';
 import { sketchFor } from '@/lib/media';
-import { BookmarkRibbon, EdelweissGlyph } from '@/components/ornament';
+import { EdelweissGlyph } from '@/components/ornament';
 
 /**
  * FeaturedPost — the latest article as a wide card at the top of /blog: framed cover (photo or inkwell
  * sketch, priority — it is the LCP), small-caps label, serif title (data → never script), excerpt,
- * author, satin bookmark ribbon (the ONE featured item in the view). Whole card = one stretched link.
+ * author (the ONE featured item in the view). Whole card = one stretched link.
  */
 export default function FeaturedPost({ post }: { post: BlogPost }) {
   const t = useTranslations('blog');
@@ -21,7 +21,6 @@ export default function FeaturedPost({ post }: { post: BlogPost }) {
 
   return (
     <article className="card-ornate card-hover group relative grid gap-0 p-3 md:grid-cols-[1.15fr_1fr] md:p-4">
-      <BookmarkRibbon className="right-8" length={72} />
       <CoverImage
         src={post.image}
         alt=""

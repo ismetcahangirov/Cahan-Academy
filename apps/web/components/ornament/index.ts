@@ -3,6 +3,7 @@
 export { Edelweiss, EdelweissGlyph } from './Edelweiss';
 export { default as OrnamentDivider } from './OrnamentDivider';
 export { default as CornerFlourish } from './CornerFlourish';
+export { default as EdelweissCorner } from './EdelweissCorner';
 export { LaceEdge, LaceCorner } from './Lace';
 export { default as WaveEdge } from './WaveEdge';
 export { BookmarkRibbon, DrapedRibbon } from './Ribbons';

@@ -8,7 +8,7 @@ import { SITE_URL, absoluteUrl, cn } from '@/lib/utils';
 import BlogCard from '@/components/cards/BlogCard';
 import CoverImage from '@/components/cards/CoverImage';
 import { isRealImage, sketchFor } from '@/lib/media';
-import { OrnamentDivider, OrnateFrame, ScriptTitle, WaxSeal } from '@/components/ornament';
+import { OrnamentDivider, OrnateFrame, ScriptTitle } from '@/components/ornament';
 import { Button, Reveal } from '@/components/ui';
 import JsonLd from '@/components/seo/JsonLd';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
@@ -58,7 +58,7 @@ export async function generateStaticParams() {
 /*
  * Article: breadcrumb → serif title (data, never script) with small-caps label and italic meta →
  * cover in an ornate frame → long-form body (prose-ornate + article.module.css) → share / back →
- * wax seal → related posts.
+ * related posts.
  * A-23: getBlogPost returns null only on 404; any other failure throws to the error boundary, so an
  * API blip during ISR keeps the last good page instead of caching a 404.
  */
@@ -175,7 +175,6 @@ export default async function BlogPostPage({ params }: PageProps) {
           )}
 
           <div className="mt-14 flex flex-col items-center gap-5">
-            <WaxSeal size={56} />
             <div className="flex w-full flex-wrap items-center justify-between gap-3 border-t border-line pt-5">
               <Button as={Link} href="/blog" variant="ghost" size="sm" icon={ArrowLeft}>
                 {t('back_to_blog')}

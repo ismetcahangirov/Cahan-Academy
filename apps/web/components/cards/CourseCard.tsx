@@ -11,7 +11,7 @@ import CoverImage from './CoverImage';
  * CourseCard — framed cover (photo, or a sketch chosen from the course's category when the image is
  * missing / stock / mock: CoverImage + sketchFor), category + popular badges, level in small caps, serif
  * title, meta (duration · students · rating), price and a details cue. The whole card is one link target
- * (stretched link), so keyboard users get a single stop. `featured` = ornate frame + bookmark ribbon
+ * (stretched link), so keyboard users get a single stop. `featured` = ornate frame
  * (ONE per view). Shared: home preview, catalogue, course and teacher detail. Server or client trees.
  *
  * <CourseCard course={c} featured={i === 0} priority={i === 0} headingLevel="h2" />

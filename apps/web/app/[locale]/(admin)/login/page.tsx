@@ -10,15 +10,15 @@ import { Link, useRouter } from '@/i18n/routing';
 import { useAuth } from '@/context/AuthContext';
 import adminApi from '@/lib/adminApi';
 import { BrandLogo, BrandLockup } from '@/components/brand';
-import { DrapedRibbon, LaceCorner, OrnamentDivider, ScriptTitle, WaxSeal } from '@/components/ornament';
+import { EdelweissCorner, OrnamentDivider, ScriptTitle } from '@/components/ornament';
 import LanguageSwitcher from '@/components/layout/LanguageSwitcher';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import { Button, FormField, Input } from '@/components/ui';
 import { apiMessage } from '@/components/admin/utils';
 
 /**
- * Admin login — the reference composition at admin scale: a wine panel (lace corners, draped ribbon, wax
- * seal, the brand) beside a parchment form. Below lg the panel collapses into a short band above the form.
+ * Admin login — the reference composition at admin scale: a wine panel (edelweiss corners,
+ * the brand) beside a parchment form. Below lg the panel collapses into a short band above the form.
  * Inline zod errors (noValidate), the API message shown in the form, no native validation bubbles.
  */
 export default function LoginPage() {
@@ -67,13 +67,11 @@ export default function LoginPage() {
     <div className="grid min-h-screen bg-page lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
       {/* wine panel = banner landmark; the form side is <main> (axe landmark-one-main / region) */}
       <header className="theme-wine hero-wine relative flex flex-col items-center justify-center overflow-hidden px-6 py-10 text-center lg:min-h-screen lg:py-16">
-        <LaceCorner corner="tl" className="absolute left-0 top-0 w-24 sm:w-32 lg:w-44" priority onWine />
-        <LaceCorner corner="br" className="absolute bottom-0 right-0 hidden w-32 lg:block lg:w-44" />
-        <DrapedRibbon className="orn-sway pointer-events-none absolute -right-10 -top-6 hidden w-56 lg:block xl:w-64" />
+        <EdelweissCorner corner="tl" priority onWine className="absolute left-0 top-0 w-24 sm:w-32 lg:w-40" />
+        <EdelweissCorner corner="br" priority onWine delay={260} className="absolute bottom-0 right-0 hidden w-32 lg:block lg:w-40" />
 
         <div className="relative z-[1] flex flex-col items-center">
-          <WaxSeal size={72} className="hidden lg:block" />
-          <BrandLogo title="Cahan Academy" className="mt-6 hidden h-36 w-auto text-accent-text lg:block xl:h-44" />
+          <BrandLogo title="Cahan Academy" className="hidden h-36 w-auto text-accent-text lg:block xl:h-44" />
           <BrandLockup title="Cahan Academy" className="h-9 w-auto text-accent-text lg:hidden" />
           <p className="font-script mt-4 text-[2.4rem] leading-none text-ink lg:mt-8 lg:text-[3.2rem]">{t('login.panel_title')}</p>
           <OrnamentDivider draw={false} className="mt-1" />
