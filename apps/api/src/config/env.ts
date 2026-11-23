@@ -20,6 +20,7 @@ const envSchema = z.object({
   ADMIN_EMAIL:        z.string().email(),
   NOTIFICATION_EMAIL: z.string().email(),
   REVALIDATE_SECRET:  z.string().min(16),
+  CATEGORY_SERVICE_TOKEN: z.string().min(32).optional(),
   CLOUDINARY_CLOUD_NAME: z.string().min(1),
   CLOUDINARY_API_KEY:    z.string().min(1),
   CLOUDINARY_API_SECRET: z.string().min(1),

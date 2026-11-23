@@ -26,6 +26,11 @@ export const globalErrorHandler: ErrorRequestHandler = (err, _req, res, _next) =
     return apiResponse.error(res, { status: 413, message: 'Sorğu çox böyükdür', errorCode: 'PAYLOAD_TOO_LARGE' });
   }
 
+  // Postgres unique violation (e.g. a slug that is already taken) is a conflict, not a server fault.
+  if (err?.code === '23505' || err?.cause?.code === '23505') {
+    return apiResponse.error(res, { status: 409, message: 'Bu slug artıq istifadə olunur', errorCode: 'DUPLICATE' });
+  }
+
   const statusCode = Number.isInteger(err?.statusCode) ? err.statusCode : 500;
   const message    = err?.isOperational ? err.message : 'Xidmət müvəqqəti əlçatmazdır';
 
