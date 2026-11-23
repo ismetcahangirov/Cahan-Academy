@@ -8,8 +8,7 @@ import CoursesPreview from '@/components/sections/CoursesPreview';
 import TeachersPreview from '@/components/sections/TeachersPreview';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
 import CTASection from '@/components/sections/CTASection';
-import JsonLd from '@/components/seo/JsonLd';
-import { SITE_URL, absoluteUrl } from '@/lib/utils';
+import { getContactSettings, getTestimonials } from '@/lib/site';
 import { alternatesFor, ogImages } from '@/lib/seo';
 
 // ISR: static HTML, regenerated in the background at most this often (same window as the
@@ -53,36 +52,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function HomePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const [contact, testimonials] = await Promise.all([getContactSettings(), getTestimonials()]);
 
   return (
     <>
-      <JsonLd
-        data={{
-          '@context': 'https://schema.org',
-          '@type': 'EducationalOrganization',
-          name: 'Cahan Academy',
-          url: absoluteUrl(locale),
-          logo: `${SITE_URL}/icon-512.png`,
-          description: 'Azərbaycanda peşəkar texnologiya təhsili — proqramlaşdırma, dizayn, marketinq.',
-          address: {
-            '@type': 'PostalAddress',
-            addressLocality: 'Bakı',
-            addressCountry: 'AZ',
-          },
-          contactPoint: {
-            '@type': 'ContactPoint',
-            telephone: '+994-50-123-45-67',
-            contactType: 'customer service',
-          },
-          sameAs: [
-            'https://facebook.com/cahanacademy',
-            'https://instagram.com/cahanacademy',
-            'https://linkedin.com/company/cahanacademy',
-            'https://youtube.com/@cahanacademy',
-          ],
-        }}
-      />
-
       <HeroSection />
       <FeaturesSection>
         <StatsSection bare />
@@ -90,8 +63,8 @@ export default async function HomePage({ params }: Props) {
       <LearningPath />
       <CoursesPreview />
       <TeachersPreview />
-      <TestimonialsSection />
-      <CTASection />
+      <TestimonialsSection items={testimonials} />
+      <CTASection contact={contact} />
     </>
   );
 }

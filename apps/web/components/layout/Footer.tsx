@@ -7,15 +7,17 @@ import EdelweissCorner from '../ornament/EdelweissCorner';
 import OrnamentDivider from '../ornament/OrnamentDivider';
 import FooterNewsletter from './FooterNewsletter';
 import { FOOTER_LINKS } from './nav';
+import { FALLBACK_CONTACT, socialLinks, telHref, type ContactSettings } from '@/lib/site';
 
 /**
  * Footer — deep wine band (.theme-wine) rising from the page in a wave,
  * stacked logo, links, contact, newsletter, edelweiss clusters opening in the bottom corners. Same look in both themes.
  * `waveFill` = background of the section right above the footer (default the page).
+ * `contact` = phone, e-mail and social links from the admin panel (Site details).
  */
 const SOCIAL = [
   {
-    href: 'https://instagram.com/cahanacademy',
+    key: 'instagram',
     label: 'Instagram',
     svg: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden="true">
@@ -26,7 +28,7 @@ const SOCIAL = [
     ),
   },
   {
-    href: 'https://facebook.com/cahanacademy',
+    key: 'facebook',
     label: 'Facebook',
     svg: (
       <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4" aria-hidden="true">
@@ -35,7 +37,7 @@ const SOCIAL = [
     ),
   },
   {
-    href: 'https://youtube.com/@cahanacademy',
+    key: 'youtube',
     label: 'YouTube',
     svg: (
       <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
@@ -49,7 +51,18 @@ const SOCIAL = [
   },
 ];
 
-export default function Footer({ waveFill = 'var(--page-base)' }: { waveFill?: string }) {
+export default function Footer({
+  waveFill = 'var(--page-base)',
+  contact = FALLBACK_CONTACT,
+}: {
+  waveFill?: string;
+  contact?: ContactSettings;
+}) {
+  const links = socialLinks(contact);
+  const social = SOCIAL.flatMap((n) => {
+    const link = links.find((l) => l.key === n.key);
+    return link ? [{ ...n, href: link.href }] : [];
+  });
   const t = useTranslations('nav');
   const tf = useTranslations('footer');
   const tn = useTranslations('newsletter');
@@ -70,7 +83,7 @@ export default function Footer({ waveFill = 'var(--page-base)' }: { waveFill?: s
               </Link>
               <p className="mt-5 max-w-xs text-[1.02rem] leading-relaxed text-ink-muted">{tf('tagline')}</p>
               <ul className="mt-6 flex gap-2" aria-label={tf('social_label')}>
-                {SOCIAL.map(({ href, label, svg }) => (
+                {social.map(({ href, label, svg }) => (
                   <li key={label}>
                     <a
                       href={href}
@@ -129,15 +142,15 @@ export default function Footer({ waveFill = 'var(--page-base)' }: { waveFill?: s
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Phone size={16} strokeWidth={1.6} className="shrink-0 text-ornament" aria-hidden="true" />
-                    <a href="tel:+994501234567" className="num whitespace-nowrap text-ink hover:underline">
-                      +994 50 123 45 67
+                    <a href={telHref(contact.phone)} className="num whitespace-nowrap text-ink hover:underline">
+                      {contact.phone}
                     </a>
                   </li>
                   <li className="flex min-w-0 items-center gap-2.5">
                     <Mail size={16} strokeWidth={1.6} className="shrink-0 text-ornament" aria-hidden="true" />
                     {/* never split the address mid-word; only an extremely narrow column may wrap it */}
-                    <a href="mailto:info@cahanacademy.az" className="min-w-0 text-ink [overflow-wrap:anywhere] hover:underline sm:whitespace-nowrap">
-                      info@cahanacademy.az
+                    <a href={`mailto:${contact.email}`} className="min-w-0 text-ink [overflow-wrap:anywhere] hover:underline sm:whitespace-nowrap">
+                      {contact.email}
                     </a>
                   </li>
                 </ul>

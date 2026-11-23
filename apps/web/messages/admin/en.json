@@ -16,7 +16,9 @@
     "back_to_site": "Back to the site",
     "logout": "Sign out",
     "menu_open": "Open admin menu",
-    "menu_close": "Close admin menu"
+    "menu_close": "Close admin menu",
+    "testimonials": "Testimonials",
+    "site": "Site details"
   },
   "common": {
     "refresh": "Refresh",
@@ -340,5 +342,44 @@
     "err_old": "Enter your current password.",
     "err_confirm": "Repeat the new password.",
     "err_mismatch": "The new passwords do not match."
+  },
+  "site": {
+    "title": "Site details",
+    "subtitle": "Phone, e-mail, address, opening hours and social links: the footer, the contact page and search engines show these.",
+    "contact_title": "Contact",
+    "contact_subtitle": "Footer, the “Start today” card, the contact page, the privacy policy.",
+    "phone_hint": "Shown exactly as typed, e.g. +994 50 123 45 67.",
+    "social_title": "Social networks",
+    "social_subtitle": "A link left empty is not shown on the site.",
+    "instagram": "Instagram",
+    "facebook": "Facebook",
+    "youtube": "YouTube",
+    "place_title": "Address and opening hours",
+    "address": "Address",
+    "hours": "Opening hours",
+    "hours_hint": "Each line is shown on its own.",
+    "delay_note": "Saved changes show on the site right away (sometimes after a few minutes).",
+    "saved": "Site details saved.",
+    "err_phone": "A phone number may only contain digits, spaces, +, - and ().",
+    "err_link": "The link must start with https://.",
+    "err_address": "The address is required in all three languages.",
+    "err_hours": "Opening hours are required in all three languages."
+  },
+  "testimonials": {
+    "title": "Testimonials",
+    "subtitle": "Student reviews on the home and about pages: {count}",
+    "new": "New testimonial",
+    "modal_new": "New testimonial",
+    "modal_edit": "Edit testimonial",
+    "role": "Role / workplace",
+    "role_hint": "E.g. Front-end Developer @ Kapital Bank. May stay empty.",
+    "text": "Testimonial",
+    "text_hint": "As the student wrote it, in their language. Real reviews with their consent only.",
+    "rating": "Stars (1–5)",
+    "rating_label": "{n} of 5 stars",
+    "empty_title": "No testimonials",
+    "empty_desc": "Without testimonials the site leaves the section out.",
+    "err_text": "A testimonial needs at least 10 characters.",
+    "err_rating": "Stars must be between 1 and 5."
   }
 }

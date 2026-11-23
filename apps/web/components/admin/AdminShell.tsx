@@ -20,6 +20,8 @@ import {
   UsersRound,
   X,
   type LucideIcon,
+  Building2,
+  Quote,
 } from 'lucide-react';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
@@ -51,6 +53,8 @@ const NAV: { key: string; href: string; icon: LucideIcon }[] = [
   { key: 'blog', href: '/dashboard/blog', icon: FileText },
   { key: 'newsletter', href: '/dashboard/newsletter', icon: Mail },
   { key: 'faq', href: '/dashboard/faq', icon: HelpCircle },
+  { key: 'testimonials', href: '/dashboard/testimonials', icon: Quote },
+  { key: 'site', href: '/dashboard/site', icon: Building2 },
   { key: 'users', href: '/dashboard/users', icon: UserCog },
   { key: 'settings', href: '/dashboard/settings', icon: Settings },
 ];

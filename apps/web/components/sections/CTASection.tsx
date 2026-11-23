@@ -7,13 +7,14 @@ import WaxSeal from '../ornament/WaxSeal';
 import { DrapedRibbon } from '../ornament/Ribbons';
 import Button from '../ui/Button';
 import Reveal from '../ui/Reveal';
+import { FALLBACK_CONTACT, telHref, type ContactSettings } from '@/lib/site';
 
 /**
  * CTASection — closing invitation: a parchment panel in an ornate frame, ribbon draped over its corner,
  * wax seal, script title, two actions (contact page + phone). Used on the home and about pages.
- * The phone number is the existing placeholder-looking copy ("Owner must confirm").
+ * `contact` = the phone from the admin panel (Site details).
  */
-export default function CTASection() {
+export default function CTASection({ contact = FALLBACK_CONTACT }: { contact?: ContactSettings }) {
   const t = useTranslations('home');
   const th = useTranslations('hero');
 
@@ -37,9 +38,9 @@ export default function CTASection() {
             <Button as={Link} href="/contact" size="lg" iconAfter={ArrowRight}>
               {th('cta_secondary')}
             </Button>
-            <Button as="a" href="tel:+994501234567" variant="outline" size="lg" icon={PhoneCall} motif={false}>
+            <Button as="a" href={telHref(contact.phone)} variant="outline" size="lg" icon={PhoneCall} motif={false}>
               <span className="sr-only">{t('cta_call')}: </span>
-              <span className="num">+994 50 123 45 67</span>
+              <span className="num">{contact.phone}</span>
             </Button>
           </div>
         </OrnateFrame>

@@ -14,6 +14,8 @@ import contactRoutes from './routes/contact.routes.js';
 import newsletterRoutes from './routes/newsletter.routes.js';
 import faqRoutes from './routes/faq.routes.js';
 import teamMemberRoutes from './routes/teamMember.routes.js';
+import settingsRoutes from './routes/settings.routes.js';
+import testimonialRoutes from './routes/testimonial.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
 import authRoutes from './routes/auth.routes.js';
 import adminRoutes from './routes/admin.routes.js';
@@ -62,6 +64,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/faqs', faqRoutes);
 app.use('/api/team', teamMemberRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/upload', uploadRoutes);
 
 // Error Handling
