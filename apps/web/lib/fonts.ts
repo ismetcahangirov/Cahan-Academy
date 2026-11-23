@@ -1,34 +1,54 @@
 import localFont from 'next/font/local';
 
 /*
- * Self-hosted brand fonts (same families as the dashboard). The woff2 files in assets/fonts are subsets
- * of the upstream Google Fonts TTFs (SIL OFL, see assets/fonts/OFL.txt):
+ * Self-hosted brand fonts. EB Garamond and Cormorant SC are subsets of the upstream Google Fonts TTFs
+ * (SIL OFL, see assets/fonts/OFL.txt):
  *   *-latin     Basic Latin, Latin-1, Latin Extended-A, Ə/ə, punctuation, №, ₼/€  (az + en pages)
  *   *-cyrillic  Cyrillic (ru pages only download these — unicode-range)
  *   cormorant-sc-*  one file per weight with both ranges (small)
+ *   cahan-display-regular  the academy's own title face (SIL OFL, assets/fonts/OFL-CahanDisplay.txt; OTFs + README in
+ *                    docs/brand/font/cahan-display). Covers Latin + every Azerbaijani letter + Russian
+ *                    Cyrillic + № ₼ in one file, so it needs no unicode-range split.
  * Coverage proof: `npm run fonts:coverage`. Rebuild recipe: apps/web/docs/DESIGN.md ("Fonts").
  *
- * How the split works: the Latin face and the Cyrillic face are two families stacked in --font-serif /
- * --font-script (globals.css). The Latin call has NO generated fallback (adjustFontFallback: false),
+ * How the split works: the Latin face and the Cyrillic face are two families stacked in --font-serif
+ * (globals.css). The Latin call has NO generated fallback (adjustFontFallback: false),
  * otherwise its metric-adjusted local fallback would catch Cyrillic before the Cyrillic webfont; the
  * Cyrillic call carries the metric-adjusted fallback, which is what renders while fonts load.
  *
- * Roles: script = Great Vibes (short fixed titles only), serif = EB Garamond (body, UI, data),
+ * Roles: title (--font-script, kept name) = Cahan Display 400 (short fixed titles only), serif = EB Garamond (body, UI, data),
  * sc = Cormorant SC (labels, buttons, badges — always uppercase, see globals.css .sc).
  */
 // unicode-range values are repeated as literals below (next/font requires literal options):
 //   latin    = Basic Latin, Latin-1, Latin Ext-A, Ə/ə, punctuation, №, ₼, €
 //   cyrillic = U+0400-045F, U+0490-0491, U+04D8-04D9
 
+/*
+ * Preload: only what the first screen paints — EB Garamond Latin upright (body, nav, lead) and Cahan Display 400
+ * (titles). Italic is below the fold (testimonials, card dates, article excerpt), so it is its own call with
+ * preload: false; both calls declare the SAME font-family ('Cahan EB Garamond'), so the browser still sees one
+ * family with an upright and an italic face (a second family would get a synthesized oblique instead).
+ */
 export const ebGaramond = localFont({
-  src: [
-    { path: '../assets/fonts/eb-garamond-latin.woff2', weight: '400 800', style: 'normal' },
-    { path: '../assets/fonts/eb-garamond-italic-latin.woff2', weight: '400 800', style: 'italic' },
-  ],
+  src: [{ path: '../assets/fonts/eb-garamond-latin.woff2', weight: '400 800', style: 'normal' }],
   variable: '--font-eb-garamond',
   display: 'swap',
   preload: true,
-  declarations: [{ prop: 'unicode-range', value: 'U+0000-00FF, U+0100-017F, U+018F, U+0192, U+0259, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0300-030C, U+0327, U+2000-206F, U+20AC, U+20BC, U+2116, U+2122, U+2190-2193, U+2212, U+2215, U+FEFF, U+FFFD' }],
+  declarations: [
+    { prop: 'font-family', value: "'Cahan EB Garamond'" },
+    { prop: 'unicode-range', value: 'U+0000-00FF, U+0100-017F, U+018F, U+0192, U+0259, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0300-030C, U+0327, U+2000-206F, U+20AC, U+20BC, U+2116, U+2122, U+2190-2193, U+2212, U+2215, U+FEFF, U+FFFD' },
+  ],
+  adjustFontFallback: false,
+});
+
+export const ebGaramondItalic = localFont({
+  src: [{ path: '../assets/fonts/eb-garamond-italic-latin.woff2', weight: '400 800', style: 'italic' }],
+  display: 'swap',
+  preload: false,
+  declarations: [
+    { prop: 'font-family', value: "'Cahan EB Garamond'" },
+    { prop: 'unicode-range', value: 'U+0000-00FF, U+0100-017F, U+018F, U+0192, U+0259, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0300-030C, U+0327, U+2000-206F, U+20AC, U+20BC, U+2116, U+2122, U+2190-2193, U+2212, U+2215, U+FEFF, U+FFFD' },
+  ],
   adjustFontFallback: false,
 });
 
@@ -45,23 +65,20 @@ export const ebGaramondCyrillic = localFont({
   adjustFontFallback: 'Times New Roman',
 });
 
-export const greatVibes = localFont({
-  src: [{ path: '../assets/fonts/great-vibes-latin.woff2', weight: '400', style: 'normal' }],
-  variable: '--font-great-vibes',
+/*
+ * Cahan Display: hhea and OS/2 typo metrics are identical (950/-300, line gap 0) even though USE_TYPO_METRICS is
+ * set, so next/font's generated fallback (which reads hhea) matches the line box browsers use — the automatic
+ * 'Times New Roman' fallback is safe here (unlike a font whose hhea and typo metrics differ, which needs a
+ * hand-written fallback @font-face). Titles always use weight 400, so only Regular ships; the Light and Bold
+ * OTFs stay in docs/brand/font/cahan-display (subset one into assets/fonts and add it here when a design uses it).
+ */
+export const cahanDisplay = localFont({
+  src: [{ path: '../assets/fonts/cahan-display-regular.woff2', weight: '400', style: 'normal' }],
+  variable: '--font-cahan-display',
   display: 'swap',
   preload: true,
-  declarations: [{ prop: 'unicode-range', value: 'U+0000-00FF, U+0100-017F, U+018F, U+0192, U+0259, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0300-030C, U+0327, U+2000-206F, U+20AC, U+20BC, U+2116, U+2122, U+2190-2193, U+2212, U+2215, U+FEFF, U+FFFD' }],
-  adjustFontFallback: false,
-});
-
-export const greatVibesCyrillic = localFont({
-  src: [{ path: '../assets/fonts/great-vibes-cyrillic.woff2', weight: '400', style: 'normal' }],
-  variable: '--font-great-vibes-cyr',
-  display: 'swap',
-  preload: false,
-  declarations: [{ prop: 'unicode-range', value: 'U+0400-045F, U+0490-0491, U+04D8-04D9' }],
-  fallback: ['Segoe Script', 'cursive'],
-  adjustFontFallback: false,
+  fallback: ['Georgia', 'Times New Roman', 'serif'],
+  adjustFontFallback: 'Times New Roman',
 });
 
 export const cormorantSC = localFont({
@@ -71,12 +88,13 @@ export const cormorantSC = localFont({
   ],
   variable: '--font-cormorant-sc',
   display: 'swap',
-  // small labels only; not preloaded so the hero's script + serif faces get the bandwidth (LCP)
+  // small labels only; not preloaded so the hero's title + serif faces get the bandwidth (LCP)
   preload: false,
   fallback: ['Georgia', 'serif'],
   adjustFontFallback: 'Times New Roman',
 });
 
-export const fontVariables = [ebGaramond, ebGaramondCyrillic, greatVibes, greatVibesCyrillic, cormorantSC]
+// ebGaramondItalic has no variable of its own: its @font-face joins --font-eb-garamond's family ('Cahan EB Garamond').
+export const fontVariables = [ebGaramond, ebGaramondCyrillic, cahanDisplay, cormorantSC]
   .map((f) => f.variable)
   .join(' ');

@@ -9,17 +9,26 @@ import { AlertCircle, ArrowLeft, Eye, EyeOff, KeyRound, Mail } from 'lucide-reac
 import { Link, useRouter } from '@/i18n/routing';
 import { useAuth } from '@/context/AuthContext';
 import adminApi from '@/lib/adminApi';
-import { BrandLogo, BrandLockup } from '@/components/brand';
-import { EdelweissCorner, OrnamentDivider, ScriptTitle } from '@/components/ornament';
+import { BrandMark } from '@/components/brand';
+import { EdelweissCorner, ScriptTitle } from '@/components/ornament';
 import LanguageSwitcher from '@/components/layout/LanguageSwitcher';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import { Button, FormField, Input } from '@/components/ui';
 import { apiMessage } from '@/components/admin/utils';
+import { cn } from '@/lib/utils';
+
+/** the four edelweiss clusters (same sizes as the dashboard's auth pages) */
+const CORNER_SIZE = 'w-20 sm:w-28 lg:w-36';
+/** small bordered pills for the language menu + theme toggle (the dashboard's auth look) */
+const PILL =
+  '[--btn-h:2.15rem] border-line-strong bg-surface text-ink-muted hover:border-ornament-soft hover:bg-surface hover:text-ink';
 
 /**
- * Admin login — the reference composition at admin scale: a wine panel (edelweiss corners,
- * the brand) beside a parchment form. Below lg the panel collapses into a short band above the form.
- * Inline zod errors (noValidate), the API message shown in the form, no native validation bubbles.
+ * Admin login — the dashboard's auth composition: the flat paper colour with a soft parchment hint, the brand
+ * mark (no wordmark) as a faint full-height watermark, a small edelweiss cluster in every corner, and the form
+ * centred straight on the page (no card, frame, seal, lace or ribbon). Language menu + theme toggle sit top
+ * centre (banner); the form column is <main>. Inline zod errors (noValidate), the API message shown in the
+ * form, no native validation bubbles. Fits one screen at 1440x900.
  */
 export default function LoginPage() {
   const t = useTranslations('admin');
@@ -64,38 +73,43 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="grid min-h-screen bg-page lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
-      {/* wine panel = banner landmark; the form side is <main> (axe landmark-one-main / region) */}
-      <header className="theme-wine hero-wine relative flex flex-col items-center justify-center overflow-hidden px-6 py-10 text-center lg:min-h-screen lg:py-16">
-        <EdelweissCorner corner="tl" priority onWine className="absolute left-0 top-0 w-24 sm:w-32 lg:w-40" />
-        <EdelweissCorner corner="br" priority onWine delay={260} className="absolute bottom-0 right-0 hidden w-32 lg:block lg:w-40" />
-
-        <div className="relative z-[1] flex flex-col items-center">
-          <BrandLogo title="Cahan Academy" className="hidden h-36 w-auto text-accent-text lg:block xl:h-44" />
-          <BrandLockup title="Cahan Academy" className="h-9 w-auto text-accent-text lg:hidden" />
-          <p className="font-script mt-4 text-[2.4rem] leading-none text-ink lg:mt-8 lg:text-[3.2rem]">{t('login.panel_title')}</p>
-          <OrnamentDivider draw={false} className="mt-1" />
-          <p className="mt-2 hidden max-w-xs text-[1.05rem] text-ink-muted lg:block">{t('login.panel_text')}</p>
+    <div className="relative isolate flex min-h-screen flex-col items-center justify-center overflow-hidden bg-paper px-4 py-16 sm:px-6">
+      {/* background (follows the page theme) */}
+      <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+        {/* parchment texture, toned down to a soft hint */}
+        <div className="absolute inset-0 opacity-40" style={{ backgroundImage: 'var(--tex-paper)', backgroundSize: '512px 512px' }} />
+        <div className="absolute inset-0 flex items-center justify-center">
+          {/* dark: the dashboard uses white at 10%, but white over the wine-black paper leaves the colour law's tone
+              line (color-audit); wine at 35% over #170004 stays on it and reads about as faint */}
+          <BrandMark
+            title=""
+            className="w-auto max-w-none shrink-0 translate-x-[6vw] text-wine opacity-[0.13] dark:opacity-[0.35]"
+            style={{ height: '100vh' }}
+          />
         </div>
+        <EdelweissCorner corner="tl" priority className={cn('absolute left-0 top-0', CORNER_SIZE)} />
+        <EdelweissCorner corner="tr" priority delay={240} className={cn('absolute right-0 top-0', CORNER_SIZE)} />
+        <EdelweissCorner corner="bl" priority delay={360} className={cn('absolute bottom-0 left-0', CORNER_SIZE)} />
+        <EdelweissCorner corner="br" priority delay={480} className={cn('absolute bottom-0 right-0', CORNER_SIZE)} />
+      </div>
+
+      {/* banner: language menu + theme toggle, top centre, clear of the corner ornaments */}
+      <header className="absolute left-1/2 top-5 z-30 flex -translate-x-1/2 items-center gap-2">
+        <LanguageSwitcher align="left" buttonClassName={cn(PILL, 'px-3.5')} />
+        <ThemeToggle className={PILL} />
       </header>
 
-      {/* parchment form */}
-      <main id="main" className="paper relative flex flex-col px-4 py-8 sm:px-8">
-        <div className="flex items-center justify-between gap-2">
-          <Link href="/" className="btn btn-ghost btn-sm gap-1.5 text-accent-text">
-            <ArrowLeft size={16} strokeWidth={1.6} aria-hidden="true" />
-            {t('login.back')}
-          </Link>
-          <div className="flex items-center gap-1 sm:gap-2">
-            <LanguageSwitcher />
-            <ThemeToggle />
-          </div>
-        </div>
+      {/* the form, centred on the page (no card, frame or seal) */}
+      <main id="main" className="relative w-full max-w-[37rem] px-4 py-8 sm:px-24">
+        <div className="mx-auto w-full max-w-[22rem]">
+          <ScriptTitle as="h1" size="page" align="center" className="orn-rise" title={t('login.title')} subtitle={t('login.subtitle')} />
 
-        <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-8">
-          <ScriptTitle as="h1" size="page" align="center" title={t('login.title')} subtitle={t('login.subtitle')} />
-
-          <form noValidate onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5" aria-describedby={serverError ? 'login-error' : undefined}>
+          <form
+            noValidate
+            onSubmit={handleSubmit(onSubmit)}
+            className="orn-rise mt-8 space-y-5"
+            aria-describedby={serverError ? 'login-error' : undefined}
+          >
             {serverError && (
               <p
                 id="login-error"
@@ -141,10 +155,17 @@ export default function LoginPage() {
               )}
             </FormField>
 
-            <Button type="submit" block size="lg" loading={isSubmitting}>
+            <Button type="submit" block size="lg" loading={isSubmitting} motif>
               {isSubmitting ? t('login.submitting') : t('login.submit')}
             </Button>
           </form>
+
+          <p className="mt-8 text-center">
+            <Link href="/" className="link inline-flex items-center gap-1.5 text-[0.98rem]">
+              <ArrowLeft size={15} strokeWidth={1.6} aria-hidden="true" />
+              {t('login.back')}
+            </Link>
+          </p>
         </div>
       </main>
     </div>

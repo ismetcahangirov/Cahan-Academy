@@ -84,8 +84,6 @@
   "login": {
     "title": "Sign in",
     "subtitle": "Sign in to the admin panel",
-    "panel_title": "Admin panel",
-    "panel_text": "Courses, teachers, blog and applications in one place.",
     "email": "Email",
     "password": "Password",
     "show_password": "Show password",

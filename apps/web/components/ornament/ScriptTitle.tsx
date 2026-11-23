@@ -3,8 +3,8 @@ import { cn } from '@/lib/utils';
 import OrnamentDivider from './OrnamentDivider';
 
 /**
- * ScriptTitle — the heading block: calligraphic title, small-caps eyebrow/subtitle, ornament divider,
- * optional actions slot. The ONLY place the script font is used.
+ * ScriptTitle — the heading block: title in the title face (Cahan Display; the "script" name is historic),
+ * small-caps eyebrow/subtitle, ornament divider, optional actions slot.
  *
  *   <ScriptTitle title={t('title')} subtitle={t('subtitle')} actions={<Button>…</Button>} />
  *   <ScriptTitle align="center" size="section" eyebrow={t('eyebrow')} title={t('title')} />
@@ -12,15 +12,16 @@ import OrnamentDivider from './OrnamentDivider';
  *        align 'start'|'center', size 'hero'|'page'|'section'|'card', as (default h1 for page/hero else h2),
  *        entity (serif line under the script title), divider (default true), className.
  *
- * Rule: the script carries a SHORT FIXED phrase (2–4 words). Data — a course, teacher or post name —
- * never goes into the script; pass it as `entity` (serif). Only a detail page may use its entity's name
+ * Rule: the title face carries a SHORT FIXED phrase (2–4 words). Data — a course, teacher or post name —
+ * never goes into it; pass it as `entity` (serif). Only a detail page may use its entity's name
  * as the page title, and then in serif (see DESIGN.md).
  */
+// Sized for Cahan Display (x-height 455/1000, wide upright serif): ~0.7x the old calligraphic sizes.
 const SIZES = {
-  hero: 'text-[3.3rem] leading-[1.02] sm:text-[4.4rem] lg:text-[5.2rem]',
-  page: 'text-[2.7rem] sm:text-[3.4rem]',
-  section: 'text-[2.35rem] sm:text-[2.9rem]',
-  card: 'text-[1.85rem]',
+  hero: 'text-[2.4rem] leading-[1.06] sm:text-[3.2rem] lg:text-[3.8rem]',
+  page: 'text-[2rem] sm:text-[2.75rem]',
+  section: 'text-[1.75rem] sm:text-[2.25rem]',
+  card: 'text-[1.4rem]',
 } as const;
 
 export default function ScriptTitle({

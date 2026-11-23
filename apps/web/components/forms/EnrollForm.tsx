@@ -84,7 +84,7 @@ export default function EnrollForm({ courseTitle, courseId, onSuccess }: EnrollF
         data-course-id={courseId}
       >
         <WaxSeal size={92} />
-        <p className="font-script mt-4 text-[2.4rem] leading-none text-accent-text dark:text-ink">{t('success_title')}</p>
+        <p className="font-script mt-4 text-[1.75rem] leading-tight text-accent-text dark:text-ink">{t('success_title')}</p>
         <OrnamentDivider className="mt-3" />
         <p className="mt-4 max-w-sm text-[1.08rem] leading-relaxed text-ink">{t('success')}</p>
         <Button variant="outline" size="sm" className="mt-6" onClick={() => setStatus('idle')}>

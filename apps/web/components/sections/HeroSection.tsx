@@ -30,7 +30,7 @@ export default function HeroSection() {
           {t('badge')}
           <EdelweissGlyph className="hidden h-3.5 w-3.5 text-ornament sm:block" />
         </p>
-        <h1 id="hero-title" className="script-title orn-rise mt-5 text-[3.3rem] leading-[1.04] sm:text-[4.6rem] lg:text-[5.6rem]">
+        <h1 id="hero-title" className="script-title orn-rise mt-5 text-balance text-[2.4rem] leading-[1.08] sm:text-[3.3rem] lg:text-[4rem]">
           {t('title')}
         </h1>
         <OrnamentDivider className="mt-5" />

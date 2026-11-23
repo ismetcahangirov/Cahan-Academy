@@ -68,7 +68,7 @@ export default function ContactForm() {
         <h3
           ref={doneRef}
           tabIndex={-1}
-          className="script-title mt-5 text-[2.4rem] outline-none sm:text-[2.8rem]"
+          className="script-title mt-5 text-[1.75rem] outline-none sm:text-[2rem]"
         >
           {t('success_title')}
         </h3>

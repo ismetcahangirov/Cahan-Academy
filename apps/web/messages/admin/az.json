@@ -84,8 +84,6 @@
   "login": {
     "title": "Giriş",
     "subtitle": "İdarəetmə panelinə daxil olun",
-    "panel_title": "İdarə paneli",
-    "panel_text": "Kurslar, müəllimlər, bloq və müraciətlər bir yerdə.",
     "email": "E-poçt",
     "password": "Şifrə",
     "show_password": "Şifrəni göstər",
