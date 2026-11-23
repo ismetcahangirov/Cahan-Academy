@@ -21,9 +21,10 @@ export const metadata: Metadata = {
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION_CODE,
   },
+  // same tab icon as the LMS: the transparent mark (SVG first, PNG fallbacks); /favicon.ico (public/) is only for
+  // clients that ask for it directly and is the same transparent mark
   icons: {
     icon: [
-      { url: '/favicon.ico', sizes: '48x48' },
       { url: '/favicon.svg', type: 'image/svg+xml' },
       { url: '/favicon-32.png', type: 'image/png', sizes: '32x32' },
       { url: '/favicon-16.png', type: 'image/png', sizes: '16x16' },
