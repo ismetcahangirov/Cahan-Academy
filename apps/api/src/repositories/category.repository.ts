@@ -1,5 +1,5 @@
 import { db } from '../config/db.js';
-import { categories, NewCategory } from '../config/schema.js';
+import { categories, courses, NewCategory } from '../config/schema.js';
 import { eq } from 'drizzle-orm';
 
 export const getAllCategories = async () => {
@@ -28,6 +28,11 @@ export const updateCategory = async (id: string, data: Partial<NewCategory>) => 
     .where(eq(categories.id, id))
     .returning();
   return updatedCategory;
+};
+
+export const categoryHasCourses = async (id: string) => {
+  const rows = await db.select({ id: courses.id }).from(courses).where(eq(courses.categoryId, id)).limit(1);
+  return rows.length > 0;
 };
 
 export const deleteCategory = async (id: string) => {

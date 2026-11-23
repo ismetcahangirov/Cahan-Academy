@@ -8,6 +8,7 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
+  categoryHasCourses,
 } from '../repositories/category.repository.js';
 import { CategorySchema } from '../schemas/form.schema.js';
 
@@ -42,6 +43,9 @@ export const deleteCategoryAdmin = asyncHandler(async (req: Request, res: Respon
   const existing = await getCategoryById(id);
   if (!existing) {
     return apiResponse.error(res, { message: 'Kateqoriya tapılmadı', status: 404 });
+  }
+  if (await categoryHasCourses(id)) {
+    return apiResponse.error(res, { message: 'Bu kateqoriyada kurslar var. Əvvəlcə kursları başqa kateqoriyaya keçirin.', status: 409 });
   }
   const deleted = await deleteCategory(id);
   return apiResponse.success(res, { data: deleted, message: 'Kateqoriya uğurla silindi' });
