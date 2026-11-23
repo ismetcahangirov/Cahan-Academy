@@ -31,6 +31,7 @@ import ThemeToggle from '@/components/layout/ThemeToggle';
 import { Button, Spinner } from '@/components/ui';
 import { FeedbackProvider } from '@/components/ui/Feedback';
 import { apiMessage } from './utils';
+import { isolateWheel } from '@/lib/scrollIsolation';
 
 /**
  * AdminShell — the CMS frame: wine sidebar (lockup, nav with an edelweiss marker on the active item,
@@ -121,6 +122,13 @@ export default function AdminShell({ children }: { children: ReactNode }) {
     };
   }, [open]);
 
+  // the sidebar and the page scroll independently: a wheel over the sidebar never scrolls the page behind it
+  const ready = !isLoading && !!user;
+  useEffect(() => {
+    const aside = asideRef.current;
+    return ready && aside ? isolateWheel(aside) : undefined;
+  }, [ready]);
+
   if (isLoading || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-page">
@@ -176,7 +184,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
           </button>
         </div>
 
-        <nav aria-label={t('nav.label')} className="custom-scrollbar relative z-[1] flex-1 overflow-y-auto px-3 py-4 pr-5">
+        <nav aria-label={t('nav.label')} className="custom-scrollbar relative z-[1] flex-1 overflow-y-auto overscroll-contain px-3 py-4 pr-5">
           <ul className="space-y-0.5">
             {NAV.map((item) => {
               const active = isActive(pathname, item.href);
