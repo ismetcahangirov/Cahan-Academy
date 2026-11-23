@@ -87,10 +87,10 @@ export default function LoginPage() {
             style={{ height: '100vh' }}
           />
         </div>
-        <EdelweissCorner corner="tl" className={cn('absolute left-0 top-0', CORNER_SIZE)} />
-        <EdelweissCorner corner="tr" className={cn('absolute right-0 top-0', CORNER_SIZE)} />
-        <EdelweissCorner corner="bl" className={cn('absolute bottom-0 left-0', CORNER_SIZE)} />
-        <EdelweissCorner corner="br" className={cn('absolute bottom-0 right-0', CORNER_SIZE)} />
+        <EdelweissCorner corner="tl" priority className={cn('absolute left-0 top-0', CORNER_SIZE)} />
+        <EdelweissCorner corner="tr" priority delay={240} className={cn('absolute right-0 top-0', CORNER_SIZE)} />
+        <EdelweissCorner corner="bl" priority delay={360} className={cn('absolute bottom-0 left-0', CORNER_SIZE)} />
+        <EdelweissCorner corner="br" priority delay={480} className={cn('absolute bottom-0 right-0', CORNER_SIZE)} />
       </div>
 
       {/* banner: language menu + theme toggle, top centre, clear of the corner ornaments */}

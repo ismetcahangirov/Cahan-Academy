@@ -1,6 +1,5 @@
 import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
-import { BookmarkRibbon } from '../ornament/Ribbons';
 import CornerFlourish from '../ornament/CornerFlourish';
 
 /**
@@ -10,7 +9,7 @@ import CornerFlourish from '../ornament/CornerFlourish';
  *   'plain'     thin frame, white / wine-black surface — lists, table wrappers, forms (default)
  *   'ornate'    + inner hairline, inner glow, two corner flourishes — highlights, summaries
  *   'paper'     parchment fill + texture — reading content, forms
- *   'featured'  ornate + a satin bookmark ribbon from the top edge — the ONE item to notice per view
+ *   'featured'  ornate — the ONE item to notice per view
  * hover: lift on hover (transform only) for clickable cards; as: element/component (e.g. Link).
  *
  * <Card className="p-5">…</Card>
@@ -50,7 +49,6 @@ export default function Card<T extends ElementType = 'div'>({
           <CornerFlourish corner="br" className="absolute bottom-2.5 right-2.5 z-[1] h-6 w-6" />
         </>
       )}
-      {variant === 'featured' && <BookmarkRibbon />}
       {children}
     </Tag>
   );

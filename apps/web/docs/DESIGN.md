@@ -130,12 +130,12 @@ Import from `@/components/ornament` (all server-component friendly, decorative, 
 | `EdelweissGlyph` (8–20px) / `Edelweiss` (≥24px) | primary motif: divider centre, bullets, active nav item, button motif, current timeline step | emoji, hearts, stars as decoration |
 | `OrnamentDivider` | under every `ScriptTitle` (built in), between long-text sections, in modals/footers | stacked dividers |
 | `CornerFlourish` / `OrnateFrame` | featured panels, stat tiles, teacher portraits, CTA panel, timelines | every row of a dense list |
-| `LaceEdge` (CSS bg strip) / `LaceCorner` (lazy img) | section **edges and corners** only (hero, wine bands, footer, drawer) | behind text/data, inside tables |
-| `EdelweissCorner` (CSS bg `--tex-edel-corner`, dark variant swaps in) | the four corners of the admin login (same artwork + sizes as the dashboard's auth pages) | behind text/data, mixed with lace on one surface |
+| `EdelweissCorner` (lazy img pair) | section **corners** (hero, page bands, testimonials, footer, 404, admin login — same artwork as the dashboard's auth pages); opens from its corner: `priority` = on load (CSS), otherwise on scroll (`Reveal`) | behind text/data, inside tables |
+| `LaceEdge` (CSS bg strip) / `LaceCorner` (lazy img) | retired from sections (owner 2026-11-23: floral lace → edelweiss); `LaceEdge` only on the drawer and admin sidebar edge | sections |
 | `WaveEdge` | where two bands meet; `fill` = colour of the neighbour (`var(--paper-base)`/`var(--page-base)`), `invert` at the top of a band | more than one wave per join |
-| `DrapedRibbon` | hero corner, closing CTA, celebratory spots — max one per view region | list pages |
-| `BookmarkRibbon` | the ONE featured card in a view (`<Card variant="featured">`, `CourseCard featured`) | several per grid |
-| `WaxSeal` | brand/closing moments: hero join, footer join, CTA panel | as a bullet |
+| `DrapedRibbon` | **letters only** (owner 2026-11-23): the closing CTA parchment | anywhere else |
+| `BookmarkRibbon` | not used (owner 2026-11-23: ribbons only on letters) | cards |
+| `WaxSeal` | **letters only** (owner 2026-11-23): the CTA parchment, contact / enroll "sent" messages | hero, bands, footer, as a bullet |
 | `SketchIllustration` (`books, inkwell, globe, lamp, cap, notebook`) | empty states, section accents, image placeholders (`CoverImage`) | behind text |
 | `Timeline` | "how it works", history, schedules | |
 | `BrandMark` / `BrandLogo` / `BrandLockup` | brand only (from the owner's paths, currentColor) | retyping "CAHAN ACADEMY" in a font |
@@ -202,10 +202,10 @@ Stats/Testimonials/CTA are reusable on other pages.
 
 ## 6. Page recipes
 
-**Head band (every list / content page)**: `<PageBand id trail eyebrow title lead seal? waveFill?>` from
-`components/layout/PageBand` — the one wine band (`.hero-wine`, lace tl/tr, breadcrumbs from `trail` (Home is added;
+**Head band (every list / content page)**: `<PageBand id trail eyebrow title lead waveFill?>` from
+`components/layout/PageBand` — the one wine band (`.hero-wine`, edelweiss corners tl/tr, breadcrumbs from `trail` (Home is added;
 names default to the nav label of the path), centred `ScriptTitle size="page"` with the eyebrow between edelweiss
-glyphs, wave into the page, optional wax seal). No page builds its own band.
+glyphs, wave into the page). No page builds its own band.
 
 **Marketing list page** (courses, teachers, blog): `PageBand` → filter row (`Input icon={Search}` + `Select`/pill buttons, wraps on mobile) → grid of cards in
 `<Reveal as="ul" stagger>` (each card inside an `<li>`; first card may be `featured`) → `EmptyState` inside a
@@ -245,7 +245,8 @@ Tokens: `--dur-1` 150ms (hover/press), `--dur-2` 250ms (menus, modal), `--dur-3`
 | dropdown, cookie notice | `.orn-pop` / `.orn-rise` |
 | drawer | `.drawer` + `data-open` (transform only) |
 | hover lift | `card-hover` / `<Card hover>` |
-| continuous | `.orn-sway` (hero ribbon) — transform only, off with reduced motion |
+| corner ornament opening | `.orn-bloom` (on load) / `.reveal.reveal-bloom` (on scroll) via `EdelweissCorner` — scale + turn + fade from its corner |
+| continuous | `.orn-sway` — transform only, off with reduced motion |
 
 **`Reveal` can never blank the page.** Markup is rendered visible (SSR, no JS, crawlers, print). After hydration
 `RevealObserver` (mounted once in the locale layout) hides only elements that are still *below the viewport*

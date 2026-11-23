@@ -9,7 +9,7 @@ import JsonLd from '@/components/seo/JsonLd';
 import CoverImage from '@/components/cards/CoverImage';
 import { Button, Card, EmptyState } from '@/components/ui';
 import Reveal from '@/components/ui/Reveal';
-import { EdelweissGlyph, LaceCorner, OrnamentDivider, OrnateFrame, ScriptTitle, WaveEdge } from '@/components/ornament';
+import { EdelweissCorner, EdelweissGlyph, OrnamentDivider, OrnateFrame, ScriptTitle, WaveEdge } from '@/components/ornament';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import CourseCard from '@/components/cards/CourseCard';
 import { isRealImage, sketchFor } from '@/lib/media';
@@ -83,8 +83,8 @@ export default async function TeacherDetailPage({ params }: PageProps) {
 
       {/* ── Hero: wine band, framed arched portrait ─────────────────────────────────────────────── */}
       <section className="theme-wine hero-wine relative isolate overflow-hidden">
-        <LaceCorner corner="tl" priority onWine className="absolute left-0 top-0 w-20 sm:w-32 lg:w-44" />
-        <LaceCorner corner="tr" priority onWine className="absolute right-0 top-0 hidden w-32 sm:block lg:w-44" />
+        <EdelweissCorner corner="tl" priority onWine className="absolute left-0 top-0 w-20 sm:w-32 lg:w-40" />
+        <EdelweissCorner corner="tr" priority onWine delay={260} className="absolute right-0 top-0 hidden w-32 sm:block lg:w-40" />
 
         <div className="relative mx-auto max-w-6xl px-4 pb-24 pt-8 sm:px-6 sm:pb-28 sm:pt-10 lg:px-8">
           <Breadcrumbs

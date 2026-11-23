@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 /*
  * Home = the design showcase (see apps/web/docs/DESIGN.md "Home composition"):
- * wine hero (lace, ribbon, seal) → wave → parchment: stats + strengths → learning-path timeline →
+ * wine hero (edelweiss corners) → wave → parchment: stats + strengths → learning-path timeline →
  * parchment courses band (featured card with bookmark) → teachers in arched frames →
  * wine testimonials band → closing invitation → wine footer.
  */

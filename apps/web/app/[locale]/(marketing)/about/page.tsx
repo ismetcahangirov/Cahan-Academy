@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /*
- * About: wine head band (lace, seal on the join) → history timeline → parchment band with mission /
+ * About: wine head band (edelweiss corners) → history timeline → parchment band with mission /
  * vision + stats → values → team portraits (API, graceful when it fails) → wine testimonials → closing CTA.
  */
 export default async function AboutPage({ params }: Props) {
@@ -66,7 +66,7 @@ export default async function AboutPage({ params }: Props) {
         }}
       />
 
-      <PageBand id="about-title" trail={{ locale, items: [{ path: '/about' }] }} seal eyebrow={t('badge')} title={t('hero_title')} lead={t('hero_subtitle')} />
+      <PageBand id="about-title" trail={{ locale, items: [{ path: '/about' }] }} eyebrow={t('badge')} title={t('hero_title')} lead={t('hero_subtitle')} />
       <HistorySection />
       <MissionSection>
         <StatsSection bare />

@@ -89,6 +89,7 @@
   --dur-3: 400ms;
   --dur-reveal: 700ms;
   --dur-draw: 900ms;
+  --dur-bloom: 1100ms;
   --stagger: 60ms;
   --rise: 8px;
   --rise-lg: 18px;
@@ -110,7 +111,6 @@
   --tex-lace-edge: url("/ornaments/lace-edge.webp");
   --tex-lace-edge-v: url("/ornaments/lace-edge-v.webp");
   --tex-bookmark: url("/ornaments/bookmark-ribbon.webp");
-  --tex-edel-corner: url("/ornaments/edel-corner.webp");
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -120,6 +120,7 @@
     --dur-3: 120ms;
     --dur-reveal: 1ms;
     --dur-draw: 1ms;
+    --dur-bloom: 1ms;
     --stagger: 0ms;
     --rise: 0px;
     --rise-lg: 0px;
@@ -232,7 +233,6 @@
   --tex-lace-edge: url("/ornaments/lace-edge-dark.webp");
   --tex-lace-edge-v: url("/ornaments/lace-edge-v-dark.webp");
   --tex-bookmark: url("/ornaments/bookmark-ribbon-dark.webp");
-  --tex-edel-corner: url("/ornaments/edel-corner-dark.webp");
 
   --background: var(--page);
   --foreground: var(--ink);
@@ -368,6 +368,10 @@ html::-webkit-scrollbar-thumb:hover,
 }
 @keyframes orn-spin {
   to { transform: rotate(360deg); }
+}
+/* edelweiss corner opening from its own corner (transform-origin set on the element) */
+@keyframes orn-bloom {
+  from { opacity: 0; transform: scale(0.35) rotate(-14deg); }
 }
 @keyframes orn-sway {
   0%, 100% { transform: rotate(-1.2deg); }
@@ -1022,6 +1026,9 @@ select.field {
 .orn-reveal {
   animation: orn-fade var(--dur-3) var(--ease-silk) both;
 }
+.orn-bloom {
+  animation: orn-bloom var(--dur-bloom) var(--ease-silk) var(--bloom-delay, 120ms) both;
+}
 .orn-rise {
   animation: orn-rise var(--dur-3) var(--ease-silk) both;
 }
@@ -1074,6 +1081,13 @@ select.field {
 }
 .reveal.reveal-fade.is-pending {
   transform: none;
+}
+/* EdelweissCorner below the fold: the cluster opens from its corner when it scrolls in */
+.reveal.reveal-bloom.is-pending {
+  transform: scale(0.35) rotate(-14deg);
+}
+.reveal.reveal-bloom.is-in {
+  transition-duration: var(--dur-bloom);
 }
 .reveal-stagger > *:nth-child(2) { --reveal-delay: calc(var(--stagger) * 1); }
 .reveal-stagger > *:nth-child(3) { --reveal-delay: calc(var(--stagger) * 2); }
