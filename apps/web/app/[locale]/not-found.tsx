@@ -2,12 +2,11 @@ import type { ReactNode } from 'react';
 import { BrandLockup } from '@/components/brand';
 import { EdelweissCorner, OrnateFrame, ScriptTitle, SketchIllustration } from '@/components/ornament';
 import { buttonClass } from '@/components/ui/Button';
-import ThemeToggle from '@/components/layout/ThemeToggle';
 
 // Shown for notFound() inside /[locale] (unknown path or course/teacher/blog slug).
 // A not-found boundary gets no params, and Next renders it with EVERY page of the segment: reading the
 // locale on the server (getLocale → headers()) made all routes dynamic, and a client component would ship
-// its JS with every page (only the tiny ThemeToggle island is client). So the copy is rendered in all three languages and `<html lang>` (set by the
+// its JS with every page. So the copy is rendered in all three languages and `<html lang>` (set by the
 // locale layout) shows one of them through CSS (`.i18n-*` in globals.css): static, no JS.
 // Copy is inline so it does not depend on message keys (works even if message loading failed).
 const COPY = {
@@ -35,8 +34,6 @@ export default function LocaleNotFound() {
     <main className="paper relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-4 py-16">
       <EdelweissCorner corner="tl" priority className="absolute left-0 top-0 w-24 sm:w-32" />
       <EdelweissCorner corner="br" priority delay={260} className="absolute bottom-0 right-0 w-24 sm:w-32" />
-      {/* the page has no site header: the theme switch still has to be reachable (owner requirement) */}
-      <ThemeToggle className="absolute right-4 top-4" />
       <PerLocale
         render={(l) => (
           <a href={COPY[l].href} aria-label={`Cahan Academy — ${COPY[l].home}`} className="mb-8 block text-accent-text">

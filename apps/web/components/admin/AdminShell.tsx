@@ -29,7 +29,6 @@ import { useAuth } from '@/context/AuthContext';
 import { BrandLockup, BrandMark } from '@/components/brand';
 import { EdelweissGlyph, LaceEdge, OrnamentDivider } from '@/components/ornament';
 import LanguageSwitcher from '@/components/layout/LanguageSwitcher';
-import ThemeToggle from '@/components/layout/ThemeToggle';
 import { Button, Spinner } from '@/components/ui';
 import { FeedbackProvider } from '@/components/ui/Feedback';
 import { apiMessage } from './utils';
@@ -257,7 +256,6 @@ export default function AdminShell({ children }: { children: ReactNode }) {
             </p>
             <div className="ml-auto flex items-center gap-1 sm:gap-2">
               <LanguageSwitcher />
-              <ThemeToggle />
               <Button variant="ghost" size="sm" icon={LogOut} onClick={logout} className="text-accent-text">
                 <span className="hidden sm:inline">{t('nav.logout')}</span>
                 <span className="sr-only sm:hidden">{t('nav.logout')}</span>

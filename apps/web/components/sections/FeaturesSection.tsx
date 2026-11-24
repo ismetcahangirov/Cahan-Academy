@@ -2,10 +2,11 @@ import { useTranslations } from 'next-intl';
 import { Award, BookOpen, Shield, Target, Users, Zap } from 'lucide-react';
 import ScriptTitle from '../ornament/ScriptTitle';
 import SketchIllustration from '../ornament/SketchIllustration';
+import WaveEdge from '../ornament/WaveEdge';
 import Reveal from '../ui/Reveal';
 
 /**
- * FeaturesSection — "Why us": parchment section, centred script title, six features in a ruled grid
+ * FeaturesSection — "Why us": white (.theme-light) parchment section, centred script title, six features in a ruled grid
  * (icon in a thin ring, serif title, muted text). Copy lives in messages `home.f1…f6`.
  * Two of the claims (1200+ students, 8 years) are listed under "Owner must confirm".
  */
@@ -22,7 +23,7 @@ export default function FeaturesSection({ children }: { children?: React.ReactNo
   const t = useTranslations('home');
 
   return (
-    <section id="academy" aria-labelledby="features-title" className="paper relative overflow-hidden pb-16 pt-20 sm:pt-24">
+    <section id="academy" aria-labelledby="features-title" className="theme-light paper relative overflow-hidden pb-24 pt-20 sm:pb-28 sm:pt-24">
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {children}
 
@@ -56,6 +57,8 @@ export default function FeaturesSection({ children }: { children?: React.ReactNo
           </div>
         </div>
       </div>
+      {/* white section on the dark page: wave down into the learning path */}
+      <WaveEdge fill="var(--page-base)" className="absolute inset-x-0 -bottom-px" />
     </section>
   );
 }

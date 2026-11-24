@@ -48,8 +48,8 @@ off-palette: use `<Modal>` and `noValidate` + zod messages.
 
 ## 2. Tokens
 
-All tokens live in `app/globals.css` (`:root` = light, `.dark` = dark, `.theme-wine` = a deep wine panel in either
-theme). Tailwind utilities exist for the semantic ones:
+All tokens live in `app/globals.css` (`:root` / `.theme-light` = the light set, `.dark` = the dark set the site runs on,
+`.theme-wine` = a deep wine panel). Tailwind utilities exist for the semantic ones:
 
 | token | utility | light | dark | use |
 |---|---|---|---|---|
@@ -57,7 +57,8 @@ theme). Tailwind utilities exist for the semantic ones:
 | `--surface` | `bg-surface` | `#FFFFFF` | `#1E0005` | cards, menus, modals |
 | `--surface-2` / `-3` | `bg-surface-2` / `-3` | `#F5F0F1` / `#EBE0E2` | `#270006` / `#370008` | hover/muted, pressed |
 | `--paper` | `bg-paper`, `.paper` | `#F8F4F4` | `#170004` | parchment bands (+ texture via `.paper`) |
-| `--paper-base`, `--page-base` | — | | | theme paper/page even inside `.theme-wine` (wave fills) |
+| `--paper-base`, `--page-base` | — | | `#170004` / `#120003` | the site's paper/page even inside `.theme-wine` / `.theme-light` (wave fills) |
+| `--paper-light`, `--page-light` | — | `#F8F4F4` / `#FAF7F8` | | wave fills toward a `.theme-light` section |
 | `--field` | `bg-field` | `#FFFFFF` | `#170004` | inputs |
 | `--ink` | `text-ink` | `#170004` | `#FFFFFF` | body text |
 | `--ink-muted` | `text-ink-muted` | `#86424D` | `#C19EA3` | secondary text (AA) |
@@ -79,12 +80,16 @@ not yet migrated build and stay readable. **Do not use them in migrated code** �
 (`dark:` utilities apply inside it too). `.hero-wine` (radial wine gradient + grain) and `.band-wine` (vertical
 gradient + grain) are its backgrounds.
 
-### Themes (owner requirement)
-Light and dark are both first-class. Default = system preference; the header toggle (`components/layout/ThemeToggle`,
-also in the mobile drawer) stores `localStorage.theme = 'light' | 'dark'` (try/catch) and `aria-pressed` = dark on.
-An inline `<head>` script (`ThemeScript`) applies `.dark` before first paint (no flash; `<html suppressHydrationWarning>`).
-**Every page agent must verify both themes** (screenshots + colour audit), and every raster ornament must use its
-`-dark` variant in dark mode — the ornament components do that for you; never hard-code `/ornaments/x.webp`.
+### Theme: dark base with white sections (owner requirement, 2026-11-24)
+There is **no theme switch**. `<html class="dark">` is static (set in `app/[locale]/layout.tsx`), so the dark set is
+the site's base. Some sections are white: put `.theme-light` on the section (plus `.paper` or `bg-page` for its
+background). It re-applies the light tokens and light ornament art inside, and `dark:` utilities stop applying there
+(the custom variant excludes `.theme-light` subtrees; component rules written as `.dark .x` carry
+`:not(.theme-light *)`). Wine panels (`.theme-wine`) are unchanged.
+Current white sections: home Features (+ stats) and Courses preview, about Mission (+ stats), course detail Enrol.
+A white section next to the dark page gets a `WaveEdge` filled with `var(--page-base)`; a wave leading into a white
+section uses `var(--paper-light)`. Every raster ornament must still come from the ornament components (light and
+`-dark` variants); never hard-code `/ornaments/x.webp`.
 
 ## 3. Typography
 
@@ -195,8 +200,8 @@ bundles): `ui/Breadcrumbs` (visible trail + BreadcrumbList JSON-LD), `ui/FilterC
 `openGraph` must list it, the parent's file-based image is not merged), `metaDescription()`.
 
 Shell (`components/layout`): `Header` (sticky, lockup, SC nav with edelweiss separators, `LanguageSwitcher`,
-`ThemeToggle`, CTA), `MobileMenu` (dialog drawer: focus trap, Escape, focus return, scroll lock), `Footer` (wine band
-with wave + seal, logo, links, contact, `FooterNewsletter`), `ThemeScript`, `nav.ts` (links). Home sections:
+CTA), `MobileMenu` (dialog drawer: focus trap, Escape, focus return, scroll lock), `Footer` (wine band
+with wave + seal, logo, links, contact, `FooterNewsletter`), `nav.ts` (links). Home sections:
 `components/sections/*` (Hero, Stats, Features, LearningPath, CoursesPreview, TeachersPreview, Testimonials, CTA) —
 Stats/Testimonials/CTA are reusable on other pages.
 
@@ -226,7 +231,7 @@ content in `prose prose-ornate` (typography plugin re-toned to the palette), `Or
 **Admin data page** (`/dashboard/*`): calm — no lace, no ribbons, no waves. `ScriptTitle size="page"` with SC
 subtitle (counts) + one primary action; filter row; `Table` on ≥640px, `Card` list below; `StatusPill` for states;
 row actions as ghost `iconOnly` buttons with `aria-label`; `Skeleton` rows while loading; `EmptyState` when empty.
-Sidebar = a `.theme-wine band-wine` column; header = `site-header` with `ThemeToggle`.
+Sidebar = a `.theme-wine band-wine` column; header = `site-header` (language + logout).
 
 **Admin modal form**: `Modal` (title = short script phrase like "Yeni kurs", `entity` = the item name when editing),
 `<form id noValidate>` inside, `FormField` grid, footer: ghost Cancel + primary Save (`form="id"`, `loading`);
@@ -271,7 +276,7 @@ fetches; no `loading.tsx` above a `[slug]` route (it streams a 200 before `notFo
 
 Gutter 16px (`px-4`); **no horizontal page scroll** (clip decorative overhangs with `overflow-x-clip` on the section);
 tap targets ≥ 40px (`btn` md = 44px, `btn-sm` 36px); primary CTAs `block` on phones; two-column card grids only for
-compact cards (teachers); modals become bottom sheets; header shows lockup + language + theme toggle + menu.
+compact cards (teachers); modals become bottom sheets; header shows lockup + language + menu.
 
 ## 9. Do / don't
 
@@ -294,9 +299,9 @@ npm run mock-api            # terminal 1: fixtures on :5101, no images (BULK=40 
 NEXT_PUBLIC_API_URL=http://localhost:5101/api npx next dev -p <your port>   # terminal 2
 #   (perf: next build && next start -p <port> with the same env)
 
-# screenshots: light + dark × 1440 + 390 for every page you touch — then LOOK at them
+# screenshots: 1440 + 390 for every page you touch — then LOOK at them
 node scripts/screenshots.mjs --base http://localhost:<port> --routes "/,/courses" --out C:/dev/landing-ornate/shots/<agent>
-# colour audit (runtime) — must print 0 violations for your routes, both themes, both widths
+# colour audit (runtime) — must print 0 violations for your routes, both widths
 node scripts/color-audit.mjs --base http://localhost:<port> --routes "/courses,admin:/dashboard/courses" --out C:/dev/landing-ornate/shots/<agent>/audit
 # colour lint (static, also in CI): remove your files from scripts/color-lint-pending.txt, then
 node scripts/color-lint.mjs
@@ -316,5 +321,5 @@ npm run lint && npm run test --workspace=@academy/api && npm run build --workspa
 On Git Bash prefix route arguments with `MSYS_NO_PATHCONV=1` (otherwise `/` becomes `C:/Program Files/Git`).
 `admin:` routes log in to the mock API first (any email/password). Two `next dev` servers must not share one
 `apps/web/.next` — run one per worktree. Also check interactive states the screenshots miss (drawer, language menu,
-modal, form errors, cookie notice, empty state) in both themes and keyboard focus. Script flags and the local recipe:
+modal, form errors, cookie notice, empty state) and keyboard focus. Script flags and the local recipe:
 `scripts/README.md`.

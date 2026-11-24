@@ -54,7 +54,7 @@ export default function HeroSection() {
         </a>
       </div>
 
-      <WaveEdge fill="var(--paper-base)" className="absolute inset-x-0 -bottom-px" />
+      <WaveEdge fill="var(--paper-light)" className="absolute inset-x-0 -bottom-px" />
     </section>
   );
 }
