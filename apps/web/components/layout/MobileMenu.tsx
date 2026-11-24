@@ -10,7 +10,6 @@ import { EdelweissGlyph } from '../ornament/Edelweiss';
 import OrnamentDivider from '../ornament/OrnamentDivider';
 import { LaceEdge } from '../ornament/Lace';
 import LanguageSwitcher from './LanguageSwitcher';
-import ThemeToggle from './ThemeToggle';
 import { NAV_LINKS, isActive } from './nav';
 
 /**
@@ -142,9 +141,6 @@ export default function MobileMenu({ open, onClose }: { open: boolean; onClose: 
             <div className="flex items-center justify-between gap-3">
               <span className="sc text-[0.82rem] text-ink-muted">{tc('language')}</span>
               <LanguageSwitcher variant="inline" />
-            </div>
-            <div className="flex items-center justify-end">
-              <ThemeToggle withLabel />
             </div>
           </div>
         </nav>

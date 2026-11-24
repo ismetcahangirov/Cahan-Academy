@@ -7,8 +7,6 @@ import { fontVariables } from '@/lib/fonts';
 import { SITE_URL } from '@/lib/utils';
 import CookieConsent from '@/components/ui/CookieConsent';
 import RevealObserver from '@/components/ui/RevealObserver';
-import ThemeScript from '@/components/layout/ThemeScript';
-import ThemeSync from '@/components/layout/ThemeSync';
 import '../globals.css';
 
 export function generateStaticParams() {
@@ -35,10 +33,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#FAF7F8' },
-    { media: '(prefers-color-scheme: dark)', color: '#120003' },
-  ],
+  themeColor: '#120003',
+  colorScheme: 'dark',
 };
 
 export default async function LocaleLayout({
@@ -58,17 +54,14 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    // lang drives the Azerbaijani dotted İ in uppercase small caps; the theme script edits class before hydration
-    <html lang={locale} className={fontVariables} suppressHydrationWarning>
-      <head>
-        <ThemeScript />
-      </head>
+    // lang drives the Azerbaijani dotted İ in uppercase small caps. The site is dark-only: `.dark` is static
+    // (white sections opt in with .theme-light, see globals.css), so there is no theme script or switch.
+    <html lang={locale} className={`${fontVariables} dark`} style={{ colorScheme: 'dark' }}>
       <body>
         <NextIntlClientProvider messages={messages}>
           {children}
           <CookieConsent />
           <RevealObserver />
-          <ThemeSync />
         </NextIntlClientProvider>
       </body>
     </html>

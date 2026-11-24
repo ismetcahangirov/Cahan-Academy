@@ -8,7 +8,6 @@ import { cn } from '@/lib/utils';
 import { BrandLockup } from '../brand/Brand';
 import { EdelweissGlyph } from '../ornament/Edelweiss';
 import LanguageSwitcher from './LanguageSwitcher';
-import ThemeToggle from './ThemeToggle';
 import MobileMenu from './MobileMenu';
 import { NAV_LINKS, isActive } from './nav';
 
@@ -69,7 +68,6 @@ export default function Header() {
 
           <div className="flex items-center gap-1 sm:gap-2">
             <LanguageSwitcher />
-            <ThemeToggle />
             <Link href="/courses" className="btn btn-primary btn-sm ml-1 hidden sm:inline-flex">
               {t('enroll')}
             </Link>

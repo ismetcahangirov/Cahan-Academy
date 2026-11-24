@@ -28,7 +28,7 @@ const args = parseArgs();
 const base = (args.base || DEFAULT_BASE).replace(/\/$/, '');
 const api = args.api || DEFAULT_API;
 const out = args.out || 'a11y';
-const themes = list(args.themes, 'light,dark');
+const themes = list(args.themes, 'dark');
 const widths = list(args.widths, '1440,390').map(Number);
 const TARGET_TIMEOUT = Number(args.timeout || 120) * 1000;
 assertLocal(base);

@@ -12,7 +12,6 @@ import adminApi from '@/lib/adminApi';
 import { BrandMark } from '@/components/brand';
 import { EdelweissCorner, ScriptTitle } from '@/components/ornament';
 import LanguageSwitcher from '@/components/layout/LanguageSwitcher';
-import ThemeToggle from '@/components/layout/ThemeToggle';
 import { Button, FormField, Input } from '@/components/ui';
 import { apiMessage } from '@/components/admin/utils';
 import { cn } from '@/lib/utils';
@@ -93,10 +92,9 @@ export default function LoginPage() {
         <EdelweissCorner corner="br" priority delay={480} className={cn('absolute bottom-0 right-0', CORNER_SIZE)} />
       </div>
 
-      {/* banner: language menu + theme toggle, top centre, clear of the corner ornaments */}
+      {/* banner: language menu, top centre, clear of the corner ornaments */}
       <header className="absolute left-1/2 top-5 z-30 flex -translate-x-1/2 items-center gap-2">
         <LanguageSwitcher align="left" buttonClassName={cn(PILL, 'px-3.5')} />
-        <ThemeToggle className={PILL} />
       </header>
 
       {/* the form, centred on the page (no card, frame or seal) */}

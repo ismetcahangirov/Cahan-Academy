@@ -38,7 +38,7 @@ const runs = Math.max(1, Number(args.runs || 1));
 const device = args.device || 'moto';
 const network = args.network || 'none';
 const reducedMotion = truthy(args['reduced-motion']);
-const theme = args.theme || 'light';
+const theme = args.theme || 'dark';
 assertLocal(base);
 const routes = parseRoutes(args.routes || '/');
 

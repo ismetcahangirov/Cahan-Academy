@@ -1,9 +1,8 @@
 // Shared Playwright helpers for screenshots.mjs, color-audit.mjs and perf-probe.mjs.
 // LOCALHOST ONLY: every script refuses to run against a non-local host (never production).
 //
-// Theme: the site keeps 'light' | 'dark' | 'system' in localStorage['theme'] and an inline <head>
-// script sets <html class="dark">. newContext() writes the key before any page script runs AND
-// emulates the matching prefers-color-scheme, so both the class and media-query paths agree.
+// Theme: the site is dark-only (<html class="dark"> is static, white sections use .theme-light), so the
+// `theme` option no longer changes the page; newContext() still emulates prefers-color-scheme for it.
 // Cookie banner: cookie_consent=accepted is set unless { consent: false } (--consent 0).
 // Admin: routes prefixed "admin:" log in through the mock API (POST /auth/login) and carry the
 // refreshToken cookie that apps/web/middleware.ts requires for /dashboard. Cookies are host-scoped

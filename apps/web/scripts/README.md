@@ -31,7 +31,7 @@ Playwright comes from the root `node_modules` (`@playwright/test`). If Chromium 
 | `--base` | `http://localhost:3101` | site under test (must be local) |
 | `--api` | `http://localhost:5101/api` | API used for admin login and `{course}` / `{teacher}` / `{post}` templates |
 | `--routes` | `/` | comma list. Prefix a route with `admin:` to log in first, e.g. `admin:/dashboard/courses`. Paths may use `{course}`, `{teacher}` or `{post}` (the first slug from the API), e.g. `/courses/{course}` |
-| `--themes` | `light,dark` | sets `localStorage.theme` before any page script runs and emulates `prefers-color-scheme` to match |
+| `--themes` | `dark` | the site is dark-only (white sections are `.theme-light`), so this only names the files |
 | `--widths` | `1440,390` | viewport widths. The height is 900, or 844 below 600 px |
 | `--consent` | `1` | sets the cookie `cookie_consent=accepted` so the banner does not cover the page. Use `0` to show it |
 | `--scroll` | `1` | scrolls to the bottom in steps (fires reveals and lazy images), then back to the top |

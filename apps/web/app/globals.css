@@ -1,8 +1,10 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* `dark:` utilities follow the .dark class on <html> and also apply inside .theme-wine panels */
-@custom-variant dark (&:where(.dark, .dark *, .theme-wine, .theme-wine *));
+/* The site is dark-only: <html class="dark"> is static (no theme switch). `.theme-light` turns one section into a
+   white panel (light tokens + light ornament art), `.theme-wine` into a deep wine panel. `dark:` utilities apply
+   everywhere except inside a `.theme-light` panel (a wine panel nested in a light one is dark again). */
+@custom-variant dark (&:where(.dark:not(.theme-light *), .dark *:not(.theme-light, .theme-light *), .theme-wine, .theme-wine *));
 
 /*
  * Cahan Academy · ornate theme tokens (ported 1:1 from the dashboard's client/src/index.css).
@@ -105,12 +107,9 @@
   /* layout */
   --header-h: 4.5rem;
 
-  /* raster ornaments used as CSS backgrounds (dark variants are swapped in below);
-     the larger ones (lace corner, ribbon, seal, sketches) are lazy <img> pairs, see ornament/ThemedImg */
-  --tex-paper: url("/ornaments/parchment.webp");
-  --tex-lace-edge: url("/ornaments/lace-edge.webp");
-  --tex-lace-edge-v: url("/ornaments/lace-edge-v.webp");
-  --tex-bookmark: url("/ornaments/bookmark-ribbon.webp");
+  /* fixed light colours for wave fills next to a .theme-light section (the --*-base pair is the dark site's) */
+  --page-light: #FAF7F8;
+  --paper-light: #F8F4F4;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -127,8 +126,11 @@
   }
 }
 
-/* ------------------------------------------------------------------ light theme */
-:root {
+/* ------------------------------------------------------------------ light token set
+ * The root of the site is always .dark; these light tokens apply inside .theme-light panels (white sections).
+ * :root keeps them as the base so the dark set below only has to override. */
+:root,
+.theme-light {
   color-scheme: light;
 
   --page: #FAF7F8;          /* s .03  faint parchment */
@@ -136,8 +138,6 @@
   --surface-2: #F5F0F1;     /* s .06  hover, muted fills */
   --surface-3: #EBE0E2;     /* s .12  pressed / selected */
   --paper: #F8F4F4;         /* s .045 parchment panels (+ --tex-paper) */
-  --paper-base: #F8F4F4;    /* the theme's paper, NOT overridden inside .theme-wine (wave fills) */
-  --page-base: #FAF7F8;
   --field: #FFFFFF;
 
   --ink: #170004;           /* s 1.75 wine-black body text */
@@ -173,6 +173,13 @@
   --shadow-lg: 0 28px 64px -24px rgba(92, 0, 14, 0.38), 0 6px 16px -6px rgba(92, 0, 14, 0.12);
   --glow-inset: inset 0 0 0 1px rgba(92, 0, 14, 0.03), inset 0 0 32px rgba(92, 0, 14, 0.045);
 
+  /* raster ornaments used as CSS backgrounds (dark variants are swapped in below);
+     the larger ones (lace corner, ribbon, seal, sketches) are lazy <img> pairs, see ornament/ThemedImg */
+  --tex-paper: url("/ornaments/parchment.webp");
+  --tex-lace-edge: url("/ornaments/lace-edge.webp");
+  --tex-lace-edge-v: url("/ornaments/lace-edge-v.webp");
+  --tex-bookmark: url("/ornaments/bookmark-ribbon.webp");
+
   /* legacy aliases used by pages that are not migrated yet */
   --background: var(--page);
   --foreground: var(--ink);
@@ -182,9 +189,9 @@
   --muted-foreground: var(--ink-muted);
 }
 
-/* ------------------------------------------------------------------ dark theme
- * .theme-wine applies the dark token set to a single panel in either theme (hero, CTA band, footer,
- * mobile drawer), so ornaments and text inside it use the on-dark variants. */
+/* ------------------------------------------------------------------ dark token set (the site)
+ * .theme-wine applies the dark token set to a single panel (hero, testimonials band, footer, admin drawer),
+ * so ornaments and text inside it use the on-dark variants. */
 .dark,
 .theme-wine {
   color-scheme: dark;
@@ -242,9 +249,15 @@
   --muted-foreground: var(--ink-muted);
 }
 
-.dark {
+/* the site's page / paper even inside .theme-wine and .theme-light panels (wave fills toward the page) */
+:root {
   --paper-base: #170004;
   --page-base: #120003;
+}
+
+/* a white section on the dark site: its own text colour (body's colour is resolved with the dark --ink) */
+.theme-light {
+  color: var(--ink);
 }
 
 /* A deeper, warmer wine panel (hero, CTA band, footer, drawer) - same in both themes */
@@ -409,7 +422,7 @@ html::-webkit-scrollbar-thumb:hover,
   line-height: 1.08;
   color: var(--accent-text);
 }
-.dark .script-title,
+.dark .script-title:not(.theme-light *),
 .theme-wine .script-title {
   color: var(--ink);
 }
@@ -582,7 +595,7 @@ html::-webkit-scrollbar-thumb:hover,
 .btn-primary:hover:not(:disabled) {
   background-color: var(--accent-hover);
 }
-.dark .btn-primary {
+.dark .btn-primary:not(.theme-light *) {
   border-color: var(--line-strong);
 }
 
@@ -618,7 +631,7 @@ html::-webkit-scrollbar-thumb:hover,
   color: var(--accent-fg);
 }
 .theme-wine .btn-danger:hover:not(:disabled),
-.dark .btn-danger:hover:not(:disabled) {
+.dark .btn-danger:hover:not(:disabled):not(.theme-light *) {
   background-color: #5C000E;
   border-color: #E2D1D4;
   color: #FFFFFF;
@@ -658,7 +671,7 @@ html::-webkit-scrollbar-thumb:hover,
   background-color: var(--accent);
   color: var(--accent-fg);
 }
-.dark .status-filled {
+.dark .status-filled:not(.theme-light *) {
   background-color: #5C000E;
   color: #FFFFFF;
   border-color: var(--line-strong);
@@ -735,7 +748,7 @@ html::-webkit-scrollbar-thumb:hover,
   color: #FFFFFF;
   border-color: #5C000E;
 }
-.dark .badge-solid,
+.dark .badge-solid:not(.theme-light *),
 .theme-wine .badge-solid {
   border-color: var(--line-strong);
 }
@@ -788,7 +801,7 @@ html::-webkit-scrollbar-thumb:hover,
 .field:hover:not(:disabled) {
   border-color: var(--ornament-soft);
 }
-.dark .field:hover:not(:disabled),
+.dark .field:hover:not(:disabled):not(.theme-light *),
 .theme-wine .field:hover:not(:disabled) {
   border-color: var(--ink-subtle);
 }
@@ -821,7 +834,7 @@ select.field {
   background-repeat: no-repeat;
   background-position: right 0.9rem center;
 }
-.dark select.field,
+.dark select.field:not(.theme-light *),
 .theme-wine select.field {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23E2D1D4' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
 }
@@ -1004,7 +1017,7 @@ select.field {
   background-image: linear-gradient(90deg, transparent, rgba(92, 0, 14, 0.07), transparent);
   animation: orn-shimmer 1.6s var(--ease-silk) infinite;
 }
-.dark .skeleton::after {
+.dark .skeleton:not(.theme-light *)::after {
   background-image: linear-gradient(90deg, transparent, rgba(92, 0, 14, 0.45), transparent);
 }
 

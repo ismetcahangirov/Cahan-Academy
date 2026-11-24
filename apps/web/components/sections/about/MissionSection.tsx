@@ -23,7 +23,7 @@ export default function MissionSection({ children }: { children?: ReactNode }) {
   const t = useTranslations('about');
 
   return (
-    <section aria-labelledby="mission-title" id="mission" className="cv-auto paper relative py-24 sm:py-28">
+    <section aria-labelledby="mission-title" id="mission" className="cv-auto theme-light paper relative py-24 sm:py-28">
       <WaveEdge invert fill="var(--page-base)" className="absolute inset-x-0 -top-px" />
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <Reveal>

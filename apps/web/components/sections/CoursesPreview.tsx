@@ -31,7 +31,7 @@ export default async function CoursesPreview() {
   const courses = await loadCourses(locale);
 
   return (
-    <section aria-labelledby="courses-title" className="cv-auto paper relative py-24 sm:py-28">
+    <section aria-labelledby="courses-title" className="cv-auto theme-light paper relative py-24 sm:py-28">
       <WaveEdge invert fill="var(--page-base)" className="absolute inset-x-0 -top-px" />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>

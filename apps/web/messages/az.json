@@ -298,10 +298,6 @@
     "page_status": "Səhifə {page} / {total}",
     "error": "Xəta baş verdi. Yenidən cəhd edin."
   },
-  "theme": {
-    "toggle": "Açıq və tünd mövzu arasında keçid",
-    "dark": "Tünd mövzu"
-  },
   "home": {
     "hero_scroll": "Davamına baxın",
     "stats_title": "Rəqəmlərlə akademiya",

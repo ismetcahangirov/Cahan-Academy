@@ -348,7 +348,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
       </div>
 
       {/* ── Enrolment: parchment band with the framed form ──────────────────────────────────────── */}
-      <section id="enroll" aria-labelledby="enroll-title" className="paper relative scroll-mt-[var(--header-h)] py-20 sm:py-24">
+      <section id="enroll" aria-labelledby="enroll-title" className="theme-light paper relative scroll-mt-[var(--header-h)] py-20 sm:py-24">
         <WaveEdge invert fill="var(--page-base)" className="absolute inset-x-0 -top-px" />
         <div className="mx-auto max-w-2xl px-4 sm:px-6">
           <OrnateFrame className="px-5 py-9 sm:px-10 sm:py-11">
