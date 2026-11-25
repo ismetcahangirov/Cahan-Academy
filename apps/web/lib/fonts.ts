@@ -76,7 +76,9 @@ export const cahanDisplay = localFont({
   src: [{ path: '../assets/fonts/cahan-display-regular.woff2', weight: '400', style: 'normal' }],
   variable: '--font-cahan-display',
   display: 'swap',
-  preload: true,
+  // titles now use Times New Roman (--font-title in globals.css); the face stays registered but is not preloaded,
+  // so the browser only downloads it if a rule uses var(--font-cahan-display) again
+  preload: false,
   fallback: ['Georgia', 'Times New Roman', 'serif'],
   adjustFontFallback: 'Times New Roman',
 });

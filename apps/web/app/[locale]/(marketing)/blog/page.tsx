@@ -50,9 +50,12 @@ export default async function BlogPage({ params }: PageProps) {
           })),
         }}
       />
-      <PageBand id="blog-title" trail={{ locale, items: [{ path: '/blog' }] }} eyebrow={t('hero_badge')} title={t('page_title')} lead={t('page_subtitle')} />
-      <div className="mx-auto max-w-6xl px-4 pb-24 pt-10 sm:px-6 sm:pt-14 lg:px-8">
-        <BlogList posts={posts} failed={failed} />
+      <PageBand id="blog-title" trail={{ locale, items: [{ path: '/blog' }] }} eyebrow={t('hero_badge')} title={t('page_title')} lead={t('page_subtitle')} waveFill="var(--page-light)" />
+      {/* page body: a white section between the wine head band and the wine footer (dark / light alternate) */}
+      <div data-footer-light className="theme-light bg-page">
+        <div className="mx-auto max-w-6xl px-4 pb-24 pt-10 sm:px-6 sm:pt-14 lg:px-8">
+          <BlogList posts={posts} failed={failed} />
+        </div>
       </div>
     </>
   );

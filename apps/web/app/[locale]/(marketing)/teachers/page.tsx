@@ -62,8 +62,12 @@ export default async function TeachersPage({ params }: PageProps) {
         eyebrow={tp('eyebrow')}
         title={t('page_title')}
         lead={t('page_description')}
+        waveFill="var(--page-light)"
       />
-      <TeachersClientPage teachers={teachers as Teacher[]} locale={locale} />
+      {/* page body: a white section between the wine head band and the wine footer (dark / light alternate) */}
+      <div data-footer-light className="theme-light bg-page">
+        <TeachersClientPage teachers={teachers as Teacher[]} locale={locale} />
+      </div>
     </>
   );
 }

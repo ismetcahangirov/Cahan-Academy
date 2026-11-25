@@ -62,57 +62,60 @@ export default async function ContactPage({ params }: Props) {
         }}
       />
 
-      <PageBand id="contact-title" trail={{ locale, items: [{ path: '/contact' }] }} eyebrow={t('eyebrow')} title={t('title')} lead={t('lead')} />
+      <PageBand id="contact-title" trail={{ locale, items: [{ path: '/contact' }] }} eyebrow={t('eyebrow')} title={t('title')} lead={t('lead')} waveFill="var(--page-light)" />
 
-      <div className="mx-auto grid max-w-6xl items-start gap-6 px-4 pb-24 pt-12 sm:px-6 sm:pt-16 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-10 lg:px-8">
-        <OrnateFrame as="section" aria-labelledby="contact-form-title" className="px-5 pb-8 pt-9 sm:px-10 sm:pb-10 sm:pt-11">
-          <ScriptTitle id="contact-form-title" size="card" as="h2" title={t('form_title')} subtitle={t('form_hint')} />
-          <div className="mt-7">
-            <ContactForm />
-          </div>
-        </OrnateFrame>
+      {/* page body: a white section between the wine head band and the wine footer (dark / light alternate) */}
+      <div data-footer-light className="theme-light bg-page">
+        <div className="mx-auto grid max-w-6xl items-start gap-6 px-4 pb-24 pt-12 sm:px-6 sm:pt-16 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-10 lg:px-8">
+          <OrnateFrame as="section" aria-labelledby="contact-form-title" className="px-5 pb-8 pt-9 sm:px-10 sm:pb-10 sm:pt-11">
+            <ScriptTitle id="contact-form-title" size="card" as="h2" title={t('form_title')} subtitle={t('form_hint')} />
+            <div className="mt-7">
+              <ContactForm />
+            </div>
+          </OrnateFrame>
 
-        <OrnateFrame
-          as="aside"
-          paper
-          corners="diagonal"
-          aria-labelledby="contact-info-title"
-          className="relative overflow-hidden px-6 pb-8 pt-9 sm:px-9"
-        >
-          <ScriptTitle id="contact-info-title" size="card" as="h2" title={t('info_title')} lead={t('info_lead')} />
-          <ul className="mt-7 space-y-6">
-            <Fact icon={Phone} label={t('phone')}>
-              <a href={telHref(contact.phone)} className="num link">
-                {contact.phone}
-              </a>
-            </Fact>
-            <Fact icon={Mail} label={t('email')}>
-              <a href={`mailto:${contact.email}`} className="link break-words">
-                {contact.email}
-              </a>
-            </Fact>
-            <Fact icon={MapPin} label={t('address_label')}>
-              <p>{address}</p>
-              <a
-                href={mapHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="sc mt-1.5 inline-flex items-center gap-1.5 text-[0.82rem] text-accent-text hover:underline"
-              >
-                {t('map_link')}
-                <ExternalLink size={13} strokeWidth={1.8} aria-hidden="true" />
-              </a>
-            </Fact>
-            <Fact icon={Clock} label={t('hours_label')}>
-              {hours.map((line, i) => (
-                <p key={i} className={i === 0 ? 'time-italic' : 'time-italic text-ink-muted'}>
-                  {line}
-                </p>
-              ))}
-            </Fact>
-          </ul>
-          <SketchIllustration name="inkwell" className="mx-auto mt-9 w-28 sm:w-32" />
-        </OrnateFrame>
+          <OrnateFrame
+            as="aside"
+            paper
+            corners="diagonal"
+            aria-labelledby="contact-info-title"
+            className="relative overflow-hidden px-6 pb-8 pt-9 sm:px-9"
+          >
+            <ScriptTitle id="contact-info-title" size="card" as="h2" title={t('info_title')} lead={t('info_lead')} />
+            <ul className="mt-7 space-y-6">
+              <Fact icon={Phone} label={t('phone')}>
+                <a href={telHref(contact.phone)} className="num link">
+                  {contact.phone}
+                </a>
+              </Fact>
+              <Fact icon={Mail} label={t('email')}>
+                <a href={`mailto:${contact.email}`} className="link break-words">
+                  {contact.email}
+                </a>
+              </Fact>
+              <Fact icon={MapPin} label={t('address_label')}>
+                <p>{address}</p>
+                <a
+                  href={mapHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="sc mt-1.5 inline-flex items-center gap-1.5 text-[0.82rem] text-accent-text hover:underline"
+                >
+                  {t('map_link')}
+                  <ExternalLink size={13} strokeWidth={1.8} aria-hidden="true" />
+                </a>
+              </Fact>
+              <Fact icon={Clock} label={t('hours_label')}>
+                {hours.map((line, i) => (
+                  <p key={i} className={i === 0 ? 'time-italic' : 'time-italic text-ink-muted'}>
+                    {line}
+                  </p>
+                ))}
+              </Fact>
+            </ul>
+            <SketchIllustration name="inkwell" className="mx-auto mt-9 w-28 sm:w-32" />
+          </OrnateFrame>
+        </div>
       </div>
     </>
   );

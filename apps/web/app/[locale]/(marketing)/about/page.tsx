@@ -68,14 +68,14 @@ export default async function AboutPage({ params }: Props) {
         }}
       />
 
-      <PageBand id="about-title" trail={{ locale, items: [{ path: '/about' }] }} eyebrow={t('badge')} title={t('hero_title')} lead={t('hero_subtitle')} />
+      <PageBand id="about-title" trail={{ locale, items: [{ path: '/about' }] }} eyebrow={t('badge')} title={t('hero_title')} lead={t('hero_subtitle')} waveFill="var(--page-light)" />
       <HistorySection />
       <MissionSection>
         <StatsSection bare />
       </MissionSection>
       <ValuesSection />
       <TeamSection />
-      <TestimonialsSection items={testimonials} />
+      <TestimonialsSection items={testimonials} topFill="var(--page-light)" bottomFill="var(--page-light)" />
       <CTASection contact={contact} />
     </>
   );

@@ -8,7 +8,7 @@ import { SITE_URL, absoluteUrl, cn } from '@/lib/utils';
 import BlogCard from '@/components/cards/BlogCard';
 import CoverImage from '@/components/cards/CoverImage';
 import { isRealImage, sketchFor } from '@/lib/media';
-import { OrnamentDivider, OrnateFrame, ScriptTitle } from '@/components/ornament';
+import { OrnamentDivider, OrnateFrame, ScriptTitle, WaveEdge } from '@/components/ornament';
 import { Button, Reveal } from '@/components/ui';
 import JsonLd from '@/components/seo/JsonLd';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
@@ -186,7 +186,9 @@ export default async function BlogPostPage({ params }: PageProps) {
       </article>
 
       {related.length > 0 && (
-        <section aria-labelledby="related-title" className="cv-auto relative pb-24 pt-6">
+        // white section after the dark article (dark / light alternate); the article's page colour waves into it
+        <section aria-labelledby="related-title" data-footer-light className="cv-auto theme-light bg-page relative pb-24 pt-20 sm:pt-24">
+          <WaveEdge invert fill="var(--page-base)" className="absolute inset-x-0 -top-px" />
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <ScriptTitle id="related-title" align="center" size="section" title={t('related_posts')} />
             <Reveal as="ul" stagger className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

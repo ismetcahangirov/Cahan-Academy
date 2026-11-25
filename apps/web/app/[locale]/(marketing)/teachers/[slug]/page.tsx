@@ -140,66 +140,69 @@ export default async function TeacherDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        <WaveEdge fill="var(--page-base)" className="absolute inset-x-0 -bottom-px" />
+        <WaveEdge fill="var(--page-light)" className="absolute inset-x-0 -bottom-px" />
       </section>
 
-      {longBio && (
-        <section aria-labelledby="bio-title" className="mx-auto max-w-3xl px-4 pt-14 sm:px-6">
-          <Card variant="paper" className="p-6 sm:p-9">
-            <ScriptTitle id="bio-title" size="section" title={tp('about_title')} />
-            <p className="mt-6 whitespace-pre-line text-[1.1rem] leading-relaxed text-ink">{teacher.bio}</p>
-          </Card>
-        </section>
-      )}
-
-      <section
-        id="teacher-courses"
-        aria-labelledby="teacher-courses-title"
-        className="mx-auto max-w-7xl scroll-mt-[var(--header-h)] px-4 pb-24 pt-14 sm:px-6 lg:px-8"
-      >
-        <ScriptTitle
-          id="teacher-courses-title"
-          size="section"
-          title={tp('courses_title')}
-          subtitle={courses.length ? tp('courses_count', { count: courses.length }) : undefined}
-          actions={
-            courses.length > 0 ? (
-              <Button as={Link} href="/courses" variant="outline" size="sm" iconAfter={ArrowRight}>
-                {tp('all_courses')}
-              </Button>
-            ) : undefined
-          }
-        />
-        {courses.length ? (
-          <Reveal as="ul" stagger className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {courses.map((course, i) => (
-              <li key={course.id}>
-                <CourseCard course={course} featured={courses.length > 1 && i === 0 && course.isPopular} />
-              </li>
-            ))}
-          </Reveal>
-        ) : (
-          <div className="card-paper mt-10">
-            <EmptyState
-              sketch="books"
-              title={tp('no_courses_title')}
-              description={tp('no_courses_desc')}
-              action={
-                <Button as={Link} href="/courses" variant="outline">
-                  {tn('courses')}
-                </Button>
-              }
-            />
-          </div>
+      {/* white section between the wine hero and the wine footer (dark / light alternate) */}
+      <div data-footer-light className="theme-light bg-page">
+        {longBio && (
+          <section aria-labelledby="bio-title" className="mx-auto max-w-3xl px-4 pt-14 sm:px-6">
+            <Card variant="paper" className="p-6 sm:p-9">
+              <ScriptTitle id="bio-title" size="section" title={tp('about_title')} />
+              <p className="mt-6 whitespace-pre-line text-[1.1rem] leading-relaxed text-ink">{teacher.bio}</p>
+            </Card>
+          </section>
         )}
-        <p className="mt-14 flex items-center justify-center gap-3">
-          <EdelweissGlyph className="h-4 w-4 text-ornament" />
-          <Link href="/teachers" className="sc text-[0.85rem] text-accent-text underline decoration-line-strong underline-offset-4 hover:decoration-current">
-            {t('back_to_list')}
-          </Link>
-          <EdelweissGlyph className="h-4 w-4 text-ornament" />
-        </p>
-      </section>
+
+        <section
+          id="teacher-courses"
+          aria-labelledby="teacher-courses-title"
+          className="mx-auto max-w-7xl scroll-mt-[var(--header-h)] px-4 pb-24 pt-14 sm:px-6 lg:px-8"
+        >
+          <ScriptTitle
+            id="teacher-courses-title"
+            size="section"
+            title={tp('courses_title')}
+            subtitle={courses.length ? tp('courses_count', { count: courses.length }) : undefined}
+            actions={
+              courses.length > 0 ? (
+                <Button as={Link} href="/courses" variant="outline" size="sm" iconAfter={ArrowRight}>
+                  {tp('all_courses')}
+                </Button>
+              ) : undefined
+            }
+          />
+          {courses.length ? (
+            <Reveal as="ul" stagger className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {courses.map((course, i) => (
+                <li key={course.id}>
+                  <CourseCard course={course} featured={courses.length > 1 && i === 0 && course.isPopular} />
+                </li>
+              ))}
+            </Reveal>
+          ) : (
+            <div className="card-paper mt-10">
+              <EmptyState
+                sketch="books"
+                title={tp('no_courses_title')}
+                description={tp('no_courses_desc')}
+                action={
+                  <Button as={Link} href="/courses" variant="outline">
+                    {tn('courses')}
+                  </Button>
+                }
+              />
+            </div>
+          )}
+          <p className="mt-14 flex items-center justify-center gap-3">
+            <EdelweissGlyph className="h-4 w-4 text-ornament" />
+            <Link href="/teachers" className="sc text-[0.85rem] text-accent-text underline decoration-line-strong underline-offset-4 hover:decoration-current">
+              {t('back_to_list')}
+            </Link>
+            <EdelweissGlyph className="h-4 w-4 text-ornament" />
+          </p>
+        </section>
+      </div>
     </>
   );
 }

@@ -86,16 +86,22 @@ the site's base. Some sections are white: put `.theme-light` on the section (plu
 background). It re-applies the light tokens and light ornament art inside, and `dark:` utilities stop applying there
 (the custom variant excludes `.theme-light` subtrees; component rules written as `.dark .x` carry
 `:not(.theme-light *)`). Wine panels (`.theme-wine`) are unchanged.
-Current white sections: home Features (+ stats) and Courses preview, about Mission (+ stats), course detail Enrol.
-A white section next to the dark page gets a `WaveEdge` filled with `var(--page-base)`; a wave leading into a white
-section uses `var(--paper-light)`. Every raster ornament must still come from the ornament components (light and
+**Dark and light sections alternate on every page (owner, 2026-11-25).** Wine bands (hero, `PageBand`, testimonials,
+footer) count as dark. Current white sections: home Features (+ stats), Courses preview and the closing letter
+(`CTASection`); about History, Values + Team, CTA (Mission is dark); the body of every `PageBand` page (courses,
+teachers, blog, contact, FAQ, legal); course detail body and related (Enrol is dark); teacher detail body; blog
+article related posts. A white section next to the dark page gets a `WaveEdge` filled with `var(--page-base)`; a wave
+leading into a white section uses `var(--paper-light)` / `var(--page-light)` (`PageBand waveFill`,
+`TestimonialsSection topFill/bottomFill`). A page whose last block is white marks it `data-footer-light`, which fills
+the footer's top wave with `--page-light`. Seams: a top-level `.theme-light` block and the block after it overlap by
+1px, and `.cv-auto` has `overflow-clip-margin: 2px`, so no hairline shows between sections (globals.css). Every raster ornament must still come from the ornament components (light and
 `-dark` variants); never hard-code `/ornaments/x.webp`.
 
 ## 3. Typography
 
 | role | family | class | rules |
 |---|---|---|---|
-| Title | **Cahan Display** 400 (the academy's own face; only Regular ships — Light/Bold OTFs are in `docs/brand/font/cahan-display`) | `.script-title`, `font-script`, `<ScriptTitle>` (historic names, kept) | short fixed headings (2–4 words): hero, section, page, modal, empty state. Always weight 400, upright (`font-style: normal`, set by the classes). **Never** data (course/teacher/post names), body text, buttons, inputs, nav, tables, numbers. |
+| Title | **Times New Roman** 400 (owner, 2026-11-25; system font via `--font-title`: Times New Roman → Times → Liberation Serif → serif). Cahan Display stays registered in `lib/fonts.ts` (not preloaded) to switch back. Also all `h1`–`h6` and article headings | `.script-title`, `font-script`, `<ScriptTitle>` (historic names, kept) | short fixed headings (2–4 words): hero, section, page, modal, empty state. Always weight 400, upright (`font-style: normal`, set by the classes). **Never** data (course/teacher/post names), body text, buttons, inputs, nav, tables, numbers. |
 | Serif body + data | **EB Garamond** 400–800 + italic | default `font-serif` | everything readable; `.num` = lining tabular figures; `.time-italic` for dates/times. |
 | Small caps | **Cormorant SC** 600/700 | `.sc`, `font-sc` | eyebrows, labels, buttons, badges, nav, table headers. Always `text-transform: uppercase` (built into `.sc`, `.btn`, `.badge`, `.field-label`…). With `<html lang="az">` this gives the dotted **İ** — Cormorant SC draws lowercase `i` dotless ("Giriş" would read "Gırış"). Never remove the uppercase. Cormorant SC has no `₼`. |
 
@@ -105,7 +111,7 @@ Latin Ext-A, Ə/ə, punctuation, №, ₼ — everything az/en pages need) and a
 downloaded on ru pages, via `unicode-range`); Cormorant SC is one small file per weight (600/700, not preloaded).
 **Cahan Display** (`cahan-display-regular.woff2`, SIL OFL `assets/fonts/OFL-CahanDisplay.txt`) is one file that
 already covers Latin, every Azerbaijani letter, Russian Cyrillic, № and ₼, so it has no unicode-range split.
-**Preload = the first screen only:** EB Garamond Latin upright + Cahan Display 400 (2 files). The Latin italic is a
+**Preload = the first screen only:** EB Garamond Latin upright (titles are the system Times New Roman; Cahan Display is not preloaded). The Latin italic is a
 separate `localFont` call with `preload: false` that declares the same `font-family` ('Cahan EB Garamond'), so it
 stays one family (real italic, no synthesized oblique) without being preloaded. A face that is not used must not
 ship in `lib/fonts.ts` at all: next/font preloads every file of a `preload: true` call. Check after a build with

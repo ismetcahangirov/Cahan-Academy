@@ -17,7 +17,7 @@ export default function HistorySection() {
   const t = useTranslations('about');
 
   return (
-    <section aria-labelledby="history-title" id="history" className="relative py-20 sm:py-24">
+    <section aria-labelledby="history-title" id="history" className="theme-light bg-page relative py-20 sm:py-24">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.15fr_1fr] lg:gap-16 lg:px-8">
         <Reveal className="order-2 lg:order-1">
           <OrnateFrame paper className="px-4 pb-3 pt-9 sm:px-8 sm:pt-10">
