@@ -95,7 +95,9 @@ leading into a white section uses `var(--paper-light)` (`PageBand waveFill`,
 `TestimonialsSection topFill/bottomFill`). A page whose last block is white marks it `data-footer-light`, which fills
 the footer's top wave with `--paper-light`. Every white section uses the parchment background of home "Our programmes"
 (`.theme-light paper`, owner 2026-11-25), never a flat `bg-page`; adjacent white sections share one wrapper so the
-texture does not restart (about Values + Team). Seams: a top-level `.theme-light` block and the block after it overlap by
+texture does not restart (about Values + Team). The closing letter (`CTASection`) is not parchment but a sheet of
+writing paper (`<OrnateFrame letter>` → `.letter-paper`: smooth white, laid + chain lines, two fold creases, aged
+edges, square corners, lifted shadow), so it stands out from the crumpled parchment page. Seams: a top-level `.theme-light` block and the block after it overlap by
 1px, and `.cv-auto` has `overflow-clip-margin: 2px`, so no hairline shows between sections (globals.css). Every raster ornament must still come from the ornament components (light and
 `-dark` variants); never hard-code `/ornaments/x.webp`.
 
