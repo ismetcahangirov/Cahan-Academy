@@ -9,7 +9,7 @@ import CornerFlourish, { type Corner } from './CornerFlourish';
  *
  * <OrnateFrame className="p-6">…</OrnateFrame>
  * <OrnateFrame corners="diagonal" cornerSize="h-6 w-6" as="section" paper>…</OrnateFrame>
- * <OrnateFrame letter>…</OrnateFrame>  (a sheet of writing paper: laid lines, fold creases, lifted shadow — the CTA letter)
+ * <OrnateFrame letter>…</OrnateFrame>  (a sheet of cotton writing paper: fine soft grain, lifted shadow — the CTA letter)
  * Props: as, corners 'all'|'diagonal'|'none', cornerSize (classes), paper (parchment fill), letter (letter paper), className.
  */
 const PLACES: Record<Corner, string> = {
