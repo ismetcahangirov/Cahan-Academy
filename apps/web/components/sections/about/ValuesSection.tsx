@@ -17,7 +17,7 @@ export default function ValuesSection() {
   const t = useTranslations('about');
 
   return (
-    <section aria-labelledby="values-title" className="cv-auto theme-light bg-page py-20 sm:py-24">
+    <section aria-labelledby="values-title" className="cv-auto py-20 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <Reveal>
           <ScriptTitle id="values-title" align="center" size="section" eyebrow={t('values_eyebrow')} title={t('values_title')} />

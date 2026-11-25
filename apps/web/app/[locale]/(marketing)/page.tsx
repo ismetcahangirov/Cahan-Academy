@@ -63,7 +63,7 @@ export default async function HomePage({ params }: Props) {
       <LearningPath />
       <CoursesPreview />
       <TeachersPreview />
-      <TestimonialsSection items={testimonials} bottomFill="var(--page-light)" />
+      <TestimonialsSection items={testimonials} bottomFill="var(--paper-light)" />
       <CTASection contact={contact} />
     </>
   );

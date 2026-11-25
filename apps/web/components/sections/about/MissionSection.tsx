@@ -24,7 +24,7 @@ export default function MissionSection({ children }: { children?: ReactNode }) {
 
   return (
     <section aria-labelledby="mission-title" id="mission" className="cv-auto paper relative py-24 sm:py-28">
-      <WaveEdge invert fill="var(--page-light)" className="absolute inset-x-0 -top-px" />
+      <WaveEdge invert fill="var(--paper-light)" className="absolute inset-x-0 -top-px" />
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <Reveal>
           <ScriptTitle
@@ -45,7 +45,7 @@ export default function MissionSection({ children }: { children?: ReactNode }) {
         </Reveal>
         {children && <div className="mt-14">{children}</div>}
       </div>
-      <WaveEdge fill="var(--page-light)" className="absolute inset-x-0 -bottom-px" />
+      <WaveEdge fill="var(--paper-light)" className="absolute inset-x-0 -bottom-px" />
     </section>
   );
 }

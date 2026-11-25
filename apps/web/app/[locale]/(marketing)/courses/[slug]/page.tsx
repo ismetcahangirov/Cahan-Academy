@@ -220,11 +220,11 @@ export default async function CourseDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        <WaveEdge fill="var(--page-light)" className="absolute inset-x-0 -bottom-px" />
+        <WaveEdge fill="var(--paper-light)" className="absolute inset-x-0 -bottom-px" />
       </section>
 
       {/* ── Body (white section): about + curriculum | facts + teacher ──────────────────────────── */}
-      <div className="theme-light bg-page">
+      <div className="theme-light paper">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 pb-20 pt-10 sm:px-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-10 lg:px-8 lg:pt-14">
           <div className="min-w-0 space-y-8">
             <Card as="section" variant="paper" aria-labelledby="about-title" className="p-6 sm:p-9">
@@ -351,7 +351,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
       {/* ── Enrolment: dark parchment band with the framed form (dark / light sections alternate) ──────────────────────────────────────── */}
       <section id="enroll" aria-labelledby="enroll-title" className="paper relative scroll-mt-[var(--header-h)] py-20 sm:py-24">
-        <WaveEdge invert fill="var(--page-light)" className="absolute inset-x-0 -top-px" />
+        <WaveEdge invert fill="var(--paper-light)" className="absolute inset-x-0 -top-px" />
         <div className="mx-auto max-w-2xl px-4 sm:px-6">
           <OrnateFrame className="px-5 py-9 sm:px-10 sm:py-11">
             <ScriptTitle
@@ -368,11 +368,11 @@ export default async function CourseDetailPage({ params }: PageProps) {
             </div>
           </OrnateFrame>
         </div>
-        <WaveEdge fill={related.length > 0 ? 'var(--page-light)' : 'var(--page-base)'} className="absolute inset-x-0 -bottom-px" />
+        <WaveEdge fill={related.length > 0 ? 'var(--paper-light)' : 'var(--page-base)'} className="absolute inset-x-0 -bottom-px" />
       </section>
 
       {related.length > 0 && (
-        <div data-footer-light className="theme-light bg-page">
+        <div data-footer-light className="theme-light paper">
           <section aria-labelledby="related-title" className="cv-auto mx-auto max-w-7xl px-4 pb-24 pt-16 sm:px-6 lg:px-8">
             <ScriptTitle
               id="related-title"

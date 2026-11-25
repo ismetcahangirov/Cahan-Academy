@@ -257,9 +257,9 @@
   --page-base: #120003;
 }
 
-/* a page whose last section is light ([data-footer-light]): the footer's top wave is filled with the light page */
+/* a page whose last section is light ([data-footer-light]): the footer's top wave is filled with the light parchment */
 body:has([data-footer-light]) {
-  --footer-wave: var(--page-light);
+  --footer-wave: var(--paper-light);
 }
 
 /* Section seams: dark and light sections alternate, and a WaveEdge clipped by its band's overflow at a fractional y

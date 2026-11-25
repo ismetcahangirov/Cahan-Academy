@@ -66,10 +66,10 @@ export default async function FAQPage({ params }: Props) {
         }}
       />
 
-      <PageBand id="faq-title" trail={{ locale, items: [{ path: '/faq' }] }} eyebrow={t('badge')} title={t('title')} lead={t('description')} waveFill="var(--page-light)" />
+      <PageBand id="faq-title" trail={{ locale, items: [{ path: '/faq' }] }} eyebrow={t('badge')} title={t('title')} lead={t('description')} waveFill="var(--paper-light)" />
 
       {/* page body: a white section between the wine head band and the wine footer (dark / light alternate) */}
-      <div data-footer-light className="theme-light bg-page">
+      <div data-footer-light className="theme-light paper">
         <div className="mx-auto grid max-w-6xl items-start gap-10 px-4 pb-24 pt-12 sm:px-6 sm:pt-16 lg:grid-cols-[minmax(0,1fr)_19rem] lg:gap-12 lg:px-8">
           <div className="min-w-0">
             <FAQAccordion items={items} locale={locale} headingLevel="h2" />

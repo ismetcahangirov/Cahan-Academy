@@ -62,10 +62,10 @@ export default async function ContactPage({ params }: Props) {
         }}
       />
 
-      <PageBand id="contact-title" trail={{ locale, items: [{ path: '/contact' }] }} eyebrow={t('eyebrow')} title={t('title')} lead={t('lead')} waveFill="var(--page-light)" />
+      <PageBand id="contact-title" trail={{ locale, items: [{ path: '/contact' }] }} eyebrow={t('eyebrow')} title={t('title')} lead={t('lead')} waveFill="var(--paper-light)" />
 
       {/* page body: a white section between the wine head band and the wine footer (dark / light alternate) */}
-      <div data-footer-light className="theme-light bg-page">
+      <div data-footer-light className="theme-light paper">
         <div className="mx-auto grid max-w-6xl items-start gap-6 px-4 pb-24 pt-12 sm:px-6 sm:pt-16 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-10 lg:px-8">
           <OrnateFrame as="section" aria-labelledby="contact-form-title" className="px-5 pb-8 pt-9 sm:px-10 sm:pb-10 sm:pt-11">
             <ScriptTitle id="contact-form-title" size="card" as="h2" title={t('form_title')} subtitle={t('form_hint')} />

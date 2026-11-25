@@ -140,11 +140,11 @@ export default async function TeacherDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        <WaveEdge fill="var(--page-light)" className="absolute inset-x-0 -bottom-px" />
+        <WaveEdge fill="var(--paper-light)" className="absolute inset-x-0 -bottom-px" />
       </section>
 
       {/* white section between the wine hero and the wine footer (dark / light alternate) */}
-      <div data-footer-light className="theme-light bg-page">
+      <div data-footer-light className="theme-light paper">
         {longBio && (
           <section aria-labelledby="bio-title" className="mx-auto max-w-3xl px-4 pt-14 sm:px-6">
             <Card variant="paper" className="p-6 sm:p-9">

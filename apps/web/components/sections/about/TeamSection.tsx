@@ -18,7 +18,7 @@ export default async function TeamSection() {
   const { items: members, failed } = await getTeam(locale);
 
   return (
-    <section aria-labelledby="team-title" className="cv-auto theme-light bg-page pb-24 pt-8 sm:pb-28">
+    <section aria-labelledby="team-title" className="cv-auto pb-24 pt-8 sm:pb-28">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <Reveal>
           <ScriptTitle

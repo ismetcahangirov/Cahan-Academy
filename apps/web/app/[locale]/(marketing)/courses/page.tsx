@@ -65,10 +65,10 @@ export default async function CoursesPage({ params }: PageProps) {
         eyebrow={tp('eyebrow')}
         title={t('page_title')}
         lead={t('page_subtitle')}
-        waveFill="var(--page-light)"
+        waveFill="var(--paper-light)"
       />
       {/* page body: a white section between the wine head band and the wine footer (dark / light alternate) */}
-      <div data-footer-light className="theme-light bg-page">
+      <div data-footer-light className="theme-light paper">
         <CoursesClientPage initialCourses={courses as Course[]} initialCategories={categories} locale={locale} />
       </div>
     </>

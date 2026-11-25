@@ -187,7 +187,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
       {related.length > 0 && (
         // white section after the dark article (dark / light alternate); the article's page colour waves into it
-        <section aria-labelledby="related-title" data-footer-light className="cv-auto theme-light bg-page relative pb-24 pt-20 sm:pt-24">
+        <section aria-labelledby="related-title" data-footer-light className="cv-auto theme-light paper relative pb-24 pt-20 sm:pt-24">
           <WaveEdge invert fill="var(--page-base)" className="absolute inset-x-0 -top-px" />
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <ScriptTitle id="related-title" align="center" size="section" title={t('related_posts')} />
