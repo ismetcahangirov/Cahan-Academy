@@ -94,53 +94,56 @@ export default async function LegalDocument({ kind, locale }: { kind: keyof type
         }}
       />
 
-      <PageBand id="legal-title" trail={{ locale, items: [{ name: title, path: doc.path }] }} eyebrow={t('eyebrow')} title={title} lead={t(doc.lead)}>
+      <PageBand id="legal-title" trail={{ locale, items: [{ name: title, path: doc.path }] }} eyebrow={t('eyebrow')} title={title} lead={t(doc.lead)} waveFill="var(--page-light)">
         <p className="time-italic mt-5 text-center text-[1.02rem] text-ink-muted">
           {t('last_updated')}: <time dateTime={LAST_UPDATED}>{updated}</time>
         </p>
       </PageBand>
 
-      <div className="mx-auto grid max-w-6xl items-start gap-6 px-4 pb-24 pt-10 sm:px-6 sm:pt-14 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-10 lg:px-8">
-        {/* contents: disclosure on phones/tablets, sticky column on desktop */}
-        <details className="card-paper group px-4 py-3 lg:hidden">
-          <summary className="sc flex cursor-pointer list-none items-center justify-between gap-3 py-1 text-[0.9rem] text-ink [&::-webkit-details-marker]:hidden">
-            <span className="inline-flex items-center gap-2">
+      {/* page body: a white section between the wine head band and the wine footer (dark / light alternate) */}
+      <div data-footer-light className="theme-light bg-page">
+        <div className="mx-auto grid max-w-6xl items-start gap-6 px-4 pb-24 pt-10 sm:px-6 sm:pt-14 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-10 lg:px-8">
+          {/* contents: disclosure on phones/tablets, sticky column on desktop */}
+          <details className="card-paper group px-4 py-3 lg:hidden">
+            <summary className="sc flex cursor-pointer list-none items-center justify-between gap-3 py-1 text-[0.9rem] text-ink [&::-webkit-details-marker]:hidden">
+              <span className="inline-flex items-center gap-2">
+                <EdelweissGlyph className="h-4 w-4" />
+                {t('toc')}
+              </span>
+              <ChevronDown size={18} strokeWidth={1.6} className="text-accent-text transition-transform group-open:rotate-180" aria-hidden="true" />
+            </summary>
+            <nav aria-label={t('toc')} className="pb-2">
+              <TocList sections={sections} idPrefix={idPrefix} />
+            </nav>
+          </details>
+          <nav aria-label={t('toc')} className="card-paper sticky top-24 hidden px-4 py-5 lg:block">
+            <p className="sc inline-flex items-center gap-2 px-2 text-[0.9rem] text-ink">
               <EdelweissGlyph className="h-4 w-4" />
               {t('toc')}
-            </span>
-            <ChevronDown size={18} strokeWidth={1.6} className="text-accent-text transition-transform group-open:rotate-180" aria-hidden="true" />
-          </summary>
-          <nav aria-label={t('toc')} className="pb-2">
+            </p>
             <TocList sections={sections} idPrefix={idPrefix} />
           </nav>
-        </details>
-        <nav aria-label={t('toc')} className="card-paper sticky top-24 hidden px-4 py-5 lg:block">
-          <p className="sc inline-flex items-center gap-2 px-2 text-[0.9rem] text-ink">
-            <EdelweissGlyph className="h-4 w-4" />
-            {t('toc')}
-          </p>
-          <TocList sections={sections} idPrefix={idPrefix} />
-        </nav>
 
-        <div className="card-paper px-5 py-9 sm:px-12 sm:py-12">
-          {sections.map((s, i) => (
-            <Fragment key={i}>
-              {i > 0 && <OrnamentDivider className="my-9" />}
-              <section id={`${idPrefix}-${i + 1}`} aria-labelledby={`${idPrefix}-${i + 1}-title`} className="scroll-mt-28">
-                <h2 id={`${idPrefix}-${i + 1}-title`} className="flex items-baseline gap-3 text-[1.45rem] font-semibold leading-snug text-ink sm:text-[1.6rem]">
-                  <span className="time-italic shrink-0 text-[1.15rem] font-normal text-ink-muted">{ROMAN[i] ?? i + 1}.</span>
-                  {s.title}
-                </h2>
-                <p className="mt-3 max-w-[42rem] text-[1.12rem] leading-[1.75] text-ink">{withLinks(s.body.replaceAll('{email}', contact.email))}</p>
-              </section>
-            </Fragment>
-          ))}
+          <div className="card-paper px-5 py-9 sm:px-12 sm:py-12">
+            {sections.map((s, i) => (
+              <Fragment key={i}>
+                {i > 0 && <OrnamentDivider className="my-9" />}
+                <section id={`${idPrefix}-${i + 1}`} aria-labelledby={`${idPrefix}-${i + 1}-title`} className="scroll-mt-28">
+                  <h2 id={`${idPrefix}-${i + 1}-title`} className="flex items-baseline gap-3 text-[1.45rem] font-semibold leading-snug text-ink sm:text-[1.6rem]">
+                    <span className="time-italic shrink-0 text-[1.15rem] font-normal text-ink-muted">{ROMAN[i] ?? i + 1}.</span>
+                    {s.title}
+                  </h2>
+                  <p className="mt-3 max-w-[42rem] text-[1.12rem] leading-[1.75] text-ink">{withLinks(s.body.replaceAll('{email}', contact.email))}</p>
+                </section>
+              </Fragment>
+            ))}
 
-          <div className="mt-12 flex flex-col items-start gap-3 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
-            <p className="sc text-[0.82rem] text-ink-muted">{t('see_also')}</p>
-            <Button as={Link} href={doc.other.path} variant="outline" iconAfter={ArrowRight}>
-              {t(doc.other.title)}
-            </Button>
+            <div className="mt-12 flex flex-col items-start gap-3 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
+              <p className="sc text-[0.82rem] text-ink-muted">{t('see_also')}</p>
+              <Button as={Link} href={doc.other.path} variant="outline" iconAfter={ArrowRight}>
+                {t(doc.other.title)}
+              </Button>
+            </div>
           </div>
         </div>
       </div>

@@ -55,8 +55,10 @@
 
   /* fonts: next/font/local variables set on <html> by lib/fonts.ts */
   /* serif / sc: Latin face + Cyrillic face (unicode-range split, see lib/fonts.ts).
-     --font-script keeps its historic name but is the title face: Cahan Display (one file per weight, all scripts). */
-  --font-script: var(--font-cahan-display), Georgia, serif;
+     --font-script keeps its historic name but is the title face. Titles/headings use Times New Roman (owner, 2026-11-25);
+     Cahan Display stays registered in lib/fonts.ts (not preloaded) so it can come back by swapping --font-title. */
+  --font-title: "Times New Roman", Times, "Liberation Serif", "Nimbus Roman", serif;
+  --font-script: var(--font-title);
   --font-serif: var(--font-eb-garamond), var(--font-eb-garamond-cyr), "Garamond", "Georgia", serif;
   --font-sc: var(--font-cormorant-sc), var(--font-eb-garamond), var(--font-eb-garamond-cyr), "Georgia", serif;
   --font-sans: var(--font-eb-garamond), var(--font-eb-garamond-cyr), "Garamond", "Georgia", serif;
@@ -79,7 +81,7 @@
   --color-muted-foreground: var(--ink-muted);
   --color-accent-foreground: var(--ink);
   --color-destructive: var(--accent-text);
-  --font-heading: var(--font-eb-garamond), var(--font-eb-garamond-cyr), "Garamond", "Georgia", serif;
+  --font-heading: var(--font-title);
   --font-body: var(--font-eb-garamond), var(--font-eb-garamond-cyr), "Garamond", "Georgia", serif;
 }
 
@@ -255,6 +257,30 @@
   --page-base: #120003;
 }
 
+/* a page whose last section is light ([data-footer-light]): the footer's top wave is filled with the light page */
+body:has([data-footer-light]) {
+  --footer-wave: var(--page-light);
+}
+
+/* Section seams: dark and light sections alternate, and a WaveEdge clipped by its band's overflow at a fractional y
+   can leave a 1px row of the dark body showing as a grey hairline across a light edge. The block after the seam
+   overlaps by 1px and paints over it (the footer is shifted up instead, because it keeps its margin-top: auto). */
+main > .theme-light,
+main > .theme-light + * {
+  position: relative;
+  margin-top: -1px;
+}
+body:has([data-footer-light]) footer {
+  top: -1px;
+}
+/* the dark block after a light one may have no background of its own (the body shows through), so the 1px it
+   overlaps would still show the light section's last row; base layer, so .paper / .band-wine / bg-* still win */
+@layer base {
+  main > .theme-light + * {
+    background-color: var(--page);
+  }
+}
+
 /* a white section on the dark site: its own text colour (body's colour is resolved with the dark --ink) */
 .theme-light {
   color: var(--ink);
@@ -328,7 +354,7 @@ body {
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-serif);
+    font-family: var(--font-title);
     text-wrap: balance;
   }
 }
@@ -397,7 +423,7 @@ html::-webkit-scrollbar-thumb:hover,
 @layer components {
 
 /* ------------------------------------------------------------------ typography */
-/* .font-script / .script-title: the title face (Cahan Display 400, upright). Class names are historic. */
+/* .font-script / .script-title: the title face (Times New Roman 400, upright). Class names are historic. */
 .font-script {
   font-size-adjust: none;
   font-weight: 400;
@@ -1115,6 +1141,9 @@ select.field {
 .cv-auto {
   content-visibility: auto;
   contain-intrinsic-size: auto 900px;
+  /* content-visibility clips paint at the box; let a WaveEdge placed at -top-px / -bottom-px reach 1px past it,
+     otherwise its anti-aliased edge leaves a hairline seam between sections */
+  overflow-clip-margin: 2px;
 }
 
 /* ------------------------------------------------------------------ landing shell */

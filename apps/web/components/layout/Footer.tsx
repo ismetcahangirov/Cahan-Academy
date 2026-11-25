@@ -71,7 +71,8 @@ export default function Footer({
   return (
     <footer className="cv-auto relative mt-auto">
       <div className="theme-wine band-wine relative overflow-hidden pb-8 pt-24 sm:pt-28">
-        <WaveEdge invert fill={waveFill} className="absolute inset-x-0 -top-px" />
+        {/* --footer-wave: set in globals.css when the page ends on a light section ([data-footer-light]) */}
+        <WaveEdge invert fill={`var(--footer-wave, ${waveFill})`} className="absolute inset-x-0 -top-px" />
         <EdelweissCorner corner="bl" onWine className="absolute bottom-0 left-0 w-20 sm:w-32" />
         <EdelweissCorner corner="br" onWine className="absolute bottom-0 right-0 w-20 sm:w-32" />
 

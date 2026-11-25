@@ -220,136 +220,138 @@ export default async function CourseDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        <WaveEdge fill="var(--page-base)" className="absolute inset-x-0 -bottom-px" />
+        <WaveEdge fill="var(--page-light)" className="absolute inset-x-0 -bottom-px" />
       </section>
 
-      {/* ── Body: about + curriculum | facts + teacher ───────────────────────────────────────────── */}
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 pb-20 pt-10 sm:px-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-10 lg:px-8 lg:pt-14">
-        <div className="min-w-0 space-y-8">
-          <Card as="section" variant="paper" aria-labelledby="about-title" className="p-6 sm:p-9">
-            <ScriptTitle id="about-title" size="section" title={longDescription ? tp('about_title') : tp('highlights_title')} />
-            {longDescription && (
-              <>
-                <p className="mt-6 whitespace-pre-line text-[1.1rem] leading-relaxed text-ink">{course.description}</p>
-                <h3 className="sc mt-8 text-[0.9rem] text-ink-muted">{tp('highlights_title')}</h3>
-              </>
-            )}
-            <ul className="mt-6 grid gap-x-6 gap-y-3 sm:grid-cols-2">
-              {highlights.map((item) => (
-                <li key={item} className="flex items-start gap-3 text-[1.05rem] text-ink">
-                  <EdelweissGlyph className="mt-1 h-4 w-4 shrink-0 text-ornament" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </Card>
-
-          {syllabus.length > 0 && (
-            <Reveal>
-              <OrnateFrame as="section" paper id="syllabus" aria-labelledby="syllabus-title" className="p-6 sm:p-9" corners="diagonal">
-                <ScriptTitle
-                  id="syllabus-title"
-                  size="section"
-                  title={tp('syllabus_title')}
-                  subtitle={tp('syllabus_count', { count: syllabus.length })}
-                />
-                <Timeline className="mt-8">
-                  {syllabus.map((item, i) => (
-                    <TimelineItem
-                      key={`${i}-${item.title}`}
-                      time={toRoman(i + 1)}
-                      title={item.title}
-                      meta={item.description}
-                      state={i === 0 ? 'current' : 'upcoming'}
-                      className={i === syllabus.length - 1 ? '[&>div:last-child]:pb-0' : undefined}
-                    />
-                  ))}
-                </Timeline>
-              </OrnateFrame>
-            </Reveal>
-          )}
-        </div>
-
-        <aside className="space-y-6 lg:sticky lg:top-[calc(var(--header-h)+1.5rem)] lg:self-start">
-          {/* on phones the hero already carries these facts and the sticky bar the action */}
-          <Card variant="ornate" className="hidden p-6 lg:block">
-            <h2 className="sc text-center text-[0.95rem] text-ink-muted">{tp('facts_title')}</h2>
-            <OrnamentDivider className="mt-2" />
-            <dl className="mt-3 divide-y divide-line-hair">
-              <Fact icon={Wallet} label={tp('meta_price')}>
-                {course.price ?? tp('price_on_request')}
-              </Fact>
-              {course.duration && (
-                <Fact icon={Clock} label={tp('meta_duration')}>
-                  {course.duration}
-                </Fact>
+      {/* ── Body (white section): about + curriculum | facts + teacher ──────────────────────────── */}
+      <div className="theme-light bg-page">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 pb-20 pt-10 sm:px-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-10 lg:px-8 lg:pt-14">
+          <div className="min-w-0 space-y-8">
+            <Card as="section" variant="paper" aria-labelledby="about-title" className="p-6 sm:p-9">
+              <ScriptTitle id="about-title" size="section" title={longDescription ? tp('about_title') : tp('highlights_title')} />
+              {longDescription && (
+                <>
+                  <p className="mt-6 whitespace-pre-line text-[1.1rem] leading-relaxed text-ink">{course.description}</p>
+                  <h3 className="sc mt-8 text-[0.9rem] text-ink-muted">{tp('highlights_title')}</h3>
+                </>
               )}
-              <Fact icon={Layers} label={tp('meta_level')}>
-                {levelLabel}
-              </Fact>
-              {course.category?.name && (
-                <Fact icon={Tag} label={tp('meta_category')}>
-                  {course.category.name}
-                </Fact>
-              )}
-              {course.studentsCount && (
-                <Fact icon={Users} label={tp('meta_students')}>
-                  {course.studentsCount}
-                </Fact>
-              )}
-              {course.rating && (
-                <Fact icon={Award} label={tp('meta_rating')}>
-                  {course.rating}
-                </Fact>
-              )}
-            </dl>
-            <Button as="a" href="#enroll" block className="mt-5">
-              {t('enroll_btn')}
-            </Button>
-          </Card>
-
-          {teacher && (
-            <Card as="section" aria-labelledby="teacher-title" className="relative p-6 text-center">
-              <p id="teacher-title" className="font-script text-[1.35rem] leading-tight text-accent-text dark:text-ink">
-                {tp('teacher_title')}
-              </p>
-              <CoverImage
-                src={teacher.image}
-                alt=""
-                sketch={sketchFor(teacher.position, teacher.name)}
-                rounded="arch"
-                sizes="10rem"
-                className="mx-auto mt-5 aspect-[4/5] w-32"
-              />
-              <EdelweissGlyph className="mx-auto mt-4 h-4 w-4" />
-              <p className="mt-2 text-[1.25rem] font-semibold leading-snug text-ink">
-                {teacherSlug ? (
-                  <Link
-                    href={`/teachers/${teacherSlug}`}
-                    className="outline-none after:absolute after:inset-0 after:rounded-[var(--radius-lg)] after:content-[''] focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-[var(--focus)]"
-                  >
-                    {teacher.name}
-                  </Link>
-                ) : (
-                  teacher.name
-                )}
-              </p>
-              {teacher.position && <p className="sc mt-1 text-[0.8rem] text-ink-muted">{teacher.position}</p>}
-              {teacher.bio && <p className="mt-3 line-clamp-4 text-[1rem] leading-relaxed text-ink-muted">{teacher.bio}</p>}
-              {teacherSlug && (
-                <span className="sc mt-4 inline-flex items-center gap-1.5 text-[0.85rem] text-accent-text" aria-hidden="true">
-                  {tt('view_profile')}
-                  <ArrowRight size={15} strokeWidth={1.6} />
-                </span>
-              )}
+              <ul className="mt-6 grid gap-x-6 gap-y-3 sm:grid-cols-2">
+                {highlights.map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-[1.05rem] text-ink">
+                    <EdelweissGlyph className="mt-1 h-4 w-4 shrink-0 text-ornament" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </Card>
-          )}
-        </aside>
+
+            {syllabus.length > 0 && (
+              <Reveal>
+                <OrnateFrame as="section" paper id="syllabus" aria-labelledby="syllabus-title" className="p-6 sm:p-9" corners="diagonal">
+                  <ScriptTitle
+                    id="syllabus-title"
+                    size="section"
+                    title={tp('syllabus_title')}
+                    subtitle={tp('syllabus_count', { count: syllabus.length })}
+                  />
+                  <Timeline className="mt-8">
+                    {syllabus.map((item, i) => (
+                      <TimelineItem
+                        key={`${i}-${item.title}`}
+                        time={toRoman(i + 1)}
+                        title={item.title}
+                        meta={item.description}
+                        state={i === 0 ? 'current' : 'upcoming'}
+                        className={i === syllabus.length - 1 ? '[&>div:last-child]:pb-0' : undefined}
+                      />
+                    ))}
+                  </Timeline>
+                </OrnateFrame>
+              </Reveal>
+            )}
+          </div>
+
+          <aside className="space-y-6 lg:sticky lg:top-[calc(var(--header-h)+1.5rem)] lg:self-start">
+            {/* on phones the hero already carries these facts and the sticky bar the action */}
+            <Card variant="ornate" className="hidden p-6 lg:block">
+              <h2 className="sc text-center text-[0.95rem] text-ink-muted">{tp('facts_title')}</h2>
+              <OrnamentDivider className="mt-2" />
+              <dl className="mt-3 divide-y divide-line-hair">
+                <Fact icon={Wallet} label={tp('meta_price')}>
+                  {course.price ?? tp('price_on_request')}
+                </Fact>
+                {course.duration && (
+                  <Fact icon={Clock} label={tp('meta_duration')}>
+                    {course.duration}
+                  </Fact>
+                )}
+                <Fact icon={Layers} label={tp('meta_level')}>
+                  {levelLabel}
+                </Fact>
+                {course.category?.name && (
+                  <Fact icon={Tag} label={tp('meta_category')}>
+                    {course.category.name}
+                  </Fact>
+                )}
+                {course.studentsCount && (
+                  <Fact icon={Users} label={tp('meta_students')}>
+                    {course.studentsCount}
+                  </Fact>
+                )}
+                {course.rating && (
+                  <Fact icon={Award} label={tp('meta_rating')}>
+                    {course.rating}
+                  </Fact>
+                )}
+              </dl>
+              <Button as="a" href="#enroll" block className="mt-5">
+                {t('enroll_btn')}
+              </Button>
+            </Card>
+
+            {teacher && (
+              <Card as="section" aria-labelledby="teacher-title" className="relative p-6 text-center">
+                <p id="teacher-title" className="font-script text-[1.35rem] leading-tight text-accent-text dark:text-ink">
+                  {tp('teacher_title')}
+                </p>
+                <CoverImage
+                  src={teacher.image}
+                  alt=""
+                  sketch={sketchFor(teacher.position, teacher.name)}
+                  rounded="arch"
+                  sizes="10rem"
+                  className="mx-auto mt-5 aspect-[4/5] w-32"
+                />
+                <EdelweissGlyph className="mx-auto mt-4 h-4 w-4" />
+                <p className="mt-2 text-[1.25rem] font-semibold leading-snug text-ink">
+                  {teacherSlug ? (
+                    <Link
+                      href={`/teachers/${teacherSlug}`}
+                      className="outline-none after:absolute after:inset-0 after:rounded-[var(--radius-lg)] after:content-[''] focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-[var(--focus)]"
+                    >
+                      {teacher.name}
+                    </Link>
+                  ) : (
+                    teacher.name
+                  )}
+                </p>
+                {teacher.position && <p className="sc mt-1 text-[0.8rem] text-ink-muted">{teacher.position}</p>}
+                {teacher.bio && <p className="mt-3 line-clamp-4 text-[1rem] leading-relaxed text-ink-muted">{teacher.bio}</p>}
+                {teacherSlug && (
+                  <span className="sc mt-4 inline-flex items-center gap-1.5 text-[0.85rem] text-accent-text" aria-hidden="true">
+                    {tt('view_profile')}
+                    <ArrowRight size={15} strokeWidth={1.6} />
+                  </span>
+                )}
+              </Card>
+            )}
+          </aside>
+        </div>
       </div>
 
-      {/* ── Enrolment: parchment band with the framed form ──────────────────────────────────────── */}
-      <section id="enroll" aria-labelledby="enroll-title" className="theme-light paper relative scroll-mt-[var(--header-h)] py-20 sm:py-24">
-        <WaveEdge invert fill="var(--page-base)" className="absolute inset-x-0 -top-px" />
+      {/* ── Enrolment: dark parchment band with the framed form (dark / light sections alternate) ──────────────────────────────────────── */}
+      <section id="enroll" aria-labelledby="enroll-title" className="paper relative scroll-mt-[var(--header-h)] py-20 sm:py-24">
+        <WaveEdge invert fill="var(--page-light)" className="absolute inset-x-0 -top-px" />
         <div className="mx-auto max-w-2xl px-4 sm:px-6">
           <OrnateFrame className="px-5 py-9 sm:px-10 sm:py-11">
             <ScriptTitle
@@ -366,29 +368,31 @@ export default async function CourseDetailPage({ params }: PageProps) {
             </div>
           </OrnateFrame>
         </div>
-        <WaveEdge fill="var(--page-base)" className="absolute inset-x-0 -bottom-px" />
+        <WaveEdge fill={related.length > 0 ? 'var(--page-light)' : 'var(--page-base)'} className="absolute inset-x-0 -bottom-px" />
       </section>
 
       {related.length > 0 && (
-        <section aria-labelledby="related-title" className="cv-auto mx-auto max-w-7xl px-4 pb-24 pt-16 sm:px-6 lg:px-8">
-          <ScriptTitle
-            id="related-title"
-            size="section"
-            title={tp('related_title')}
-            actions={
-              <Button as={Link} href="/courses" variant="outline" size="sm" iconAfter={ArrowRight}>
-                {tp('back')}
-              </Button>
-            }
-          />
-          <Reveal as="ul" stagger className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {related.map((c) => (
-              <li key={c.id}>
-                <CourseCard course={c} />
-              </li>
-            ))}
-          </Reveal>
-        </section>
+        <div data-footer-light className="theme-light bg-page">
+          <section aria-labelledby="related-title" className="cv-auto mx-auto max-w-7xl px-4 pb-24 pt-16 sm:px-6 lg:px-8">
+            <ScriptTitle
+              id="related-title"
+              size="section"
+              title={tp('related_title')}
+              actions={
+                <Button as={Link} href="/courses" variant="outline" size="sm" iconAfter={ArrowRight}>
+                  {tp('back')}
+                </Button>
+              }
+            />
+            <Reveal as="ul" stagger className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {related.map((c) => (
+                <li key={c.id}>
+                  <CourseCard course={c} />
+                </li>
+              ))}
+            </Reveal>
+          </section>
+        </div>
       )}
 
       <StickyEnroll

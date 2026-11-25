@@ -10,7 +10,7 @@ import Reveal from '../ui/Reveal';
 import { FALLBACK_CONTACT, telHref, type ContactSettings } from '@/lib/site';
 
 /**
- * CTASection — closing invitation: a parchment panel in an ornate frame, ribbon draped over its corner,
+ * CTASection — closing invitation (white .theme-light section, always the last one before the footer): a parchment panel in an ornate frame, ribbon draped over its corner,
  * wax seal, script title, two actions (contact page + phone). Used on the home and about pages.
  * `contact` = the phone from the admin panel (Site details).
  */
@@ -19,7 +19,7 @@ export default function CTASection({ contact = FALLBACK_CONTACT }: { contact?: C
   const th = useTranslations('hero');
 
   return (
-    <section aria-labelledby="cta-title" className="cv-auto overflow-x-clip px-4 pb-28 pt-20 sm:px-6 sm:pt-24 lg:px-8">
+    <section aria-labelledby="cta-title" data-footer-light className="cv-auto theme-light bg-page overflow-x-clip px-4 pb-28 pt-20 sm:px-6 sm:pt-24 lg:px-8">
       <Reveal className="relative mx-auto max-w-4xl">
         {/* phones: smaller and tucked inside the card edge (the section clips overflow at the viewport) */}
         <DrapedRibbon className="absolute -right-1 -top-6 z-[3] w-32 sm:-right-10 sm:-top-10 sm:w-64" />

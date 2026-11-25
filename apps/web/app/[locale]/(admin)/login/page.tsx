@@ -79,11 +79,13 @@ export default function LoginPage() {
         <div className="absolute inset-0 opacity-40" style={{ backgroundImage: 'var(--tex-paper)', backgroundSize: '512px 512px' }} />
         <div className="absolute inset-0 flex items-center justify-center">
           {/* dark: the dashboard uses white at 10%, but white over the wine-black paper leaves the colour law's tone
-              line (color-audit); wine at 35% over #170004 stays on it and reads about as faint */}
+              line (color-audit); wine at 35% over #170004 stays on it and reads about as faint.
+              Full height on wide screens; on phones the width decides (aspect 1.36: 60vw tall = 81vw wide), so the
+              whole mark stays on screen; the 7% nudge is the old 6vw optical offset, relative to the mark */}
           <BrandMark
             title=""
-            className="w-auto max-w-none shrink-0 translate-x-[6vw] text-wine opacity-[0.13] dark:opacity-[0.35]"
-            style={{ height: '100vh' }}
+            className="w-auto max-w-none shrink-0 translate-x-[7%] text-wine opacity-[0.13] dark:opacity-[0.35]"
+            style={{ height: 'min(100vh, 60vw)' }}
           />
         </div>
         <EdelweissCorner corner="tl" priority className={cn('absolute left-0 top-0', CORNER_SIZE)} />

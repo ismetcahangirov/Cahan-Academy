@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  * Home = the design showcase (see apps/web/docs/DESIGN.md "Home composition"):
  * wine hero (edelweiss corners) → wave → parchment: stats + strengths → learning-path timeline →
  * parchment courses band (featured card with bookmark) → teachers in arched frames →
- * wine testimonials band → closing invitation → wine footer.
+ * wine testimonials band → white closing invitation (the letter) → wine footer. Dark and light sections alternate.
  */
 export default async function HomePage({ params }: Props) {
   const { locale } = await params;
@@ -63,7 +63,7 @@ export default async function HomePage({ params }: Props) {
       <LearningPath />
       <CoursesPreview />
       <TeachersPreview />
-      <TestimonialsSection items={testimonials} />
+      <TestimonialsSection items={testimonials} bottomFill="var(--page-light)" />
       <CTASection contact={contact} />
     </>
   );
