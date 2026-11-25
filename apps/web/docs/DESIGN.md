@@ -91,9 +91,11 @@ footer) count as dark. Current white sections: home Features (+ stats), Courses 
 (`CTASection`); about History, Values + Team, CTA (Mission is dark); the body of every `PageBand` page (courses,
 teachers, blog, contact, FAQ, legal); course detail body and related (Enrol is dark); teacher detail body; blog
 article related posts. A white section next to the dark page gets a `WaveEdge` filled with `var(--page-base)`; a wave
-leading into a white section uses `var(--paper-light)` / `var(--page-light)` (`PageBand waveFill`,
+leading into a white section uses `var(--paper-light)` (`PageBand waveFill`,
 `TestimonialsSection topFill/bottomFill`). A page whose last block is white marks it `data-footer-light`, which fills
-the footer's top wave with `--page-light`. Seams: a top-level `.theme-light` block and the block after it overlap by
+the footer's top wave with `--paper-light`. Every white section uses the parchment background of home "Our programmes"
+(`.theme-light paper`, owner 2026-11-25), never a flat `bg-page`; adjacent white sections share one wrapper so the
+texture does not restart (about Values + Team). Seams: a top-level `.theme-light` block and the block after it overlap by
 1px, and `.cv-auto` has `overflow-clip-margin: 2px`, so no hairline shows between sections (globals.css). Every raster ornament must still come from the ornament components (light and
 `-dark` variants); never hard-code `/ornaments/x.webp`.
 

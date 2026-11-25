@@ -68,14 +68,17 @@ export default async function AboutPage({ params }: Props) {
         }}
       />
 
-      <PageBand id="about-title" trail={{ locale, items: [{ path: '/about' }] }} eyebrow={t('badge')} title={t('hero_title')} lead={t('hero_subtitle')} waveFill="var(--page-light)" />
+      <PageBand id="about-title" trail={{ locale, items: [{ path: '/about' }] }} eyebrow={t('badge')} title={t('hero_title')} lead={t('hero_subtitle')} waveFill="var(--paper-light)" />
       <HistorySection />
       <MissionSection>
         <StatsSection bare />
       </MissionSection>
-      <ValuesSection />
-      <TeamSection />
-      <TestimonialsSection items={testimonials} topFill="var(--page-light)" bottomFill="var(--page-light)" />
+      {/* Values + Team: one white parchment panel, so the texture runs on without a seam */}
+      <div className="theme-light paper">
+        <ValuesSection />
+        <TeamSection />
+      </div>
+      <TestimonialsSection items={testimonials} topFill="var(--paper-light)" bottomFill="var(--paper-light)" />
       <CTASection contact={contact} />
     </>
   );

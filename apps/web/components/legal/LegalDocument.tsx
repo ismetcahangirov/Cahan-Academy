@@ -94,14 +94,14 @@ export default async function LegalDocument({ kind, locale }: { kind: keyof type
         }}
       />
 
-      <PageBand id="legal-title" trail={{ locale, items: [{ name: title, path: doc.path }] }} eyebrow={t('eyebrow')} title={title} lead={t(doc.lead)} waveFill="var(--page-light)">
+      <PageBand id="legal-title" trail={{ locale, items: [{ name: title, path: doc.path }] }} eyebrow={t('eyebrow')} title={title} lead={t(doc.lead)} waveFill="var(--paper-light)">
         <p className="time-italic mt-5 text-center text-[1.02rem] text-ink-muted">
           {t('last_updated')}: <time dateTime={LAST_UPDATED}>{updated}</time>
         </p>
       </PageBand>
 
       {/* page body: a white section between the wine head band and the wine footer (dark / light alternate) */}
-      <div data-footer-light className="theme-light bg-page">
+      <div data-footer-light className="theme-light paper">
         <div className="mx-auto grid max-w-6xl items-start gap-6 px-4 pb-24 pt-10 sm:px-6 sm:pt-14 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-10 lg:px-8">
           {/* contents: disclosure on phones/tablets, sticky column on desktop */}
           <details className="card-paper group px-4 py-3 lg:hidden">
