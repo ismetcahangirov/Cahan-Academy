@@ -264,14 +264,17 @@ body:has([data-footer-light]) {
 
 /* Section seams: dark and light sections alternate, and a WaveEdge clipped by its band's overflow at a fractional y
    can leave a 1px row of the dark body showing as a grey hairline across a light edge. The block after the seam
-   overlaps by 1px and paints over it (the footer is shifted up instead, because it keeps its margin-top: auto). */
+   overlaps by 1px and paints over it. */
 main > .theme-light,
 main > .theme-light + * {
   position: relative;
   margin-top: -1px;
 }
-body:has([data-footer-light]) footer {
-  top: -1px;
+/* the last white block runs 2px under the footer and paints above it, covering the top edge of the footer's clipped
+   wave (whose first rows are the same light fill) */
+main > [data-footer-light] {
+  z-index: 1;
+  margin-bottom: -2px;
 }
 /* the dark block after a light one may have no background of its own (the body shows through), so the 1px it
    overlaps would still show the light section's last row; base layer, so .paper / .band-wine / bg-* still win */
@@ -500,6 +503,34 @@ html::-webkit-scrollbar-thumb:hover,
 }
 
 /* ornate = thin outer border + inner hairline frame + soft inner glow */
+/* .letter-paper: the closing letter (CTASection) — a smooth white sheet of writing paper lifted off the crumpled
+   parchment page: fine laid lines, two fold creases (folded in thirds: a shadow valley with a lit ridge below it),
+   slightly darker aged edges, square paper corners and a lifted shadow. Wine-only alphas, so it stays on the colour
+   law's tone line. */
+.letter-paper {
+  position: relative;
+  background-color: var(--surface);
+  background-image:
+    /* fold 1 + fold 2: shadow growing into the crease, a lighter band just after it */
+    linear-gradient(to bottom,
+      transparent calc(33.333% - 18px), rgba(92, 0, 14, 0.05) calc(33.333% - 1px), rgba(92, 0, 14, 0.13) 33.333%,
+      rgba(92, 0, 14, 0.015) calc(33.333% + 1px), transparent calc(33.333% + 10px)),
+    linear-gradient(to bottom,
+      transparent calc(66.666% - 18px), rgba(92, 0, 14, 0.05) calc(66.666% - 1px), rgba(92, 0, 14, 0.13) 66.666%,
+      rgba(92, 0, 14, 0.015) calc(66.666% + 1px), transparent calc(66.666% + 10px)),
+    /* laid lines of writing paper + faint chain lines across them */
+    repeating-linear-gradient(to bottom, rgba(92, 0, 14, 0.03) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(to right, rgba(92, 0, 14, 0.025) 0 1px, transparent 1px 72px),
+    /* aged edges */
+    radial-gradient(ellipse 80% 75% at 50% 45%, transparent 58%, rgba(92, 0, 14, 0.08) 100%);
+  border: 1px solid var(--line-hair);
+  border-radius: 3px;
+  box-shadow:
+    0 1px 1px rgba(92, 0, 14, 0.06),
+    0 3px 8px -3px rgba(92, 0, 14, 0.14),
+    0 30px 60px -26px rgba(92, 0, 14, 0.42);
+}
+
 .card-ornate {
   position: relative;
   background-color: var(--surface);

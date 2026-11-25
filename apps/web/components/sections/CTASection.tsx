@@ -23,7 +23,7 @@ export default function CTASection({ contact = FALLBACK_CONTACT }: { contact?: C
       <Reveal className="relative mx-auto max-w-4xl">
         {/* phones: smaller and tucked inside the card edge (the section clips overflow at the viewport) */}
         <DrapedRibbon className="absolute -right-1 -top-6 z-[3] w-32 sm:-right-10 sm:-top-10 sm:w-64" />
-        <OrnateFrame paper className="relative overflow-hidden px-6 pb-12 pt-14 text-center sm:px-14">
+        <OrnateFrame letter className="relative overflow-hidden px-6 pb-12 pt-14 text-center sm:px-14">
           <WaxSeal size={64} className="mx-auto" />
           <ScriptTitle
             id="cta-title"

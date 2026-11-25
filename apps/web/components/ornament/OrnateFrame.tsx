@@ -9,7 +9,8 @@ import CornerFlourish, { type Corner } from './CornerFlourish';
  *
  * <OrnateFrame className="p-6">…</OrnateFrame>
  * <OrnateFrame corners="diagonal" cornerSize="h-6 w-6" as="section" paper>…</OrnateFrame>
- * Props: as, corners 'all'|'diagonal'|'none', cornerSize (classes), paper (parchment fill), className.
+ * <OrnateFrame letter>…</OrnateFrame>  (a sheet of writing paper: laid lines, fold creases, lifted shadow — the CTA letter)
+ * Props: as, corners 'all'|'diagonal'|'none', cornerSize (classes), paper (parchment fill), letter (letter paper), className.
  */
 const PLACES: Record<Corner, string> = {
   tl: 'left-2.5 top-2.5',
@@ -23,6 +24,7 @@ type OrnateFrameProps<T extends ElementType> = {
   corners?: 'all' | 'diagonal' | 'none';
   cornerSize?: string;
   paper?: boolean;
+  letter?: boolean;
   className?: string;
   children?: ReactNode;
 } & Omit<ComponentPropsWithoutRef<T>, 'as' | 'className' | 'children'>;
@@ -32,6 +34,7 @@ export default function OrnateFrame<T extends ElementType = 'div'>({
   corners = 'all',
   cornerSize = 'h-7 w-7',
   paper = false,
+  letter = false,
   className,
   children,
   ...rest
@@ -39,7 +42,7 @@ export default function OrnateFrame<T extends ElementType = 'div'>({
   const Tag: ElementType = as || 'div';
   const list: Corner[] = corners === 'all' ? ['tl', 'tr', 'bl', 'br'] : corners === 'diagonal' ? ['tl', 'br'] : [];
   return (
-    <Tag className={cn(paper ? 'card-paper' : 'card-ornate', 'relative', className)} {...rest}>
+    <Tag className={cn(letter ? 'letter-paper' : paper ? 'card-paper' : 'card-ornate', 'relative', className)} {...rest}>
       {list.map((c) => (
         <CornerFlourish key={c} corner={c} className={cn('absolute z-[1]', PLACES[c], cornerSize)} />
       ))}
